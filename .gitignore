@@ -50,6 +50,7 @@ GEMINI.md
 /frontend/playwright-report/
 /frontend/test-results/
 /frontend/.vercel/
+/frontend/.env
 /frontend/*.tsbuildinfo
 
 # ── Root tooling ──────────────────────────────────────────────────────────

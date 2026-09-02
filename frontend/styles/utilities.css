@@ -1,0 +1,26 @@
+/* ============================================================================
+   Project utilities — thin layer on top of Tailwind.
+   ========================================================================== */
+
+@layer utilities {
+  /* Standard page gutter + max width. Prefer <Container>; this is for the
+     rare case a section needs the gutter without the component. */
+  .container-page {
+    width: 100%;
+    max-width: var(--spacing-container-max);
+    margin-inline: auto;
+    padding-inline: var(--spacing-margin-mobile);
+  }
+
+  @media (min-width: 768px) {
+    .container-page {
+      padding-inline: var(--spacing-margin-desktop);
+    }
+  }
+
+  /* Set by <CustomCursor> only when a decorative cursor is actually shown. */
+  .has-custom-cursor,
+  .has-custom-cursor * {
+    cursor: none;
+  }
+}

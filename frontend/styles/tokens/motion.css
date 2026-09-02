@@ -1,0 +1,21 @@
+/* ============================================================================
+   Motion — easings feed ease-<token> utilities; durations are read via var()
+   in components and mirrored in lib/motion.ts for framer-motion.
+   Reference: docs/design/motion.md
+   ========================================================================== */
+
+@theme {
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1.2);
+  --ease-enter: cubic-bezier(0, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 1, 1);
+}
+
+:root {
+  --duration-instant: 80ms;
+  --duration-fast: 160ms;
+  --duration-normal: 240ms;
+  --duration-slow: 400ms;
+
+  --tap-target-min: 44px;
+}

@@ -1,0 +1,22 @@
+/* ============================================================================
+   Layout tokens — container widths + z-index scale.
+   Grid is Tailwind's default 12/8/4 via grid-cols utilities.
+   Reference: docs/design/foundations.md §3, §6
+   ========================================================================== */
+
+@theme {
+  --spacing-container-narrow: 720px;
+  --spacing-container-standard: 960px;
+  --spacing-container-wide: 1200px;
+  --spacing-container-max: 1280px;
+
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-dropdown: 300;
+  --z-overlay: 400;
+  --z-modal: 500;
+  --z-toast: 600;
+  --z-cursor: 9999;
+}
