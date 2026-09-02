@@ -9,7 +9,9 @@ export function toMetadata(seo: SeoBlock): Metadata {
   const robots = parseRobots(seo.robots);
 
   return {
-    title: seo.meta_title ?? undefined,
+    // The API's meta_title is already brand-qualified — bypass the layout's
+    // `%s | TeamBees` template so the suffix isn't doubled.
+    title: seo.meta_title ? { absolute: seo.meta_title } : undefined,
     description: seo.meta_description ?? undefined,
     alternates: seo.canonical_url ? { canonical: seo.canonical_url } : undefined,
     robots,

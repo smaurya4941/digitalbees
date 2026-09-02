@@ -2,8 +2,13 @@
 
 > Phase 2 deliverable. The token system and primitive/component contracts that
 > everything visual is built from. Tokens live in
-> [`frontend/app/globals.css`](../../frontend/app/globals.css) (Tailwind v4
-> `@theme`); this document explains intent and usage.
+> [`frontend/styles/tokens/*.css`](../../frontend/styles/tokens) (Tailwind v4
+> `@theme`, imported by `app/globals.css`); this document explains intent and usage.
+>
+> Companions: [patterns.md](patterns.md) (UX patterns / wireframes) ·
+> [motion.md](motion.md) · [accessibility.md](accessibility.md) ·
+> [responsive.md](responsive.md) ·
+> [../architecture/frontend.md](../architecture/frontend.md) (code architecture).
 
 **Hierarchy:** `Token → Primitive → Component → Section → Template → Page`.
 Never skip a level — a page composes sections, a section composes components, a

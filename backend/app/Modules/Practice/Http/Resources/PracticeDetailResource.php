@@ -75,8 +75,8 @@ class PracticeDetailResource extends JsonResource
             'related_practices' => PracticeSummaryResource::collection($detail->relatedPractices),
 
             'seo' => SeoPayload::for($practice, [
-                'title' => "{$practice->name} — {$practice->tagline}",
-                'description' => $practice->summary,
+                'title' => $practice->name,
+                'description' => $practice->summary ?: $practice->tagline,
                 'path' => "practices/{$practice->slug}",
                 'schema_type' => 'Service',
                 'schema' => [

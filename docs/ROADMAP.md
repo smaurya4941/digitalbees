@@ -5,7 +5,9 @@
 > now headless (Next.js frontend + Laravel JSON API), so "Blade component /
 > template" means a **Next.js component / template**. Phasing and priorities
 > still hold. Phase 1 → [architecture/information-architecture.md](architecture/information-architecture.md);
-> Phase 2 → [design-system/design-foundation.md](design-system/design-foundation.md).
+> Phase 2 → [design/foundations.md](design/foundations.md);
+> Phases 3-5 → [design/patterns.md](design/patterns.md) and
+> [architecture/frontend.md](architecture/frontend.md).
 
 ## 1. Overall production roadmap
 
