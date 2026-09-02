@@ -20,7 +20,7 @@ export default function AboutSection() {
             <ScrollReveal>
               <span className="inline-block text-gold-muted font-label-sm text-label-sm uppercase tracking-wider mb-6">Who We Are</span>
               <h2 className="font-headline-xl text-headline-xl mb-10 leading-tight">
-                We Are A <span className="font-bold">Top Technology Partner Fully Invested</span> In Our Clients' Success
+                We Are A <span className="font-bold">Top Technology Partner Fully Invested</span> In Our Clients&rsquo; Success
               </h2>
             </ScrollReveal>
             <ul className="space-y-4 mb-12">

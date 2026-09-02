@@ -54,7 +54,10 @@ GEMINI.md
 
 # ── Root tooling ──────────────────────────────────────────────────────────
 /node_modules/
-/docs
 
+# docs/ is tracked (Phase 1/2 specs, schema, ADRs). Ignore only scratch output.
+/docs/**/_scratch/
+/docs/**/*.tmp.*
 
-Roadmap.md
+# Raw planning transcript kept locally, not in VCS (see docs/ROADMAP.md instead).
+/Roadmap.md

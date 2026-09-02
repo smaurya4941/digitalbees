@@ -53,7 +53,7 @@ export default function WhyChooseUsSection() {
                   <span className="material-symbols-outlined text-gold-muted">format_quote</span>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-primary">"Outstanding partnership."</p>
+                  <p className="text-sm font-semibold text-primary">&ldquo;Outstanding partnership.&rdquo;</p>
                   <p className="text-xs text-on-surface-variant">- Natalie R., CTO</p>
                 </div>
               </div>

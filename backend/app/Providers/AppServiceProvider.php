@@ -2,23 +2,31 @@
 
 namespace App\Providers;
 
+use App\Modules\Industry\Models\Industry;
+use App\Modules\Practice\Models\Practice;
+use App\Modules\Practice\Models\SubService;
+use App\Modules\Region\Models\Region;
+use App\Modules\Technology\Models\Technology;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
+        // Stable, short polymorphic type keys stored in `*_type` columns
+        // (entity_relations, seo_metadata, media, …). Never store FQCNs.
+        Relation::enforceMorphMap([
+            'practice' => Practice::class,
+            'sub_service' => SubService::class,
+            'industry' => Industry::class,
+            'region' => Region::class,
+            'technology' => Technology::class,
+        ]);
     }
 }
