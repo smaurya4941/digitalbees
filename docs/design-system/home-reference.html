@@ -1,0 +1,742 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TeamBees - Expert Engineering Teams</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#7587a7",
+                        "surface-container-high": "#e7e8ee",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#75777e",
+                        "glass-dark": "rgba(7, 19, 36, 0.75)",
+                        "tertiary": "#0d0400",
+                        "primary-container": "#0b1f3a",
+                        "secondary-container": "#ffc968",
+                        "tertiary-fixed": "#ffdcc1",
+                        "secondary-fixed": "#ffdea9",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c4c6ce",
+                        "tertiary-container": "#321800",
+                        "on-error": "#ffffff",
+                        "secondary": "#7d5800",
+                        "surface-variant": "#e1e2e8",
+                        "background": "#f8f9ff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#364764",
+                        "on-secondary-fixed-variant": "#5e4100",
+                        "on-surface": "#191c20",
+                        "surface-tint": "#4d5f7d",
+                        "on-surface-variant": "#44474d",
+                        "on-tertiary-fixed": "#2e1500",
+                        "primary": "#000615",
+                        "navy-deep": "#071324",
+                        "tertiary-fixed-dim": "#eebd94",
+                        "secondary-fixed-dim": "#f3be5e",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#d6e3ff",
+                        "on-tertiary-fixed-variant": "#613f20",
+                        "primary-fixed-dim": "#b5c7ea",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#f2f3f9",
+                        "surface": "#f8f9ff",
+                        "inverse-primary": "#b5c7ea",
+                        "surface-dim": "#d8dae0",
+                        "inverse-surface": "#2e3135",
+                        "on-secondary-fixed": "#271900",
+                        "surface-container": "#eceef3",
+                        "surface-container-highest": "#e1e2e8",
+                        "on-background": "#191c20",
+                        "on-tertiary-container": "#a87e59",
+                        "gold-muted": "#D4AF37",
+                        "on-primary-fixed": "#071c36",
+                        "inverse-on-surface": "#eff0f6",
+                        "surface-ivory": "#FDFDFD",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary-container": "#775300",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "64px",
+                        "container-max": "1280px",
+                        "unit": "8px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "title-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .writing-vertical-rl {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+    </style>
+</head>
+<body class="bg-surface-ivory text-on-surface font-body-md antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar -->
+<nav class="w-full bg-[#f8f9fa] shadow-sm relative z-50">
+    <div class="flex justify-between items-center w-full px-4 lg:px-12 py-4">
+        <!-- Logo -->
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-[#f97316] rounded-lg flex items-center justify-center text-white font-bold text-2xl">
+                T
+            </div>
+            <a class="text-2xl font-black text-gray-900 tracking-wider uppercase" href="#">TeamBees</a>
+        </div>
+        
+        <!-- Center Links -->
+        <div class="hidden lg:flex items-center gap-8">
+            <a class="text-[#f97316] font-semibold text-sm flex items-center gap-1" href="#">Home <span class="text-[#f97316]">+</span></a>
+            <a class="text-gray-900 font-semibold text-sm hover:text-[#f97316] transition-colors flex items-center gap-1" href="#">Pages <span class="text-gray-400">+</span></a>
+            <a class="text-gray-900 font-semibold text-sm hover:text-[#f97316] transition-colors flex items-center gap-1" href="#">Properties <span class="text-gray-400">+</span></a>
+            <a class="text-gray-900 font-semibold text-sm hover:text-[#f97316] transition-colors flex items-center gap-1" href="#">Projects <span class="text-gray-400">+</span></a>
+            <a class="text-gray-900 font-semibold text-sm hover:text-[#f97316] transition-colors flex items-center gap-1" href="#">Blog <span class="text-gray-400">+</span></a>
+            <a class="text-gray-900 font-semibold text-sm hover:text-[#f97316] transition-colors" href="#">Contact Us</a>
+        </div>
+        
+        <!-- Right side -->
+        <div class="hidden lg:flex items-center gap-8">
+            <div class="text-right flex flex-col justify-center">
+                <span class="text-gray-400 text-[11px] font-semibold tracking-wider">Call Us:</span>
+                <span class="text-gray-900 font-bold text-sm">+1 (800) 886 960</span>
+            </div>
+            <a class="bg-[#f97316] text-gray-900 font-bold text-sm px-6 py-3 rounded-[2rem] hover:bg-orange-500 transition-colors flex items-center gap-2" href="#">
+                Get in Touch <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+            </a>
+        </div>
+        
+        <button class="lg:hidden text-gray-900 p-2">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+    </div>
+</nav>
+
+<main>
+<!-- Headline Section -->
+<section class="relative w-full bg-[#f8f9fa] overflow-hidden py-12 lg:py-16 flex items-center">
+    <!-- Vertical grid lines -->
+    <div class="absolute inset-0 pointer-events-none flex justify-evenly">
+        <div class="w-px h-full bg-gray-200/50"></div>
+        <div class="w-px h-full bg-gray-200/50"></div>
+        <div class="w-px h-full bg-gray-200/50"></div>
+        <div class="w-px h-full bg-gray-200/50"></div>
+    </div>
+    
+    <!-- Faint left vertical text -->
+    <div class="absolute -left-6 top-1/2 -translate-y-1/2 -rotate-90">
+        <span class="text-[140px] font-bold text-gray-100 uppercase tracking-widest leading-none select-none">GUARANTEED</span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-8 md:px-24 flex flex-col md:flex-row items-center justify-between gap-12">
+        
+        <!-- Left: Text Area -->
+        <div class="max-w-3xl ml-12">
+            <div class="flex items-center gap-2 text-[#f97316] font-bold text-[10px] uppercase tracking-widest mb-6">
+                <span class="material-symbols-outlined text-[14px]">home</span>
+                BUILDING STRONG TEAMS FOR YOUR DIGITAL ENTERPRISE
+            </div>
+            <h1 class="text-[48px] md:text-[64px] leading-[1.1] text-gray-900 tracking-tight">
+                <span class="font-light">Expert</span> <span class="font-black">Engineering</span><br/>
+                <span class="font-black">Teams For Enterprise</span> <span class="font-light">&amp;</span><br/>
+                <span class="font-light">Digital Transformation</span>
+            </h1>
+        </div>
+
+        <!-- Right: Play Button Area -->
+        <div class="relative flex-shrink-0 flex items-center justify-center mt-12 md:mt-0 mr-12">
+            <!-- Orange circle accent -->
+            <div class="absolute -left-20 bottom-4 w-8 h-8 rounded-full border border-[#f97316] flex items-center justify-center">
+                <div class="w-1 h-1 bg-[#f97316] rounded-full"></div>
+            </div>
+            
+            <!-- Play Video Circle -->
+            <div class="relative w-40 h-40 flex items-center justify-center rounded-full cursor-pointer group">
+                <!-- Rotating Text -->
+                <svg class="absolute inset-0 w-full h-full animate-spin-slow" viewBox="0 0 100 100">
+                    <path d="M 50, 50 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="transparent" id="play-curve"></path>
+                    <text class="text-[9px] font-bold fill-gray-500 uppercase tracking-widest">
+                        <textPath href="#play-curve" startOffset="0%">- Play Video - Play Video - Play Video </textPath>
+                    </text>
+                </svg>
+                <!-- Orange Play Button -->
+                <div class="w-20 h-20 bg-[#f97316] rounded-full flex items-center justify-center text-black group-hover:scale-110 transition-transform shadow-lg z-10">
+                    <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Hero Section -->
+<section class="relative w-full h-[90vh] bg-gray-900 overflow-hidden flex flex-col rounded-b-[2.5rem]">
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0">
+        <img class="w-full h-full object-cover opacity-60" src="{{ asset('images/enterprise_hero_banner.jpg') }}" alt="Enterprise Engineering Teams">
+        <div class="absolute inset-0 bg-gradient-to-t from-[#111827] via-transparent to-transparent"></div>
+    </div>
+
+    <!-- Left Social Sidebar -->
+    <div class="absolute left-8 top-0 bottom-0 z-20 hidden md:flex flex-col items-center justify-center gap-8">
+        <div class="writing-vertical-rl text-white/80 text-[10px] font-bold tracking-[0.2em] uppercase transform rotate-180 mb-4">
+            Follow Us
+        </div>
+        <div class="w-[1px] h-12 bg-white/30"></div>
+        <a href="#" class="text-white/60 hover:text-white transition-colors text-[13px] font-bold">f</a>
+        <a href="#" class="text-white/60 hover:text-white transition-colors text-[13px] font-bold"><span class="material-symbols-outlined text-[16px]">photo_camera</span></a>
+        <a href="#" class="text-white/60 hover:text-white transition-colors text-[13px] font-bold">in</a>
+    </div>
+
+    <!-- Top Right 03 -->
+    <div class="absolute right-8 top-8 z-20">
+        <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white font-bold text-sm">
+            03
+        </div>
+    </div>
+
+    <!-- Content at Bottom -->
+    <div class="relative z-20 mt-auto w-full max-w-6xl mx-auto px-8 md:px-24 pb-20 pt-32">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <!-- Item 1 -->
+            <div class="flex flex-col items-start text-white">
+                <div class="w-8 h-8 bg-[#f97316] rounded-full flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-white text-[16px] font-bold" style="font-variation-settings: 'FILL' 1;">check</span>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Custom Home Design &amp; Build</h3>
+                <p class="text-gray-300 text-sm leading-relaxed mb-8 flex-grow">
+                    We're committed to delivering top-quality craftsmanship, personalized service.
+                </p>
+                <a href="#" class="text-[#f97316] font-bold text-[11px] tracking-widest uppercase hover:text-white transition-colors">SEE ALL PROJECTS</a>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="flex flex-col items-start text-white">
+                <div class="w-8 h-8 bg-[#f97316] rounded-full flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-white text-[16px] font-bold" style="font-variation-settings: 'FILL' 1;">check</span>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Turnkey Construction Solutions</h3>
+                <p class="text-gray-300 text-sm leading-relaxed mb-8 flex-grow">
+                    Strong focus on timelines and transparency, we make the homebuilding process smooth.
+                </p>
+                <a href="#" class="text-[#f97316] font-bold text-[11px] tracking-widest uppercase hover:text-white transition-colors">OUR SOLUTIONS</a>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="flex flex-col items-start text-white">
+                <div class="w-8 h-8 bg-[#f97316] rounded-full flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-white text-[16px] font-bold" style="font-variation-settings: 'FILL' 1;">check</span>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Quality Materials &amp; Workmanship</h3>
+                <p class="text-gray-300 text-sm leading-relaxed mb-8 flex-grow">
+                    Construction techniques to ensure every build is built to last. With a licensed team.
+                </p>
+                <a href="#" class="text-[#f97316] font-bold text-[11px] tracking-widest uppercase hover:text-white transition-colors">DISCOVER MORE</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Services Carousel Section -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-end mb-12">
+<div class="max-w-2xl">
+<span class="inline-block text-gold-muted font-label-sm text-label-sm uppercase tracking-wider mb-4">Our Practices</span>
+<h2 class="font-headline-xl text-headline-xl text-primary">
+                        Take A Brief <span class="font-bold">Look At Some Of The Expertise</span> We Offer
+                    </h2>
+</div>
+<div class="flex gap-4 mt-6 md:mt-0">
+<button class="w-12 h-12 rounded-full border border-outline flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-navy-deep text-white flex items-center justify-center hover:bg-primary transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Service Card 1 -->
+<div class="bg-surface-ivory border border-outline-variant/30 rounded-lg overflow-hidden group hover:shadow-[0px_20px_40px_rgba(11,31,58,0.08)] transition-shadow">
+<div class="h-48 overflow-hidden rounded-t-lg">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A dynamic, high-quality image showing a diverse team of professionals collaborating in a bright, modern corporate setting. The mood is focused and energetic, adhering to a light-mode palette with navy and gold accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDhQ3btP9PZ5kC7yBpQknnIDFs4zVygF0ri5LOy0r1ZM32PojzjIGrc5menUdp7pLMvq6WDWfutrVxKKS91fmUlRdivtpuXMl1Z7CQCwRHHVFJ9p4lUtWeywv9vQz_IW281cro-EwuQoDdpRqLOXWoXqtm-Zxge0kvSRSmXQkHNF15IuKBAyOUhYfH9mtm7PwN7gL7BcC83wZHKItJii7pFJmDTVot7cEsMvmIKVys9IH2MLf2nys6SRp2tybiQ4uAMYNfWWwr8xY">
+</div>
+<div class="p-6">
+<h4 class="font-title-md text-title-md text-primary font-bold mb-2">Talent Bees</h4>
+<p class="text-on-surface-variant text-sm">Dedicated engineering teams embedded directly into your workflows.</p>
+</div>
+</div>
+<!-- Service Card 2 (AI) -->
+<div class="bg-surface-ivory border border-outline-variant/30 rounded-lg overflow-hidden group hover:shadow-[0px_20px_40px_rgba(11,31,58,0.08)] transition-shadow">
+<div class="h-48 overflow-hidden rounded-t-lg">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AEtjO1XuQrSu_E31K0a1YS8Kc_nAY0s8gBoEDiK7qX2RMN3dEOZv7Tn6D_fu1riSsKE2feAbSqwYw1_DiF1pQQPRBzJZ-O1aeGJneH2-KLSbn2uHqcAS6JOsf1-a7iyPbAQF_Z-mUTuQNrSMcSKoI4CuaN89uOfNseDQZPh6i3ngKgCg_y5HJq54JwbJcp4n2EcGkREN34TTT-ZO9a0HA9W8zULRi0NfVa4pdariZqa0KXSCBwMtEMhQY2Pluos">
+</div>
+<div class="p-6">
+<h4 class="font-title-md text-title-md text-primary font-bold mb-2">AI Bees</h4>
+<p class="text-on-surface-variant text-sm">Intelligent production agents automating complex enterprise tasks.</p>
+</div>
+</div>
+<!-- Service Card 3 -->
+<div class="bg-surface-ivory border border-outline-variant/30 rounded-lg overflow-hidden group hover:shadow-[0px_20px_40px_rgba(11,31,58,0.08)] transition-shadow">
+<div class="h-48 overflow-hidden rounded-t-lg">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Abstract digital visualization representing digital transformation. Clean lines, bright white background, structural navy blue geometry, and subtle gold light streams indicating data flow and modernization." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJ7uWThYWStPcQWHlrqHgFMxdef_ufah-LAq3Sk185rz0Rcl_4OqDyIMn5EJayh-hT8DaifgabOnqiA3jpqay5o4QycxkyonuRiBoCZJsCxr-Z1g_i-19N0qDtL-I3q9XG78QrMZuKaDGnmal-RpdVHaHtn1qaVaie9VcQdr2FtZwoQ9x87JBhms6wiKYBPdcETr4yT8IWz9ufoilZU4BFgDvuT_8bR6u6X9sZlu1R2qnHpXQpIcaNInKO836pFkS2orxYITjez-Y">
+</div>
+<div class="p-6">
+<h4 class="font-title-md text-title-md text-primary font-bold mb-2">Digital Bees</h4>
+<p class="text-on-surface-variant text-sm">Comprehensive digital transformation and cloud modernization strategies.</p>
+</div>
+</div>
+<!-- Service Card 4 -->
+<div class="bg-surface-ivory border border-outline-variant/30 rounded-lg overflow-hidden group hover:shadow-[0px_20px_40px_rgba(11,31,58,0.08)] transition-shadow">
+<div class="h-48 overflow-hidden rounded-t-lg">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A sleek, conceptual representation of cybersecurity. A pristine white server room environment with deep navy blue glowing shields and subtle gold data nodes, emphasizing institutional trust and impenetrable security." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr9SNXYFPQ6wPzBuetoKUOTNsjOdqafbe6bCISTzQanOHq_TpBpFu9oYEu-8ytjT9Oy4lrjouUgZ87LF6iLWidX5RYaIbiXlmf5vFViGPY_dI34i-IofgjEG37RO6MxqyUiGK5_fRk7Cb6uE9LDFJBUpH_7cciJSsenRw3n7F2invY3xtnaPNioJZJRm_Msia6AZLNihJZz0khzNHLJCSZa15RvP4Uw4urydRGJqYs22MHOBCUHMeua2KDYINOSMDx6yjTMFaxWuM">
+</div>
+<div class="p-6">
+<h4 class="font-title-md text-title-md text-primary font-bold mb-2">Cyber Bees</h4>
+<p class="text-on-surface-variant text-sm">Enterprise-grade security architecture and compliance frameworks.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Split About Section -->
+<section class="py-0">
+<div class="flex flex-col lg:flex-row w-full min-h-[80vh]">
+<!-- Left Image -->
+<div class="w-full lg:w-1/2 min-h-[50vh] lg:min-h-full">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1VWIjkRoSXUrPQdI9z-rrEX5qhEmu2wFizX7I8wv2nmEL5UNbJoEzYsQFfg_PCx3iR8LbkXh7kDMPyiZoY2NZfjjVfpUFVv7tsBi6uh3wvhswNDiLOpH6aOKtE-GaIlYabc3EQ1_ivxCEmFnE_Wniq9dlaTl6H0zGA9V9iKiqFwEta6Tn67Br2fvrUGPi0jq1ZNHA127c_nhRf8MePgXk_sGpWgiTfjBKNNIid7fmeaACn0F4q-AOM5fA">
+</div>
+<!-- Right Content -->
+<div class="w-full lg:w-1/2 bg-primary-container text-white p-margin-mobile lg:p-margin-desktop flex flex-col justify-center">
+<div class="max-w-xl mx-auto lg:mx-0">
+<span class="inline-block text-gold-muted font-label-sm text-label-sm uppercase tracking-wider mb-6">Who We Are</span>
+<h2 class="font-headline-xl text-headline-xl mb-10 leading-tight">
+                            We Are A <span class="font-bold">Top Technology Partner Fully Invested</span> In Our Clients' Success
+                        </h2>
+<ul class="space-y-4 mb-12">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-gold-muted mt-1">check_circle</span>
+<span class="font-body-lg text-body-lg text-surface-container-high">Dedicated engineering pods tailored to your stack.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-gold-muted mt-1">check_circle</span>
+<span class="font-body-lg text-body-lg text-surface-container-high">Rigorous vetting process for top 1% talent.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-gold-muted mt-1">check_circle</span>
+<span class="font-body-lg text-body-lg text-surface-container-high">Transparent, agile delivery methodologies.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-gold-muted mt-1">check_circle</span>
+<span class="font-body-lg text-body-lg text-surface-container-high">Focus on long-term enterprise value creation.</span>
+</li>
+</ul>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div class="bg-navy-deep p-6 rounded border border-white/5">
+<div class="text-gold-muted font-display-lg text-3xl font-bold mb-1">500+</div>
+<div class="text-surface-variant text-sm uppercase tracking-wider">Experts</div>
+</div>
+<div class="bg-navy-deep p-6 rounded border border-white/5">
+<div class="text-gold-muted font-display-lg text-3xl font-bold mb-1">25+</div>
+<div class="text-surface-variant text-sm uppercase tracking-wider">Global Hubs</div>
+</div>
+<div class="bg-navy-deep p-6 rounded border border-white/5">
+<div class="text-gold-muted font-display-lg text-3xl font-bold mb-1">$2B+</div>
+<div class="text-surface-variant text-sm uppercase tracking-wider">Value</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Grid -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+  <div class="text-center mb-16">
+    <div class="flex items-center justify-center gap-2 text-gold-muted font-label-sm text-label-sm uppercase tracking-widest mb-4">
+      <span class="material-symbols-outlined text-sm">home</span>
+      <span class="">Our Projects</span>
+    </div>
+    <h2 class="font-headline-xl text-headline-xl text-primary">
+      Basement To <span class="font-bold">Beautiful – Finished Basement</span> Project
+    </h2>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- Project Card 1 -->
+    <div class="bg-surface-container-low rounded-[2rem] p-12 flex flex-col justify-between relative overflow-hidden min-h-[400px]">
+      <div class="text-on-surface-variant font-medium text-sm">Under Construction</div>
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <span class="text-[120px] font-bold text-outline-variant/20">01</span>
+      </div>
+      <div class="flex justify-between items-end relative z-10">
+        <h3 class="font-title-md text-title-md text-primary font-bold">Greenview Apartments</h3>
+        <div class="w-12 h-12 bg-secondary-fixed/30 rounded-full flex items-center justify-center text-secondary">
+          <span class="material-symbols-outlined">north_east</span>
+        </div>
+      </div>
+    </div>
+    <!-- Project Card 2 (Featured) -->
+    <div class="relative rounded-[2rem] p-12 flex flex-col justify-between overflow-hidden min-h-[400px] group">
+      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIePKkkHNKVqVxirZWVnzjBamhHfRZaUwRWiqvw7k3Rg4_Rc7lYC0nHk_RW7G_iVL9_R6n46ZXSY1aGHaVgxs9yKLMMX9_8DPR1sdGSmLjLsCPfJfLiM1vdwyCiPeT5ODsvhPtHT_DrDGS1MqnMZGVxph8rWNtI0xrAVBvdekoriEYzstNr8TYXJxnV17FbRG1sR6uhEtCYzZSCoxKnovzF3Db7PBw8o2DTD0w0vKgHwALdF5fia5nyVTXjRLIssbxXQ" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Premier Office Tower">
+      <div class="absolute inset-0 bg-navy-deep/40"></div>
+      <div class="relative z-10">
+        <span class="bg-gold-muted text-on-primary text-[10px] font-bold uppercase px-3 py-1 rounded-full">Completed</span>
+      </div>
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <span class="text-[120px] font-bold text-white/10">02</span>
+      </div>
+      <div class="flex justify-between items-end relative z-10">
+        <h3 class="font-title-md text-title-md text-white font-bold">Premier Office Tower</h3>
+        <div class="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-white shadow-lg">
+          <span class="material-symbols-outlined">north_east</span>
+        </div>
+      </div>
+    </div>
+    <!-- Project Card 3 -->
+    <div class="bg-surface-container-low rounded-[2rem] p-12 flex flex-col justify-between relative overflow-hidden min-h-[400px]">
+      <div class="text-on-surface-variant font-medium text-sm">Under Construction</div>
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <span class="text-[120px] font-bold text-outline-variant/20">03</span>
+      </div>
+      <div class="flex justify-between items-end relative z-10">
+        <h3 class="font-title-md text-title-md text-primary font-bold">Urban Height Residence</h3>
+        <div class="w-12 h-12 bg-secondary-fixed/30 rounded-full flex items-center justify-center text-secondary">
+          <span class="material-symbols-outlined">north_east</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section><section class="py-24 bg-surface-container-low px-margin-mobile md:px-margin-desktop">
+<div class="max-w-container-max mx-auto">
+<div class="text-center max-w-3xl mx-auto mb-16">
+<span class="inline-block text-gold-muted font-label-sm text-label-sm uppercase tracking-wider mb-4">The TeamBees Advantage</span>
+<h2 class="font-headline-xl text-headline-xl text-primary">
+                        Genuine <span class="font-bold">Partner In Every Aspect</span> Of Your Journey
+                    </h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Feature 1 -->
+<div class="bg-surface-ivory p-8 rounded-lg border border-outline-variant/50 shadow-sm">
+<div class="w-12 h-12 bg-surface-container flex items-center justify-center rounded-lg mb-6">
+<span class="material-symbols-outlined text-primary text-3xl">groups</span>
+</div>
+<h4 class="font-title-md text-title-md text-primary font-bold mb-3">Dedicated Teams</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Fully integrated pods that act as a seamless extension of your in-house engineering capabilities.</p>
+</div>
+<!-- Feature 2 -->
+<div class="bg-surface-ivory p-8 rounded-lg border border-outline-variant/50 shadow-sm">
+<div class="w-12 h-12 bg-surface-container flex items-center justify-center rounded-lg mb-6">
+<span class="material-symbols-outlined text-primary text-3xl">sync</span>
+</div>
+<h4 class="font-title-md text-title-md text-primary font-bold mb-3">Agile Delivery</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Iterative development cycles ensuring rapid time-to-market without compromising quality.</p>
+</div>
+<!-- Feature 3 -->
+<div class="bg-surface-ivory p-8 rounded-lg border border-outline-variant/50 shadow-sm">
+<div class="w-12 h-12 bg-surface-container flex items-center justify-center rounded-lg mb-6">
+<span class="material-symbols-outlined text-primary text-3xl">shield</span>
+</div>
+<h4 class="font-title-md text-title-md text-primary font-bold mb-3">Security First</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Enterprise-grade security protocols baked into every layer of our development lifecycle.</p>
+</div>
+<!-- Feature 4 -->
+<div class="bg-surface-ivory p-8 rounded-lg border border-outline-variant/50 shadow-sm">
+<div class="w-12 h-12 bg-surface-container flex items-center justify-center rounded-lg mb-6">
+<span class="material-symbols-outlined text-primary text-3xl">domain</span>
+</div>
+<h4 class="font-title-md text-title-md text-primary font-bold mb-3">Enterprise Scale</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Architectures designed to handle massive throughput and complex organizational requirements.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Banner Section -->
+<section class="px-margin-mobile md:px-margin-desktop py-12">
+<div class="rounded-[2rem] bg-gradient-to-r from-navy-deep to-[#a67c2e] p-12 flex flex-col lg:flex-row items-center justify-between gap-8">
+<h2 class="text-white text-headline-xl font-bold max-w-2xl leading-tight">
+      Let's Build Your <span class="text-secondary-fixed">Enterprise Team Today</span> - Contact Us For A Consultation!
+    </h2>
+<div class="relative w-40 h-40 flex items-center justify-center rounded-full border border-white/20 cursor-pointer group">
+<svg class="absolute inset-0 w-full h-full" id="cta-scroll-rotate" viewBox="0 0 100 100">
+<path d="M 50, 50 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="transparent" id="cta-curve"></path>
+<text class="text-[10px] font-label-sm fill-white uppercase tracking-[0.2em]">
+<textPath href="#cta-curve" startOffset="0%">SCHEDULE A VISIT • SCHEDULE A VISIT •</textPath>
+</text>
+</svg>
+<div class="w-16 h-16 bg-gold-muted rounded-full flex items-center justify-center text-on-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">arrow_forward</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Awards Row -->
+<section class="py-24 bg-surface-ivory px-margin-mobile md:px-margin-desktop">
+<div class="max-w-container-max mx-auto text-center">
+<span class="text-gold-muted font-bold tracking-[0.3em] uppercase text-label-sm">Our Recognition</span>
+<h2 class="text-navy-deep text-headline-lg font-bold mt-4 mb-16">
+      Award-Winning <span class="text-gold-muted">Partnership Trusted By</span> Enterprises
+    </h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Award 1 -->
+<div class="bg-white rounded-full shadow-sm px-8 py-6 flex items-center gap-6 border border-outline-variant/30">
+<div class="w-12 h-12 bg-gold-muted/10 rounded-full flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-gold-muted">workspace_premium</span>
+</div>
+<div class="text-left">
+<div class="text-gold-muted font-bold text-sm">2024</div>
+<div class="text-primary font-semibold">Top AI Integration Partner</div>
+</div>
+</div>
+<!-- Award 2 -->
+<div class="bg-white rounded-full shadow-sm px-8 py-6 flex items-center gap-6 border border-outline-variant/30">
+<div class="w-12 h-12 bg-gold-muted/10 rounded-full flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-gold-muted">military_tech</span>
+</div>
+<div class="text-left">
+<div class="text-gold-muted font-bold text-sm">2023</div>
+<div class="text-primary font-semibold">Enterprise Excellence</div>
+</div>
+</div>
+<!-- Award 3 -->
+<div class="bg-white rounded-full shadow-sm px-8 py-6 flex items-center gap-6 border border-outline-variant/30">
+<div class="w-12 h-12 bg-gold-muted/10 rounded-full flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-gold-muted">stars</span>
+</div>
+<div class="text-left">
+<div class="text-gold-muted font-bold text-sm">2024</div>
+<div class="text-primary font-semibold">Global Tech Leader</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Why Choose Us Section -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<!-- Left -->
+<div>
+<span class="inline-block text-gold-muted font-label-sm text-label-sm uppercase tracking-wider mb-4">WHY CHOOSE US</span>
+<h2 class="font-headline-xl text-headline-xl text-navy-deep mb-6">
+                Experienced <span class="font-bold">Engineers Committed To Quality and Client</span> Success Always
+            </h2>
+<p class="text-on-surface-variant text-body-lg mb-8">
+                We bring unparalleled expertise and dedication to every project, ensuring scalable, secure, and innovative solutions tailored to your enterprise needs.
+            </p>
+<div class="grid grid-cols-2 gap-6 mb-8">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-gold-muted">verified</span>
+<span class="font-title-md text-sm font-semibold text-primary">Proven Track Record</span>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-gold-muted">speed</span>
+<span class="font-title-md text-sm font-semibold text-primary">Fast Delivery</span>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-gold-muted">support_agent</span>
+<span class="font-title-md text-sm font-semibold text-primary">24/7 Support</span>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-gold-muted">psychology</span>
+<span class="font-title-md text-sm font-semibold text-primary">Top 1% Talent</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<a class="bg-navy-deep text-white font-title-md text-title-md px-8 py-3 rounded hover:bg-primary transition-colors" href="#">More About Us</a>
+<div class="flex items-center gap-4 border-l-2 border-outline-variant/30 pl-6">
+<div class="w-12 h-12 bg-surface-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-gold-muted">format_quote</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-primary">"Outstanding partnership."</p>
+<p class="text-xs text-on-surface-variant">- Natalie R., CTO</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right -->
+<div class="relative">
+<div class="w-full h-[600px] rounded-2xl overflow-hidden shadow-lg">
+<img alt="Enterprise Tech" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuK5StJhmKHBkiBsWv_JlZgzYOL9eHUwLuU-Btnn6W01xEk-DLHlh8kNKXErXCOOj_zdUri_ZsLQGcZ2bdfAiEHUHR3Ul9V2Su6YnQDKGYMhz1SRaHozWTRU89ySMZZfU7A1NWlsP2FeG99G25ocKuS4QpeyDZoDTq5WyA4uCnoXhd19gpNcKjVCp0EYE9t1PqXn1fn8mRkNHklfBaUDqnx0C5eM8W42VyZ_B6VohvM1PAcI-PdO4yyAAAzaZDPMgPFQ2J8HBNDpc">
+</div>
+<div class="absolute -top-8 -right-8 w-64 h-64 rounded-2xl overflow-hidden shadow-2xl border-4 border-white hidden md:block">
+<img alt="Tablet" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-aUbXyG3z3NNKhC56m_hG6SHhRl8Ak2phBG7hnZ7YAW357DGXBeGgFbPpkg508ZVA8YnTXU-xy49mPrmKXFOecNOB7tDWAPXSg9YG7MJ2U8494ig00q7x2Juv8e7vbwWwHnXp3CZrT9jXabTf-65e-2uIZQv5ab9oH21V1Mtena5fHU_7s_Xetk-1NiSL2ytT2gDbi2qMCJEmwv3ZIU3UAvZlG282mafuhVC-Fj1LM331CT7-s8EKssdF9AxCUCt1UfGNIxX1IGQ">
+</div>
+</div>
+</div>
+</section>
+<!-- Articles & Insights Section -->
+<section class="py-24 bg-surface-container-lowest px-margin-mobile md:px-margin-desktop">
+<div class="max-w-container-max mx-auto">
+<div class="text-center max-w-3xl mx-auto mb-16">
+<span class="inline-block text-gold-muted font-label-sm text-label-sm uppercase tracking-wider mb-4">ARTICLES &amp; INSIGHTS</span>
+<h2 class="font-headline-xl text-headline-xl text-navy-deep">
+                A Showcase Of <span class="font-bold">Stunning Digital Transformation</span> Stories
+            </h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="bg-surface border border-outline-variant/30 rounded-xl overflow-hidden group">
+<div class="relative h-64">
+<img alt="Blog 1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl_icAf-uTkn3Xd0R8MXVMQGFpvA_85-w-rST5eGcTYlPywo1b343SRGsX2kmLL8sQrPvescorcOr00jpB1gH3QpR8KM3CslvWn3c3G_ETTBv2Tbsq0JIthJ9k-8o4dLAPfb_SaRVpyzNq6P91qIdUlAOa4WBWU7eTsPazP04k8g8M2rA1y4_pPviL3GVdW7ENXjaQ_SHB2V1y3aUkd2AsdWpVoHA4Iz5p7rxoq5BMMLIxOnIHGe0Kdle4_0RUkaitrKdQC7HSudM">
+<div class="absolute -bottom-4 right-6 bg-white w-16 h-16 flex flex-col items-center justify-center rounded shadow-md z-10">
+<span class="font-bold text-primary leading-none text-lg">12</span>
+<span class="text-xs text-on-surface-variant uppercase tracking-wider">Jul</span>
+</div>
+</div>
+<div class="p-8 pt-10">
+<div class="text-xs text-on-surface-variant uppercase tracking-wider mb-3">By Admin / 1 Comment</div>
+<h3 class="font-title-md text-xl font-bold text-primary mb-4 group-hover:text-gold-muted transition-colors">The Future of Enterprise AI Integration</h3>
+<a class="text-secondary-fixed font-semibold hover:text-primary transition-colors flex items-center gap-1 text-sm uppercase tracking-wider" href="#">
+                        Read More <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface border border-outline-variant/30 rounded-xl overflow-hidden group">
+<div class="relative h-64">
+<img alt="Blog 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIYv125ouaV0xMQ6j-ERg93M32KwtxSPiUkI9vn-E2w4nzQSefLc0Nh4W5WuTJlu8_-iuYXM1wHSrB7BGfJWrV6r136_1UEATWy5vLQVEznvrN9o5DCez-3kTac2_yJDro_0n8SZGdnFPcLRe-BK_rq015BT_6y9xXQexOEAau0NwcJgU5GBeKhxuRH-eJzCN6Fj2nQv50AykosTnTBkvp753oa9sxVl4vXt3-rS5A43VFaO0in1YqRMF4NzP0cou35QBvNGG635o">
+<div class="absolute -bottom-4 right-6 bg-white w-16 h-16 flex flex-col items-center justify-center rounded shadow-md z-10">
+<span class="font-bold text-primary leading-none text-lg">15</span>
+<span class="text-xs text-on-surface-variant uppercase tracking-wider">Jul</span>
+</div>
+</div>
+<div class="p-8 pt-10">
+<div class="text-xs text-on-surface-variant uppercase tracking-wider mb-3">By Admin / 3 Comments</div>
+<h3 class="font-title-md text-xl font-bold text-primary mb-4 group-hover:text-gold-muted transition-colors">Scaling Global Networks Efficiently</h3>
+<a class="text-secondary-fixed font-semibold hover:text-primary transition-colors flex items-center gap-1 text-sm uppercase tracking-wider" href="#">
+                        Read More <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface border border-outline-variant/30 rounded-xl overflow-hidden group">
+<div class="relative h-64">
+<img alt="Blog 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5gjBEdFFa_gR9448xmZj5vnq2IaOJ9yjEA3H8YyM7R8Ru7u7JkYo3h_78k9yLyr9k13YKQmVAfcw1LBJuFzToCJQLaqsOyfLyQsZkE-q3hWon-uzHoCbByOHil2KtrXSogXwnMkp421pIXjAGT5NPgtpz1jGe2pBuwh0u490KNJnOvcthbLTOOreXjggHOSEUTrUlAU2PB0aXAG1hVRgV2aMx5V_0zABWnqUwG026DAvzmPLNtmEmVpMSrCc8lQ895oSGwq3-JtE">
+<div class="absolute -bottom-4 right-6 bg-white w-16 h-16 flex flex-col items-center justify-center rounded shadow-md z-10">
+<span class="font-bold text-primary leading-none text-lg">20</span>
+<span class="text-xs text-on-surface-variant uppercase tracking-wider">Jul</span>
+</div>
+</div>
+<div class="p-8 pt-10">
+<div class="text-xs text-on-surface-variant uppercase tracking-wider mb-3">By Admin / 0 Comments</div>
+<h3 class="font-title-md text-xl font-bold text-primary mb-4 group-hover:text-gold-muted transition-colors">Building the Next Generation of Labs</h3>
+<a class="text-secondary-fixed font-semibold hover:text-primary transition-colors flex items-center gap-1 text-sm uppercase tracking-wider" href="#">
+                        Read More <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Massive Footer -->
+<footer class="w-full bg-navy-deep text-white pt-24 pb-12 rounded-t-[80px] px-margin-mobile md:px-margin-desktop">
+<div class="max-w-container-max mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+<!-- Col 1 -->
+<div>
+<h4 class="text-gold-muted font-bold text-xl mb-6">Quick Links</h4>
+<ul class="space-y-4">
+<li class=""><a class="text-surface-variant hover:text-white transition-colors" href="#">Home</a></li>
+<li class=""><a class="text-surface-variant hover:text-white transition-colors" href="#">About Us</a></li>
+<li class=""><a class="text-surface-variant hover:text-white transition-colors" href="#">Services</a></li>
+<li class=""><a class="text-surface-variant hover:text-white transition-colors" href="#">Pricing</a></li>
+</ul>
+</div>
+<!-- Col 2 -->
+<div>
+<h4 class="text-gold-muted font-bold text-xl mb-6">Explore</h4>
+<ul class="space-y-4">
+<li class=""><a class="text-surface-variant hover:text-white transition-colors" href="#">Our Team</a></li>
+<li class=""><a class="text-surface-variant hover:text-white transition-colors" href="#">Case Studies</a></li>
+<li class=""><a class="text-surface-variant hover:text-white transition-colors" href="#">Blog</a></li>
+<li class=""><a class="text-surface-variant hover:text-white transition-colors" href="#">Contact</a></li>
+</ul>
+</div>
+<!-- Col 3 -->
+<div>
+<h4 class="text-gold-muted font-bold text-xl mb-6">Company</h4>
+<ul class="space-y-4">
+<li class=""><a class="text-surface-variant hover:text-white transition-colors" href="#">Privacy Policy</a></li>
+<li class=""><a class="text-surface-variant hover:text-white transition-colors" href="#">Terms of Service</a></li>
+<li class=""><a class="text-surface-variant hover:text-white transition-colors" href="#">Support</a></li>
+<li class=""><a class="text-surface-variant hover:text-white transition-colors" href="#">Careers</a></li>
+</ul>
+</div>
+<!-- Col 4 -->
+<div>
+<h4 class="text-gold-muted font-bold text-xl mb-6">Address</h4>
+<ul class="space-y-4 text-surface-variant">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-gold-muted mt-1">location_on</span>
+<span class="">123 Enterprise Blvd,<br>Tech District, NY 10001</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-gold-muted">mail</span>
+<span class="">contact@teambees.corp</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-gold-muted">phone</span>
+<span class="">+1 (800) BEES-CORP</span>
+</li>
+</ul>
+</div>
+</div>
+<div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="text-headline-lg font-headline-lg text-secondary-fixed tracking-tight">TeamBees</div>
+<div class="font-body-md text-surface-variant text-sm">
+                © 2026 Sachin. All rights reserved.
+            </div>
+</div>
+</div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const rotatingText = document.getElementById('cta-scroll-rotate');
+        if (rotatingText) {
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                // Adjust this multiplier to change rotation speed
+                const rotation = scrollY * 0.15;
+                rotatingText.style.transform = `rotate(${rotation}deg)`;
+            });
+        }
+    });
+</script>
+
+
+
+
+</body></html>

@@ -1,0 +1,56 @@
+# ── OS / editors ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.log
+/.idea
+/.vscode
+/.fleet
+/.nova
+/.zed
+.phpactor.json
+
+# ── Secrets / local env ───────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+!**/.env.example
+/auth.json
+**/auth.json
+
+# ── Agent tooling (local only) ────────────────────────────────────────────
+.agents/
+GEMINI.md
+
+# ══════════════════════════════════════════════════════════════════════════
+# backend/  — Laravel
+# ══════════════════════════════════════════════════════════════════════════
+/backend/vendor/
+/backend/node_modules/
+/backend/public/build/
+/backend/public/hot/
+/backend/public/storage/
+/backend/storage/*.key
+/backend/storage/pail
+/backend/.phpunit.cache
+/backend/.phpunit.result.cache
+/backend/database/*.sqlite
+/backend/Homestead.json
+/backend/Homestead.yaml
+
+# ══════════════════════════════════════════════════════════════════════════
+# frontend/  — Next.js
+# ══════════════════════════════════════════════════════════════════════════
+/frontend/node_modules/
+/frontend/.next/
+/frontend/out/
+/frontend/build/
+/frontend/.turbo/
+/frontend/next-env.d.ts
+/frontend/coverage/
+/frontend/playwright-report/
+/frontend/test-results/
+/frontend/.vercel/
+/frontend/*.tsbuildinfo
+
+# ── Root tooling ──────────────────────────────────────────────────────────
+/node_modules/
