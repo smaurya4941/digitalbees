@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Taxonomy backbone — see docs/data-model/schema.sql (Module 2).
  * These are the entities the Next.js dynamic routes resolve against.
+ *
+ * Loose coupling: cross-table references are plain indexed `*_id` columns, not
+ * database foreign keys. Referential integrity and cascade behaviour live in the
+ * application layer (module Services / Observers), so tables can be migrated,
+ * seeded, cached and evolved independently per module.
  */
 return new class extends Migration
 {
@@ -29,7 +34,7 @@ return new class extends Migration
 
         Schema::create('sub_services', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('practice_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('practice_id')->index();
             $table->string('name', 150);
             $table->string('slug', 150);
             $table->text('summary')->nullable();

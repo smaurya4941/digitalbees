@@ -38,7 +38,7 @@ return new class extends Migration
             $table->string('slug', 255)->unique();
             $table->text('excerpt')->nullable();
             $table->longText('body')->nullable();
-            $table->foreignId('author_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->unsignedBigInteger('author_id')->nullable()->index();
             $table->integer('reading_time_minutes')->nullable();
             $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
             $table->timestamp('published_at')->nullable();
@@ -54,14 +54,15 @@ return new class extends Migration
         });
 
         Schema::create('resource_category_resource', function (Blueprint $table): void {
-            $table->foreignId('resource_category_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('resource_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('resource_category_id');
+            $table->unsignedBigInteger('resource_id');
             $table->primary(['resource_category_id', 'resource_id']);
+            $table->index('resource_id');
         });
 
         Schema::create('locations', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('region_id')->constrained();
+            $table->unsignedBigInteger('region_id')->index();
             $table->string('name', 150)->nullable();
             $table->text('address')->nullable();
             $table->string('city', 100)->nullable();
@@ -76,7 +77,7 @@ return new class extends Migration
             $table->id();
             $table->string('title', 255);
             $table->string('slug', 255)->unique();
-            $table->foreignId('location_id')->nullable()->constrained('locations')->nullOnDelete();
+            $table->unsignedBigInteger('location_id')->nullable()->index();
             $table->enum('employment_type', ['full_time', 'part_time', 'contract'])->default('full_time');
             $table->longText('description')->nullable();
             $table->string('ats_external_id', 100)->nullable();
@@ -89,7 +90,7 @@ return new class extends Migration
 
         Schema::create('job_applications', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('job_id')->constrained('job_postings');
+            $table->unsignedBigInteger('job_id')->index();
             $table->string('full_name', 150);
             $table->string('email', 150);
             $table->string('phone', 50)->nullable();

@@ -24,7 +24,7 @@ return new class extends Migration
         Schema::create('pages', function (Blueprint $table): void {
             $table->id();
             $table->string('url_path', 500)->unique();
-            $table->foreignId('page_template_id')->constrained();
+            $table->unsignedBigInteger('page_template_id')->index();
             $table->string('pageable_type', 100)->nullable();
             $table->unsignedBigInteger('pageable_id')->nullable();
             $table->string('secondary_type', 100)->nullable();
@@ -39,7 +39,7 @@ return new class extends Migration
 
         Schema::create('page_sections', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('page_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('page_id')->index();
             $table->string('section_key', 100);
             $table->json('content');
             $table->integer('sort_order')->default(0);
@@ -55,8 +55,8 @@ return new class extends Migration
 
         Schema::create('navigation_items', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('navigation_menu_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('parent_id')->nullable()->constrained('navigation_items')->cascadeOnDelete();
+            $table->unsignedBigInteger('navigation_menu_id')->index();
+            $table->unsignedBigInteger('parent_id')->nullable()->index();
             $table->string('label', 150);
             $table->string('linkable_type', 100)->nullable();
             $table->unsignedBigInteger('linkable_id')->nullable();

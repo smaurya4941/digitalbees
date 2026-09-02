@@ -6,8 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Forms / leads / chatbot / search-log — see docs/data-model/schema.sql (Module 4-5).
- * CRM sync logs, consent logs, audit logs and KPI snapshots are deferred to a
- * later phase (see docs/data-model/schema.sql for the full set).
+ * CRM sync logs, consent logs, audit logs, content reviews, KPI snapshots and
+ * integrations live in 2026_09_02_100008_create_governance_tables.
+ *
+ * Loose coupling: references are plain indexed `*_id` columns, no DB foreign keys.
  */
 return new class extends Migration
 {
@@ -15,7 +17,7 @@ return new class extends Migration
     {
         Schema::create('leads', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('source_page_id')->nullable()->constrained('pages')->nullOnDelete();
+            $table->unsignedBigInteger('source_page_id')->nullable()->index();
             $table->string('full_name', 150)->nullable();
             $table->string('email', 150)->nullable();
             $table->string('phone', 50)->nullable();
@@ -35,14 +37,14 @@ return new class extends Migration
             $table->id();
             $table->string('email', 150)->unique();
             $table->enum('status', ['subscribed', 'unsubscribed'])->default('subscribed');
-            $table->foreignId('source_page_id')->nullable()->constrained('pages')->nullOnDelete();
+            $table->unsignedBigInteger('source_page_id')->nullable()->index();
             $table->timestamp('created_at')->nullable();
         });
 
         Schema::create('chatbot_conversations', function (Blueprint $table): void {
             $table->id();
             $table->string('session_id', 100);
-            $table->foreignId('lead_id')->nullable()->constrained('leads')->nullOnDelete();
+            $table->unsignedBigInteger('lead_id')->nullable()->index();
             $table->json('transcript');
             $table->boolean('resolved')->default(false);
             $table->timestamps();

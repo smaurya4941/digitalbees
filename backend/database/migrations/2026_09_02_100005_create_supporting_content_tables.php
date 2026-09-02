@@ -52,7 +52,7 @@ return new class extends Migration
             $table->string('name', 150);
             $table->unsignedBigInteger('logo_media_id')->nullable();
             $table->enum('partner_type', ['technology', 'alliance', 'certification'])->default('technology');
-            $table->foreignId('technology_id')->nullable()->constrained('technologies')->nullOnDelete();
+            $table->unsignedBigInteger('technology_id')->nullable()->index();
             $table->string('url', 255)->nullable();
             $table->integer('sort_order')->default(0);
             $table->enum('status', ['draft', 'published'])->default('draft');
