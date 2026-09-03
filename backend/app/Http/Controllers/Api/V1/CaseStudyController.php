@@ -2,24 +2,37 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Modules\CaseStudy\Http\Resources\CaseStudyDetailResource;
+use App\Modules\CaseStudy\Http\Resources\CaseStudySummaryResource;
+use App\Modules\CaseStudy\Services\CaseStudyService;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Backed by the CaseStudy module (app/Modules/CaseStudy): Controller -> Service -> Repository.
- * Stub: returns the standard envelope so the frontend route map is live
- * before the data layer lands.
+ * Read API for case studies. Controller -> Service -> Repository.
  */
 class CaseStudyController extends ApiController
 {
-    public function index(Request $request): JsonResponse
+    public function __construct(private readonly CaseStudyService $caseStudies) {}
+
+    /** GET /api/v1/case-studies */
+    public function index(): JsonResponse
     {
-        return ApiResponse::notImplemented('CaseStudyService::list() then CaseStudyControllerResource::collection(); GET /api/v1/case-studies');
+        return ApiResponse::collection(
+            CaseStudySummaryResource::collection($this->caseStudies->list()),
+        );
     }
 
+    /** GET /api/v1/case-studies/{caseStudy} */
     public function show(string $caseStudy): JsonResponse
     {
-        return ApiResponse::notImplemented('CaseStudyService::findBySlug(caseStudy) then CaseStudyControllerResource; GET /api/v1/case-studies/{slug}');
+        $detail = $this->caseStudies->detailBySlug($caseStudy);
+
+        if ($detail === null) {
+            throw new NotFoundHttpException("Case study [{$caseStudy}] not found.");
+        }
+
+        return ApiResponse::item(new CaseStudyDetailResource($detail));
     }
 }

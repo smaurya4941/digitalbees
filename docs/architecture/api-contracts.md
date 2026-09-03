@@ -97,14 +97,39 @@ Scoped: the sub-service must belong to `{practice}` or `404`.
 
 ---
 
-## Planned (same envelope, same conventions)
+## Implemented (Phase 1)
 
-`GET /navigation` · `GET /industries` + `/{slug}` · `GET /regions` + `/{slug}` ·
-`GET /technologies` + `/{slug}` · `GET /case-studies` + `/{slug}` ·
-`GET /insights` · `GET /careers` + `/{slug}` · `GET /pages/resolve?path=` ·
-`GET /search?q=` · `GET /sitemap` · `GET /redirects` ·
-`POST /leads` · `POST /newsletter` · `POST /careers/{career}/apply` ·
-`POST /chatbot/message`.
+Same envelope, same conventions. Full request/response schemas in
+[`docs/api/openapi.yaml`](../api/openapi.yaml).
 
-Each detail endpoint returns its template's contract: `hero`, the relevant
-related-content arrays, and a `seo` block.
+- `GET /navigation` — CMS menu trees keyed by menu key (`header`, `footer`, `mega-practices`).
+- `GET /industries` + `/{slug}` — `industry` template: hero, serving practices,
+  technologies, case studies, SEO.
+- `GET /regions` + `/{slug}` — `region` template: hero, practices delivered there,
+  `locations`, case studies, SEO.
+- `GET /technologies` + `/{slug}` — `technology` template: hero, practices,
+  industries, case studies, SEO.
+- `GET /case-studies` + `/{slug}` — `case-study` template: hero, challenge/solution/
+  results, metrics, linked practices/industries/technologies/regions, SEO.
+- `POST /auth/login`, `GET /auth/me`, `POST /auth/logout` — Sanctum token auth for
+  the CMS/admin surface.
+- `GET /admin/{type}` and `PATCH /admin/{type}/{slug}/status` — role-gated
+  (`auth:sanctum` + `role:`) draft/published/archived lifecycle for
+  practices/industries/regions/technologies/case-studies.
+
+Related entities resolve through `entity_relations`
+(`IsContentEntity::related()` / `relatedInbound()`); relation types
+`serves` / `built-with` / `delivered-in` / `featured-in`.
+
+### Roles
+
+`Super Admin` · `Admin` · `Editor` (edit only) · `SEO Manager` (SEO fields) ·
+`Reviewer` (publish/unpublish). Seeded by `RoleSeeder`; the seeded
+`test@example.com` user is `Super Admin`.
+
+## Still stubbed (envelope with `meta.stub = true`)
+
+`GET /insights` · `GET /careers` + `/{slug}` · `GET /resources` + `/{slug}` ·
+`GET /locations` + `/{slug}` · `GET /pages/resolve?path=` · `GET /search?q=` ·
+`GET /sitemap` · `GET /redirects` · `POST /leads` · `POST /newsletter` ·
+`POST /careers/{career}/apply` · `POST /chatbot/message`.

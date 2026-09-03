@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\ContentStatusController;
+use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CareerController;
 use App\Http\Controllers\Api\V1\CaseStudyController;
 use App\Http\Controllers\Api\V1\ChatbotController;
@@ -64,6 +66,24 @@ Route::get('locations/{location}', [LocationController::class, 'show'])->name('l
 
 // --- Search --------------------------------------------------------------------
 Route::get('search', [SearchController::class, 'index'])->name('search');
+
+// --- Auth (CMS / admin token auth) -------------------------------------------
+Route::post('auth/login', [AuthController::class, 'login'])->middleware('throttle:leads')->name('auth.login');
+Route::middleware('auth:sanctum')->group(function (): void {
+    Route::get('auth/me', [AuthController::class, 'me'])->name('auth.me');
+    Route::post('auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
+});
+
+// --- Admin (authenticated + role-gated) --------------------------------------
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth:sanctum', 'role:Super Admin,Admin,Editor,Reviewer'])
+    ->group(function (): void {
+        Route::get('{type}', [ContentStatusController::class, 'index'])->name('content.index');
+        Route::patch('{type}/{slug}/status', [ContentStatusController::class, 'update'])
+            ->middleware('role:Super Admin,Admin,Reviewer')
+            ->name('content.status');
+    });
 
 // --- Conversion / write (throttled) -------------------------------------------
 Route::middleware('throttle:leads')->group(function (): void {

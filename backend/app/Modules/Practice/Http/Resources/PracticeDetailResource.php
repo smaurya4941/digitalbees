@@ -2,6 +2,7 @@
 
 namespace App\Modules\Practice\Http\Resources;
 
+use App\Modules\CaseStudy\Http\Resources\CaseStudySummaryResource;
 use App\Modules\Industry\Http\Resources\IndustrySummaryResource;
 use App\Modules\Practice\Data\PracticeDetail;
 use App\Modules\Region\Http\Resources\RegionSummaryResource;
@@ -71,7 +72,7 @@ class PracticeDetailResource extends JsonResource
             'industries' => IndustrySummaryResource::collection($detail->industries),
             'technologies' => TechnologySummaryResource::collection($detail->technologies),
             'regions' => RegionSummaryResource::collection($detail->regions),
-            'case_studies' => $detail->caseStudies,
+            'case_studies' => CaseStudySummaryResource::collection($detail->caseStudies),
             'related_practices' => PracticeSummaryResource::collection($detail->relatedPractices),
 
             'seo' => SeoPayload::for($practice, [

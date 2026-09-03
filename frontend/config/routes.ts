@@ -4,8 +4,8 @@
  */
 export const routes = {
   home: () => '/',
-  about: () => '/about',
-  contact: () => '/contact',
+  about: () => '/about-us',
+  contact: () => '/contact-us',
   search: (q?: string) => (q ? `/search?q=${encodeURIComponent(q)}` : '/search'),
 
   practices: () => '/practices',

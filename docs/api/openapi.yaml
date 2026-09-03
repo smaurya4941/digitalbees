@@ -1,0 +1,563 @@
+openapi: 3.1.0
+info:
+  title: TeamBees Content API
+  version: "1.0.0"
+  description: >
+    The JSON contract between the Laravel API (`backend/`) and the Next.js
+    frontend. The frontend depends only on these shapes — never on the database.
+
+    Envelope: every response is `{ data, meta, links }` (see `App\Support\Http\ApiResponse`).
+    Only `status = published` rows are exposed on public read endpoints. Slugs are
+    the public identifier. Every entity carries an `href` (frontend path).
+
+    Status implemented in Phase 1: navigation, practices (+ sub-services),
+    industries, regions, technologies, case-studies, and the admin
+    status/auth surface. Remaining endpoints (insights, careers, resources,
+    locations, pages/resolve, search, sitemap, redirects, leads, newsletter,
+    chatbot) return the envelope with `meta.stub = true` until their slice lands.
+servers:
+  - url: /api/v1
+tags:
+  - name: Navigation
+  - name: Practices
+  - name: Industries
+  - name: Regions
+  - name: Technologies
+  - name: Case Studies
+  - name: Auth
+  - name: Admin
+
+components:
+  securitySchemes:
+    sanctumToken:
+      type: http
+      scheme: bearer
+      description: Sanctum personal access token from `POST /auth/login`.
+  schemas:
+    Envelope:
+      type: object
+      required: [data]
+      properties:
+        data: {}
+        meta: { type: object }
+        links: { type: [object, array] }
+    Error:
+      type: object
+      properties:
+        message: { type: string }
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items: { type: string }
+    SeoBlock:
+      type: object
+      properties:
+        meta_title: { type: string }
+        meta_description: { type: [string, "null"] }
+        canonical_url: { type: string }
+        robots: { type: string, example: "index,follow" }
+        og_title: { type: [string, "null"] }
+        og_description: { type: [string, "null"] }
+        og_image_url: { type: [string, "null"] }
+        twitter_card: { type: string }
+        schema_type: { type: [string, "null"] }
+        schema_json: { type: [object, "null"] }
+    PracticeSummary:
+      type: object
+      properties:
+        id: { type: integer }
+        slug: { type: string }
+        name: { type: string }
+        tagline: { type: [string, "null"] }
+        summary: { type: [string, "null"] }
+        icon: { type: [string, "null"] }
+        color_token: { type: [string, "null"] }
+        href: { type: string }
+        sub_services_count: { type: integer }
+    PracticeDetail:
+      type: object
+      properties:
+        id: { type: integer }
+        slug: { type: string }
+        name: { type: string }
+        template: { type: string, const: practice }
+        href: { type: string }
+        hero: { $ref: '#/components/schemas/Hero' }
+        proof_points:
+          type: array
+          items: { $ref: '#/components/schemas/ProofPoint' }
+        how_we_work:
+          type: array
+          items:
+            type: object
+            properties:
+              step: { type: integer }
+              title: { type: string }
+              description: { type: string }
+        services: { type: array, items: { $ref: '#/components/schemas/SubService' } }
+        industries: { type: array, items: { $ref: '#/components/schemas/IndustrySummary' } }
+        technologies: { type: array, items: { $ref: '#/components/schemas/TechnologySummary' } }
+        regions: { type: array, items: { $ref: '#/components/schemas/RegionSummary' } }
+        case_studies: { type: array, items: { $ref: '#/components/schemas/CaseStudySummary' } }
+        related_practices: { type: array, items: { $ref: '#/components/schemas/PracticeSummary' } }
+        seo: { $ref: '#/components/schemas/SeoBlock' }
+    Hero:
+      type: object
+      properties:
+        eyebrow: { type: string }
+        title: { type: string }
+        description: { type: [string, "null"] }
+        cta: { $ref: '#/components/schemas/Cta' }
+        secondary_cta: { $ref: '#/components/schemas/Cta' }
+    Cta:
+      type: object
+      properties:
+        label: { type: string }
+        url: { type: string }
+    ProofPoint:
+      type: object
+      properties:
+        value: { type: [integer, string] }
+        label: { type: string }
+    SubService:
+      type: object
+      properties:
+        id: { type: integer }
+        slug: { type: string }
+        name: { type: string }
+        summary: { type: [string, "null"] }
+        body: { type: [string, "null"] }
+        href: { type: [string, "null"] }
+    IndustrySummary:
+      type: object
+      properties:
+        id: { type: integer }
+        slug: { type: string }
+        name: { type: string }
+        summary: { type: [string, "null"] }
+        icon: { type: [string, "null"] }
+        href: { type: string }
+    IndustryDetail:
+      allOf:
+        - $ref: '#/components/schemas/IndustrySummary'
+        - type: object
+          properties:
+            template: { type: string, const: industry }
+            hero: { $ref: '#/components/schemas/Hero' }
+            proof_points: { type: array, items: { $ref: '#/components/schemas/ProofPoint' } }
+            practices: { type: array, items: { $ref: '#/components/schemas/PracticeSummary' } }
+            technologies: { type: array, items: { $ref: '#/components/schemas/TechnologySummary' } }
+            case_studies: { type: array, items: { $ref: '#/components/schemas/CaseStudySummary' } }
+            seo: { $ref: '#/components/schemas/SeoBlock' }
+    RegionSummary:
+      type: object
+      properties:
+        id: { type: integer }
+        slug: { type: string }
+        name: { type: string }
+        iso_code: { type: [string, "null"] }
+        summary: { type: [string, "null"] }
+        href: { type: string }
+    RegionDetail:
+      allOf:
+        - $ref: '#/components/schemas/RegionSummary'
+        - type: object
+          properties:
+            template: { type: string, const: region }
+            hero: { $ref: '#/components/schemas/Hero' }
+            proof_points: { type: array, items: { $ref: '#/components/schemas/ProofPoint' } }
+            practices: { type: array, items: { $ref: '#/components/schemas/PracticeSummary' } }
+            locations:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: { type: integer }
+                  name: { type: [string, "null"] }
+                  address: { type: [string, "null"] }
+                  city: { type: [string, "null"] }
+                  country: { type: [string, "null"] }
+                  lat: { type: [number, "null"] }
+                  lng: { type: [number, "null"] }
+            case_studies: { type: array, items: { $ref: '#/components/schemas/CaseStudySummary' } }
+            seo: { $ref: '#/components/schemas/SeoBlock' }
+    TechnologySummary:
+      type: object
+      properties:
+        id: { type: integer }
+        slug: { type: string }
+        name: { type: string }
+        summary: { type: [string, "null"] }
+        vendor_name: { type: [string, "null"] }
+        href: { type: string }
+    TechnologyDetail:
+      allOf:
+        - $ref: '#/components/schemas/TechnologySummary'
+        - type: object
+          properties:
+            template: { type: string, const: technology }
+            hero: { $ref: '#/components/schemas/Hero' }
+            proof_points: { type: array, items: { $ref: '#/components/schemas/ProofPoint' } }
+            practices: { type: array, items: { $ref: '#/components/schemas/PracticeSummary' } }
+            industries: { type: array, items: { $ref: '#/components/schemas/IndustrySummary' } }
+            case_studies: { type: array, items: { $ref: '#/components/schemas/CaseStudySummary' } }
+            seo: { $ref: '#/components/schemas/SeoBlock' }
+    CaseStudySummary:
+      type: object
+      properties:
+        id: { type: integer }
+        slug: { type: string }
+        title: { type: string }
+        client_name: { type: [string, "null"] }
+        summary: { type: [string, "null"] }
+        metrics: { type: array, items: { type: object } }
+        published_at: { type: [string, "null"], format: date-time }
+        href: { type: string }
+    CaseStudyDetail:
+      allOf:
+        - $ref: '#/components/schemas/CaseStudySummary'
+        - type: object
+          properties:
+            template: { type: string, const: case-study }
+            hero: { $ref: '#/components/schemas/Hero' }
+            challenge: { type: [string, "null"] }
+            solution: { type: [string, "null"] }
+            results: { type: [string, "null"] }
+            practices: { type: array, items: { $ref: '#/components/schemas/PracticeSummary' } }
+            industries: { type: array, items: { $ref: '#/components/schemas/IndustrySummary' } }
+            technologies: { type: array, items: { $ref: '#/components/schemas/TechnologySummary' } }
+            regions: { type: array, items: { $ref: '#/components/schemas/RegionSummary' } }
+            seo: { $ref: '#/components/schemas/SeoBlock' }
+    NavigationTree:
+      type: object
+      additionalProperties:
+        type: array
+        items: { $ref: '#/components/schemas/NavigationItem' }
+    NavigationItem:
+      type: object
+      properties:
+        id: { type: integer }
+        label: { type: string }
+        url: { type: [string, "null"] }
+        icon: { type: [string, "null"] }
+        children:
+          type: array
+          items: { $ref: '#/components/schemas/NavigationItem' }
+
+  responses:
+    NotFound:
+      description: Unknown or unpublished slug.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Missing or invalid token.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Forbidden:
+      description: Authenticated but lacks the required role.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ValidationError:
+      description: Unprocessable entity.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+paths:
+  /navigation:
+    get:
+      tags: [Navigation]
+      summary: All CMS-managed menu trees keyed by menu key (header, footer, mega-practices).
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data: { $ref: '#/components/schemas/NavigationTree' }
+
+  /practices:
+    get:
+      tags: [Practices]
+      summary: Published practices in display order.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/PracticeSummary' }
+  /practices/{slug}:
+    get:
+      tags: [Practices]
+      summary: The full `practice` template contract.
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties: { data: { $ref: '#/components/schemas/PracticeDetail' } }
+        "404": { $ref: '#/components/responses/NotFound' }
+  /practices/{practice}/sub-services/{subService}:
+    get:
+      tags: [Practices]
+      summary: A sub-service, scoped to its parent practice.
+      parameters:
+        - { name: practice, in: path, required: true, schema: { type: string } }
+        - { name: subService, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties: { data: { $ref: '#/components/schemas/SubService' } }
+        "404": { $ref: '#/components/responses/NotFound' }
+
+  /industries:
+    get:
+      tags: [Industries]
+      summary: Published industries in display order.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/IndustrySummary' }
+  /industries/{slug}:
+    get:
+      tags: [Industries]
+      summary: The full `industry` template contract.
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties: { data: { $ref: '#/components/schemas/IndustryDetail' } }
+        "404": { $ref: '#/components/responses/NotFound' }
+
+  /regions:
+    get:
+      tags: [Regions]
+      summary: Published regions in display order.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/RegionSummary' }
+  /regions/{slug}:
+    get:
+      tags: [Regions]
+      summary: The full `region` template contract (includes locations).
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties: { data: { $ref: '#/components/schemas/RegionDetail' } }
+        "404": { $ref: '#/components/responses/NotFound' }
+
+  /technologies:
+    get:
+      tags: [Technologies]
+      summary: Published technologies in display order.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/TechnologySummary' }
+  /technologies/{slug}:
+    get:
+      tags: [Technologies]
+      summary: The full `technology` template contract.
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties: { data: { $ref: '#/components/schemas/TechnologyDetail' } }
+        "404": { $ref: '#/components/responses/NotFound' }
+
+  /case-studies:
+    get:
+      tags: [Case Studies]
+      summary: Published case studies, newest first.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/CaseStudySummary' }
+  /case-studies/{slug}:
+    get:
+      tags: [Case Studies]
+      summary: The full `case-study` template contract.
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties: { data: { $ref: '#/components/schemas/CaseStudyDetail' } }
+        "404": { $ref: '#/components/responses/NotFound' }
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Exchange credentials for a Sanctum token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+                device_name: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties:
+                      data:
+                        type: object
+                        properties:
+                          token: { type: string }
+                          user:
+                            type: object
+                            properties:
+                              id: { type: integer }
+                              name: { type: string }
+                              email: { type: string }
+                              department: { type: [string, "null"] }
+                              roles: { type: array, items: { type: string } }
+                              permissions: { type: array, items: { type: string } }
+        "422": { $ref: '#/components/responses/ValidationError' }
+  /auth/me:
+    get:
+      tags: [Auth]
+      security: [{ sanctumToken: [] }]
+      summary: The authenticated user, roles and permissions.
+      responses:
+        "200": { description: OK }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+  /auth/logout:
+    post:
+      tags: [Auth]
+      security: [{ sanctumToken: [] }]
+      summary: Revoke the current token.
+      responses:
+        "200": { description: OK }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+
+  /admin/{type}:
+    get:
+      tags: [Admin]
+      security: [{ sanctumToken: [] }]
+      summary: >
+        Every row (any status) for a content type. `type` is one of
+        practices, industries, regions, technologies, case-studies.
+        Roles: Super Admin, Admin, Editor, Reviewer.
+      parameters:
+        - { name: type, in: path, required: true, schema: { type: string } }
+        - { name: status, in: query, required: false, schema: { type: string, enum: [draft, published, archived] } }
+      responses:
+        "200": { description: OK }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "403": { $ref: '#/components/responses/Forbidden' }
+  /admin/{type}/{slug}/status:
+    patch:
+      tags: [Admin]
+      security: [{ sanctumToken: [] }]
+      summary: >
+        Move a content entity through its draft/published/archived lifecycle.
+        Roles: Super Admin, Admin, Reviewer. Dispatches frontend cache
+        revalidation.
+      parameters:
+        - { name: type, in: path, required: true, schema: { type: string } }
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [draft, published, archived] }
+      responses:
+        "200": { description: OK }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "403": { $ref: '#/components/responses/Forbidden' }
+        "404": { $ref: '#/components/responses/NotFound' }
+        "422": { $ref: '#/components/responses/ValidationError' }

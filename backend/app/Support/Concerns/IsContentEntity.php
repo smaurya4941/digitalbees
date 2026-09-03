@@ -49,14 +49,21 @@ trait IsContentEntity
         return $this->morphOne(SeoMetadata::class, 'seoable');
     }
 
-    /** Outgoing edges in the content graph. */
+    /** Outgoing edges in the content graph (this entity is the `subject`). */
     public function relationsOut(): MorphMany
     {
         return $this->morphMany(EntityRelation::class, 'subject', 'subject_type', 'subject_id');
     }
 
+    /** Incoming edges in the content graph (this entity is the `related`). */
+    public function relationsIn(): MorphMany
+    {
+        return $this->morphMany(EntityRelation::class, 'related', 'related_type', 'related_id');
+    }
+
     /**
-     * Resolve related models of one type from the content graph.
+     * Resolve related models of one type by following outgoing edges
+     * (`this` --relation_type--> result).
      *
      * @template TModel of \Illuminate\Database\Eloquent\Model
      *
@@ -71,6 +78,50 @@ trait IsContentEntity
             ->orderBy('sort_order')
             ->pluck('related_id');
 
-        return $relatedClass::query()->whereIn('id', $edges)->get();
+        return $this->resolveGraph($relatedClass, $edges);
+    }
+
+    /**
+     * Resolve related models of one type by following incoming edges
+     * (result --relation_type--> `this`). Lets an Industry find the Practices
+     * that `serve` it, a Technology find the Practices `built-with` it, etc.
+     *
+     * @template TModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  class-string<TModel>  $subjectClass
+     * @return Collection<int, TModel>
+     */
+    public function relatedInbound(string $subjectClass, ?string $relationType = null): Collection
+    {
+        $edges = $this->relationsIn()
+            ->where('subject_type', (new $subjectClass)->getMorphClass())
+            ->when($relationType !== null, fn ($q) => $q->where('relation_type', $relationType))
+            ->orderBy('sort_order')
+            ->pluck('subject_id');
+
+        return $this->resolveGraph($subjectClass, $edges);
+    }
+
+    /**
+     * @template TModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  class-string<TModel>  $class
+     * @param  Collection<int, int>  $ids
+     * @return Collection<int, TModel>
+     */
+    private function resolveGraph(string $class, Collection $ids): Collection
+    {
+        if ($ids->isEmpty()) {
+            return new Collection;
+        }
+
+        $query = $class::query()->whereIn('id', $ids);
+
+        // Never surface draft/archived related content on the public API.
+        if (method_exists($class, 'scopePublished')) {
+            $query->published();
+        }
+
+        return $query->get()->sortBy(fn ($model) => $ids->search($model->getKey()))->values();
     }
 }

@@ -1,60 +1,108 @@
 import Image from "next/image";
 import ScrollReveal from "@/components/ui/ScrollReveal";
+import { Home, Check } from "lucide-react";
 
 export default function AboutSection() {
+  const checkmarks = [
+    "Pre-Trained Talent Pool",
+    "15+ Years Staffing Experience",
+    "Full-Time Commitment",
+    "AI-Driven Strategies"
+  ];
+
+  const cards = [
+    {
+      title: "GLOBAL FOUNDATION",
+      value: "15+\nYears",
+      sub: "In Tech Staffing\nExcellence"
+    },
+    {
+      title: "COMMITMENT MODEL",
+      value: "100%",
+      sub: "Dedicated Brand\nResources"
+    },
+    {
+      title: "DELIVERY CAPABILITY",
+      value: "Global",
+      sub: "Serving India, UAE,\nEurope & US"
+    }
+  ];
+
   return (
-    <section className="py-0">
-      <div className="flex flex-col lg:flex-row w-full min-h-[80vh]">
-        {/* Left Image */}
-        <div className="w-full lg:w-1/2 min-h-[50vh] lg:min-h-full relative">
-          <Image
-            className="w-full h-full object-cover"
-            src="https://lh3.googleusercontent.com/aida/AEtjO1VWIjkRoSXUrPQdI9z-rrEX5qhEmu2wFizX7I8wv2nmEL5UNbJoEzYsQFfg_PCx3iR8LbkXh7kDMPyiZoY2NZfjjVfpUFVv7tsBi6uh3wvhswNDiLOpH6aOKtE-GaIlYabc3EQ1_ivxCEmFnE_Wniq9dlaTl6H0zGA9V9iKiqFwEta6Tn67Br2fvrUGPi0jq1ZNHA127c_nhRf8MePgXk_sGpWgiTfjBKNNIid7fmeaACn0F4q-AOM5fA"
-            alt="Office space"
-            fill
-          />
-        </div>
-        {/* Right Content */}
-        <div className="w-full lg:w-1/2 bg-primary-container text-white p-margin-mobile lg:p-margin-desktop flex flex-col justify-center">
-          <div className="max-w-xl mx-auto lg:mx-0">
-            <ScrollReveal>
-              <span className="inline-block text-gold-muted font-label-sm text-label-sm uppercase tracking-wider mb-6">Who We Are</span>
-              <h2 className="font-headline-xl text-headline-xl mb-10 leading-tight">
-                We Are A <span className="font-bold">Top Technology Partner Fully Invested</span> In Our Clients&rsquo; Success
-              </h2>
-            </ScrollReveal>
-            <ul className="space-y-4 mb-12">
-              {[
-                "Dedicated engineering pods tailored to your stack.",
-                "Rigorous vetting process for top 1% talent.",
-                "Transparent, agile delivery methodologies.",
-                "Focus on long-term enterprise value creation."
-              ].map((text, i) => (
-                <ScrollReveal key={i} delay={0.1 * (i + 1)}>
-                  <li className="flex items-start gap-3">
-                    <span className="material-symbols-outlined text-gold-muted mt-1" style={{ fontVariationSettings: '"FILL" 1' }}>check_circle</span>
-                    <span className="font-body-lg text-body-lg text-surface-container-high">{text}</span>
-                  </li>
-                </ScrollReveal>
-              ))}
-            </ul>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {[
-                { value: "500+", label: "Experts" },
-                { value: "25+", label: "Global Hubs" },
-                { value: "$2B+", label: "Value" }
-              ].map((stat, i) => (
-                <ScrollReveal key={i} delay={0.4 + (0.1 * i)} yOffset={20}>
-                  <div className="bg-navy-deep p-6 rounded border border-white/5 hover:border-gold-muted/30 transition-colors duration-300">
-                    <div className="text-gold-muted font-display-lg text-3xl font-bold mb-1">{stat.value}</div>
-                    <div className="text-surface-variant text-sm uppercase tracking-wider">{stat.label}</div>
-                  </div>
-                </ScrollReveal>
-              ))}
-            </div>
+    <section className="w-full flex flex-col lg:flex-row bg-[#2B2222]">
+      
+      {/* Left Content: Image (Full Bleed on Left) */}
+      <div className="w-full lg:w-[45%] h-[400px] lg:h-auto relative">
+        <ScrollReveal className="h-full">
+          <div className="w-full h-full relative">
+            <Image
+              className="w-full h-full object-cover"
+              src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop"
+              alt="Golden skyscrapers"
+              fill
+            />
+            {/* Dark overlay to blend slightly with the right side if needed */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#2B2222]/50 lg:hidden"></div>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
+
+      {/* Right Content */}
+      <div className="w-full lg:w-[55%] py-20 px-8 lg:px-20 flex flex-col justify-center">
+        <ScrollReveal delay={0.1}>
+          
+          {/* Eyebrow */}
+          <div className="flex items-center gap-2 mb-6">
+            <Home size={16} strokeWidth={2.5} className="text-[#FACC15]" />
+            <span className="text-[#FACC15] font-bold text-xs uppercase tracking-[0.2em]">
+              ABOUT THE COMPANY
+            </span>
+          </div>
+          
+          {/* Headline */}
+          <h2 className="text-[36px] md:text-[44px] leading-[1.2] text-white tracking-tight mb-8">
+            We Are A <span className="font-bold">Next-Gen Digital Workforce</span> Fully Invested In Your Growth
+          </h2>
+          
+          {/* Paragraph */}
+          <p className="text-[15px] text-gray-400 leading-relaxed mb-10 max-w-3xl">
+            The Digital Bees is a strategic unit of Teambees Corp, built to bridge the gap between talent and opportunity. Backed by a 15-year foundation in global tech staffing and our EdTech ecosystem, Techiegigs, we build high-performing digital growth engines for organizations worldwide.
+          </p>
+
+          {/* Checkmarks Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-4 mb-12">
+            {checkmarks.map((text, i) => (
+              <div key={i} className="flex items-center gap-4">
+                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0">
+                  <Check size={16} className="text-[#FF7A59]" strokeWidth={3} />
+                </div>
+                <span className="text-white text-[15px] font-bold tracking-wide">{text}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* 3 Bottom Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {cards.map((card, i) => (
+              <ScrollReveal key={i} delay={0.2 + (0.1 * i)} yOffset={20}>
+                <div className="bg-gradient-to-b from-white/[0.03] to-transparent border border-dashed border-white/20 p-6 rounded-2xl flex flex-col h-full hover:bg-white/[0.05] transition-colors">
+                  <div className="text-gray-400 font-bold text-[10px] uppercase tracking-widest mb-6">
+                    {card.title}
+                  </div>
+                  <div className="text-white text-[32px] md:text-[36px] font-extrabold mb-4 tracking-tight whitespace-pre-line leading-[1.1]">
+                    {card.value}
+                  </div>
+                  <div className="text-gray-400 text-[13px] leading-relaxed whitespace-pre-line">
+                    {card.sub}
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+          
+        </ScrollReveal>
+      </div>
+      
     </section>
   );
 }

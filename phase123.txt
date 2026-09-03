@@ -1,0 +1,1694 @@
+check this. do not implement anything.
+PHASE 1 — DATABASE + API ENGINE
+Phase 1 Goal
+
+Build the content engine that powers the entire TeamBees website.
+
+At the end of Phase 1:
+
+Database
+   ↓
+Models
+   ↓
+Relationships
+   ↓
+Business logic
+   ↓
+API
+   ↓
+JSON
+
+The frontend should be able to ask:
+
+"Give me the AI Bees practice."
+
+and receive everything required to render that page.
+
+1.1 — Finalize the Content Architecture
+
+Before creating models, finalize what information TeamBees actually needs to store.
+
+Your primary entities are:
+
+Practice
+Sub-Service
+Industry
+Technology
+Region
+Case Study
+Career
+Page
+Navigation
+SEO
+Media
+
+Don't start by building all of them.
+
+Build in dependency order.
+
+Tier 1 — Core taxonomy
+Practice
+Industry
+Region
+Technology
+Tier 2 — Practice content
+Sub-Service
+Tier 3 — Proof/content
+Case Study
+Tier 4 — Corporate/content
+Career
+Page
+Tier 5 — System
+Navigation
+SEO
+Media
+
+This order matters because later entities depend on earlier ones.
+
+1.2 — Practice Entity
+
+This is your first complete entity.
+
+A Practice should contain enough information to generate a complete Practice page.
+
+Conceptually:
+
+Practice
+│
+├── Identity
+│   ├── Name
+│   ├── Slug
+│   ├── Short description
+│   └── Status
+│
+├── Hero
+│   ├── Eyebrow
+│   ├── Title
+│   ├── Description
+│   ├── CTA
+│   └── Image
+│
+├── Content
+│   ├── Overview
+│   ├── Services
+│   ├── How we work
+│   └── Capabilities
+│
+├── Relationships
+│   ├── Sub-services
+│   ├── Industries
+│   ├── Technologies
+│   ├── Case studies
+│   └── Related practices
+│
+└── SEO
+    ├── SEO title
+    ├── Description
+    ├── Canonical
+    ├── OG image
+    └── Indexability
+
+The important point:
+
+Don't make the Practice table a dumping ground for every possible piece of page content.
+
+Keep the content model structured.
+
+1.3 — Practice Seed Data
+
+Start with your seven actual practices:
+
+AI Bees
+Digital Bees
+Talent Bees
+Marketing Bees
+Quality Bees
+ServiceNow Bees
+Energy Bees
+
+Each should have:
+
+Name
+Slug
+Description
+Status
+Display order
+Hero information
+SEO information
+
+Initially, the content can be placeholder/approved draft content.
+
+The important thing is that the complete data structure works.
+
+1.4 — Industry Entity
+
+Create the Industry structure.
+
+Example conceptual data:
+
+Industry
+│
+├── Name
+├── Slug
+├── Description
+├── Hero
+├── Status
+├── Display order
+└── SEO
+
+Don't populate 50 industries immediately.
+
+Start with a small approved set.
+
+For example:
+
+Healthcare
+Banking & Financial Services
+Retail
+Manufacturing
+Energy
+Technology
+
+The exact final taxonomy should come from your approved IA/content plan.
+
+1.5 — Region Entity
+
+Region needs to support your regional architecture.
+
+Conceptually:
+
+Region
+│
+├── Name
+├── Slug
+├── Country
+├── Description
+├── Hero
+├── Locations
+├── Status
+└── SEO
+
+For example:
+
+India
+United States
+United Kingdom
+Middle East
+Europe
+
+Again, don't invent the final list randomly.
+
+Your audit noted that the database supports regions but the actual content/taxonomy has not been populated.
+
+1.6 — Technology Entity
+
+Technology should become a reusable taxonomy.
+
+Technology
+│
+├── Name
+├── Slug
+├── Category
+├── Description
+├── Logo
+├── Status
+└── SEO
+
+Potential categories:
+
+AI
+Cloud
+Data
+Web
+Mobile
+Enterprise
+Automation
+
+The important part is that technologies can be related to:
+
+Practices
+Industries
+Case Studies
+1.7 — Sub-Service Entity
+
+A Practice can have multiple services.
+
+Example:
+
+AI Bees
+│
+├── AI Strategy
+├── Generative AI
+├── Machine Learning
+├── AI Automation
+└── AI Consulting
+
+Structure:
+
+Practice
+   ↓
+Sub-services
+
+Every sub-service needs:
+
+Name
+Slug
+Description
+Practice
+Status
+Display order
+SEO
+
+This gives you the foundation for URLs such as:
+
+/practices/ai-bees/ai-consulting
+
+if your final IA approves that pattern.
+
+1.8 — Entity Relationships
+
+This is extremely important.
+
+Your website isn't just a collection of entities.
+
+It's a network.
+
+                 Practice
+                /    |    \
+               /     |     \
+              ↓      ↓      ↓
+        Industry  Technology  Region
+              \       |       /
+               \      |      /
+                ↓     ↓     ↓
+                  Case Study
+
+You need relationships such as:
+
+Practice ↔ Industry
+Practice ↔ Technology
+Practice ↔ Region
+Practice ↔ Case Study
+Industry ↔ Technology
+Industry ↔ Case Study
+Region ↔ Practice
+
+Your existing schema already contains relationship infrastructure, including polymorphic entity_relations, so Phase 1 should populate and test that architecture rather than replace it unnecessarily.
+
+1.9 — Relationship Rules
+
+Define rules before implementing them.
+
+For example:
+
+Practice → Industry
+
+One practice can serve many industries.
+
+Digital Bees
+    ↓
+Healthcare
+Retail
+Manufacturing
+Finance
+Industry → Practice
+
+One industry can use many practices.
+
+Healthcare
+    ↓
+Digital Bees
+AI Bees
+Quality Bees
+Practice → Technology
+AI Bees
+    ↓
+OpenAI
+Cloud
+Data
+ML
+Automation
+
+These relationships later generate dynamic pages and internal links.
+
+1.10 — Model Layer
+
+Once entities are defined, create backend models.
+
+The model layer should represent:
+
+Database structure
+Relationships
+Attributes
+Scopes
+Status
+Publishing state
+
+Don't put business logic everywhere inside models.
+
+Keep the model primarily responsible for representing the entity and its database relationships.
+
+1.11 — Repository Layer
+
+Repository responsibility:
+
+Get the correct data from the database.
+
+Examples of responsibilities:
+
+Find Practice by slug
+Get published Practices
+Get Practice with relationships
+Find Industry by slug
+Get related Case Studies
+
+Repository should not decide:
+
+What HTTP response should look like
+How the page should render
+How SEO should work
+
+Those belong elsewhere.
+
+1.12 — Service Layer
+
+Service responsibility:
+
+Business logic.
+
+For example:
+
+PracticeService
+
+could coordinate:
+
+Practice
++
+Sub-services
++
+Industries
++
+Technologies
++
+Case Studies
++
+Related Practices
++
+SEO
+
+So the frontend can request:
+
+Give me everything required for the Practice page.
+
+and the service prepares the appropriate dataset.
+
+1.13 — DTO / Data Contract Layer
+
+Define what information travels between backend and frontend.
+
+This is especially important because your frontend is Next.js.
+
+Think:
+
+Database model
+      ↓
+Business logic
+      ↓
+DTO / Resource
+      ↓
+API JSON
+      ↓
+Next.js TypeScript type
+
+Don't expose your database structure directly to the frontend.
+
+1.14 — API Resource Layer
+
+API responses should be consistent.
+
+For example, conceptually:
+
+Practice Response
+│
+├── Identity
+├── Hero
+├── Content
+├── Services
+├── Industries
+├── Technologies
+├── Case Studies
+├── Related Practices
+└── SEO
+
+The frontend shouldn't need to make 15 API requests just to render one Practice page.
+
+Prefer a useful page-oriented response where appropriate.
+
+1.15 — API Endpoints
+
+Start with:
+
+Practices
+GET all
+GET by slug
+
+Industries
+GET all
+GET by slug
+
+Regions
+GET all
+GET by slug
+
+Technologies
+GET all
+GET by slug
+
+Then add:
+
+Sub-services
+Case studies
+Careers
+Navigation
+Search
+Pages
+
+later.
+
+1.16 — API Standards
+
+Define these globally.
+
+Success
+200
+Created
+201
+Validation error
+422
+Unauthorized
+401
+Forbidden
+403
+Not found
+404
+Server error
+500
+
+Also standardize:
+
+pagination
+sorting
+filtering
+search
+error format
+1.17 — Publishing System
+
+Every content entity should eventually have:
+
+Draft
+Published
+Archived
+
+Don't let unpublished content accidentally appear on the public website.
+
+Define:
+
+created
+updated
+published
+archived
+
+behavior.
+
+1.18 — Validation
+
+Every API input needs validation.
+
+For example:
+
+Name
+Slug
+Email
+URL
+Status
+Required fields
+Relationships
+Images
+
+Also define:
+
+unique slug
+valid relationships
+published content rules
+1.19 — API Authentication
+
+Public endpoints:
+
+GET public content
+
+Admin endpoints:
+
+Create
+Update
+Delete
+Publish
+
+must require authentication and authorization.
+
+Create roles conceptually:
+
+Super Admin
+Admin
+Editor
+SEO Manager
+
+Don't give every user full database access.
+
+1.20 — API Documentation
+
+Document:
+
+Endpoint
+Method
+Authentication
+Parameters
+Request
+Response
+Errors
+Pagination
+
+Your existing project already has an OpenAPI location mentioned in the audit/project structure; now turn that from a placeholder into useful API documentation.
+
+PHASE 1 DEVELOPMENT ORDER
+
+Build in this exact order:
+
+1. Practice
+       ↓
+2. Industry
+       ↓
+3. Region
+       ↓
+4. Technology
+       ↓
+5. Relationships
+       ↓
+6. Sub-service
+       ↓
+7. Case Study
+       ↓
+8. Publishing
+       ↓
+9. API Resources / DTOs
+       ↓
+10. Repositories
+       ↓
+11. Services
+       ↓
+12. Controllers
+       ↓
+13. Routes
+       ↓
+14. Validation
+       ↓
+15. Authentication
+       ↓
+16. API documentation
+PHASE 1 — Definition of Done
+
+Phase 1 is complete when:
+
+✓ Core entities exist
+✓ Relationships work
+✓ Seven practices exist
+✓ Taxonomies are populated
+✓ Publishing status works
+✓ API endpoints work
+✓ API responses are consistent
+✓ Validation works
+✓ Errors are consistent
+✓ Authentication works for admin APIs
+✓ API documentation exists
+✓ API can provide all data required by frontend
+Most important test
+
+This must work:
+
+/practices/ai-bees
+
+through:
+
+Next.js
+ ↓
+API
+ ↓
+Service
+ ↓
+Repository
+ ↓
+Database
+PHASE 2 — CMS / ADMIN
+Goal
+
+Phase 1 gives you a content engine.
+
+Phase 2 gives your team the ability to operate that engine without developers.
+
+Think:
+
+Database
+     ↓
+API
+     ↓
+CMS
+     ↓
+Editors
+2.1 — CMS Architecture
+
+Your admin system should have:
+
+Dashboard
+
+Content
+├── Practices
+├── Sub-services
+├── Industries
+├── Technologies
+├── Regions
+├── Case Studies
+├── Insights
+└── Careers
+
+Relationships
+
+Media
+
+Navigation
+
+SEO
+
+Forms / Leads
+
+Users
+
+Settings
+2.2 — Dashboard
+
+Don't overbuild it.
+
+Initially show:
+
+Published pages
+Draft pages
+Pending review
+Recent changes
+Leads
+Content needing attention
+
+Later:
+
+Traffic
+Conversions
+SEO
+Search analytics
+2.3 — Practice Management
+
+This is your first CMS module.
+
+List:
+
+Practice
+Status
+Updated
+Author
+Actions
+
+Actions:
+
+Edit
+Preview
+Publish
+Unpublish
+Duplicate
+Delete
+2.4 — Practice Editor
+
+Organize the editor logically.
+
+Practice Editor
+
+Basic Information
+Hero
+Overview
+Services
+How We Work
+Industries
+Technologies
+Case Studies
+Related Practices
+SEO
+Publishing
+
+This is much better than one enormous form.
+
+2.5 — Content Blocks
+
+Eventually your CMS needs structured sections.
+
+For example:
+
+Hero
+Rich Text
+Stats
+Cards
+Logo Grid
+Steps
+Testimonial
+Image + Text
+Case Studies
+CTA
+FAQ
+
+Then editors can construct pages from approved components.
+
+But:
+
+Don't turn the CMS into a completely free-form page builder initially.
+
+Keep the structure controlled.
+
+2.6 — Media Library
+
+Build:
+
+Upload
+Browse
+Search
+Filter
+Replace
+Delete
+Alt text
+Caption
+Credit
+
+Store metadata:
+
+Filename
+URL
+Dimensions
+File type
+Alt text
+Upload date
+Usage
+
+Images should be optimized for the frontend.
+
+2.7 — Navigation Management
+
+Your existing schema already has:
+
+navigation_menus
+navigation_items
+
+so build the admin interface around that rather than hardcoding navigation.
+
+CMS should allow:
+
+Create menu
+Add item
+Reorder
+Nest item
+Change URL
+Enable/disable
+
+For example:
+
+Main Navigation
+
+Practices
+├── Talent Bees
+├── Digital Bees
+├── AI Bees
+├── Marketing Bees
+└── ...
+
+Industries
+Technologies
+Regions
+Case Studies
+Insights
+Careers
+About
+Contact
+2.8 — SEO Management
+
+Every content item should expose:
+
+SEO Title
+Meta Description
+Canonical
+Index / Noindex
+OG Title
+OG Description
+OG Image
+Schema configuration
+
+Also display basic warnings:
+
+Title too long
+Description missing
+Missing image
+Duplicate slug
+Missing canonical
+2.9 — Preview System
+
+Editors should be able to see:
+
+Draft
+ ↓
+Preview
+ ↓
+Approve
+ ↓
+Publish
+
+without publishing first.
+
+2.10 — Revision System
+
+Production CMS should eventually maintain:
+
+Version 1
+Version 2
+Version 3
+
+with:
+
+Author
+Timestamp
+Changes
+
+Allow rollback where practical.
+
+This is important because editors will eventually make mistakes.
+
+2.11 — Roles & Permissions
+
+Define:
+
+Super Admin
+
+Everything.
+
+Admin
+
+Content + users.
+
+Editor
+
+Content creation/editing.
+
+SEO Manager
+
+SEO fields and SEO tools.
+
+Reviewer
+
+Preview/approve/publish.
+
+Don't rely solely on frontend hiding buttons.
+
+Authorization must also happen on the backend.
+
+2.12 — Audit Log
+
+Record:
+
+Who
+Did what
+To which content
+When
+
+Examples:
+
+Sachin updated AI Bees
+Admin published Healthcare
+Editor changed SEO title
+
+This becomes valuable once multiple people work on the CMS.
+
+2.13 — Workflow
+
+A production workflow:
+
+Draft
+  ↓
+Editing
+  ↓
+Review
+  ↓
+Approved
+  ↓
+Published
+
+Optional:
+
+Published
+  ↓
+Archived
+2.14 — CMS Search
+
+Admin search should cover:
+
+Practice
+Industry
+Region
+Case Study
+Career
+Insight
+
+with filters:
+
+Status
+Author
+Date
+Type
+2.15 — CMS Phase 2 Order
+
+Don't build every CMS screen simultaneously.
+
+Build:
+
+1. Authentication
+        ↓
+2. Dashboard
+        ↓
+3. Practices
+        ↓
+4. Practice editor
+        ↓
+5. Industries
+        ↓
+6. Regions
+        ↓
+7. Technologies
+        ↓
+8. Sub-services
+        ↓
+9. Relationships
+        ↓
+10. Media
+        ↓
+11. Navigation
+        ↓
+12. SEO
+        ↓
+13. Publishing
+        ↓
+14. Roles
+        ↓
+15. Revision history
+        ↓
+16. Audit logs
+PHASE 2 — Definition of Done
+✓ Admin login
+✓ Roles
+✓ Practice CRUD
+✓ Industry CRUD
+✓ Region CRUD
+✓ Technology CRUD
+✓ Sub-service CRUD
+✓ Relationships manageable
+✓ Draft/publish
+✓ Preview
+✓ Media library
+✓ Navigation management
+✓ SEO management
+✓ Revision history
+✓ Audit log
+
+At this point a content editor should be able to create:
+
+New Practice
+
+without asking you to modify database records manually.
+
+PHASE 3 — DESIGN SYSTEM + FRONTEND FOUNDATION
+
+Now we build the actual website UI.
+
+Goal
+
+Create a reusable visual system so that:
+
+1 component
+     ↓
+many sections
+     ↓
+many templates
+     ↓
+300+ pages
+3.1 — Design Tokens
+
+Start here.
+
+Create token categories:
+
+Colors
+Typography
+Spacing
+Layout
+Grid
+Breakpoints
+Radius
+Borders
+Shadows
+Motion
+Z-index
+
+Your audit specifically identified missing spacing/grid/breakpoint/motion systems, so these should now be first-class foundations rather than ad-hoc CSS.
+
+3.2 — Color System
+
+Create:
+
+Brand
+Neutral
+Surface
+Text
+Border
+Semantic
+
+Semantic:
+
+Success
+Warning
+Error
+Info
+
+Don't allow components to directly depend on random hex values.
+
+3.3 — Typography System
+
+Define:
+
+Display
+H1
+H2
+H3
+H4
+
+Body Large
+Body
+Body Small
+
+Eyebrow
+Caption
+Label
+Button
+Navigation
+
+Also define:
+
+Desktop
+Tablet
+Mobile
+3.4 — Spacing System
+
+Create a consistent spacing scale.
+
+For example conceptually:
+
+XS
+SM
+MD
+LG
+XL
+2XL
+3XL
+4XL
+5XL
+
+Use it everywhere:
+
+component spacing
+section spacing
+grid gaps
+page padding
+form spacing
+3.5 — Layout System
+
+Define:
+
+Container
+Wide container
+Narrow container
+Page gutter
+Section spacing
+Grid
+
+And responsive grid:
+
+Desktop → 12 columns
+Tablet  → 8 columns
+Mobile  → 4 columns
+3.6 — Breakpoints
+
+Document your breakpoint strategy.
+
+Don't simply rely on whatever defaults happen to exist in Tailwind.
+
+Define:
+
+Mobile
+Tablet
+Desktop
+Large Desktop
+
+Then make the whole system use those values consistently.
+
+3.7 — UI Primitives
+
+First coding layer:
+
+Container
+Heading
+Text
+Button
+Link
+Icon
+Badge
+Divider
+Input
+Textarea
+Select
+Checkbox
+Radio
+
+These should have:
+
+variants
+sizes
+states
+accessibility
+responsive behavior
+3.8 — Button System
+
+Variants:
+
+Primary
+Secondary
+Tertiary
+Text
+Icon
+
+States:
+
+Default
+Hover
+Focus
+Active
+Disabled
+Loading
+
+This becomes the standard CTA language throughout TeamBees.
+
+3.9 — Form System
+
+Create:
+
+Form
+FormField
+Label
+Input
+Textarea
+Select
+Checkbox
+Radio
+ErrorMessage
+SuccessMessage
+
+States:
+
+Default
+Focus
+Error
+Disabled
+Loading
+Success
+3.10 — Common Components
+
+Build:
+
+Breadcrumb
+Pagination
+Accordion
+Tabs
+Modal
+Tooltip
+SearchInput
+Dropdown
+
+Don't build page-specific versions.
+
+3.11 — Card System
+
+Build dedicated card patterns:
+
+PracticeCard
+IndustryCard
+TechnologyCard
+CaseStudyCard
+CareerCard
+InsightCard
+LocationCard
+StatCard
+TestimonialCard
+
+Each should have a clear purpose.
+
+3.12 — Layout Components
+
+Build:
+
+Header
+Navigation
+MegaMenu
+MobileMenu
+Footer
+
+The navigation should consume CMS/API data.
+
+Not hardcoded arrays.
+
+3.13 — Section Components
+
+Now build:
+
+Hero
+ProofBar
+Stats
+PracticeGrid
+IndustryGrid
+TechnologyGrid
+CaseStudyGrid
+Testimonial
+HowWeWork
+Timeline
+GlobalPresence
+CareersSpotlight
+CTABand
+FAQ
+
+These are the building blocks of your pages.
+
+3.14 — Hero System
+
+Create multiple variants:
+
+Hero / Standard
+Hero / Split
+Hero / Image
+Hero / Editorial
+Hero / Dark
+Hero / Case Study
+Hero / Minimal
+
+The template chooses the appropriate variant.
+
+3.15 — Template System
+
+Now create:
+
+PracticeTemplate
+IndustryTemplate
+PracticeIndustryTemplate
+RegionTemplate
+RegionPracticeTemplate
+CaseStudyTemplate
+CareerTemplate
+ResourceTemplate
+
+Templates should determine:
+
+Which sections appear and in what order.
+
+3.16 — Template vs Content
+
+This distinction is critical.
+
+Template
+
+Defines:
+
+Hero
+Proof
+Services
+Industries
+Case Studies
+CTA
+Content
+
+Defines:
+
+AI Bees
+Digital Bees
+Talent Bees
+
+Therefore:
+
+PracticeTemplate
+       +
+AI Bees data
+       ↓
+AI Bees page
+
+PracticeTemplate
+       +
+Digital Bees data
+       ↓
+Digital Bees page
+3.17 — Dynamic Routing
+
+Your Next.js architecture should ultimately support:
+
+/practices/[slug]
+/industries/[slug]
+/industries/[industry]/[practice]
+/regions/[slug]
+/regions/[region]/[practice]
+/case-studies/[slug]
+/careers/[slug]
+
+The existing route configuration already establishes canonical patterns for key sections, including parent-first Practice × Industry and Region × Practice URLs.
+
+3.18 — Frontend API Layer
+
+Don't call the PHP API directly from random components.
+
+Create a centralized frontend data layer.
+
+Conceptually:
+
+Next.js
+   ↓
+API client
+   ↓
+Practice API
+Industry API
+Region API
+Case Study API
+
+Components should receive data.
+
+They shouldn't know:
+
+API URL
+authentication details
+HTTP implementation
+database structure
+3.19 — Loading States
+
+Every important data-driven page needs:
+
+Loading
+
+and ideally skeleton structures appropriate to the page.
+
+3.20 — Error States
+
+Define:
+
+API error
+Network error
+Content missing
+Invalid slug
+Server error
+
+Don't show a blank screen.
+
+3.21 — Empty States
+
+Examples:
+
+No case studies available
+No search results
+No jobs available
+No related practices
+
+Every important list needs an intentional empty state.
+
+3.22 — Accessibility
+
+Build accessibility directly into the component system.
+
+Every component should consider:
+
+Semantic HTML
+Keyboard navigation
+Focus state
+Screen readers
+Contrast
+ARIA
+Touch targets
+Reduced motion
+Form errors
+
+This directly addresses the accessibility gaps identified in your audit.
+
+3.23 — Motion System
+
+Don't let individual developers invent animations.
+
+Define:
+
+Fast
+Normal
+Slow
+
+and:
+
+Standard easing
+Enter easing
+Exit easing
+
+Then define approved patterns:
+
+Fade
+Slide
+Reveal
+Scale
+Menu
+Modal
+Hover
+
+Also support:
+
+prefers-reduced-motion
+3.24 — Design System Documentation
+
+Document:
+
+Component purpose
+When to use
+When not to use
+Variants
+States
+Responsive behavior
+Accessibility
+Figma reference
+
+This prevents the system from degrading as more developers work on it.
+
+PHASE 3 DEVELOPMENT ORDER
+
+Build it in this sequence:
+
+1. Tokens
+      ↓
+2. Global styles
+      ↓
+3. Container / layout
+      ↓
+4. Typography
+      ↓
+5. Buttons / links
+      ↓
+6. Form primitives
+      ↓
+7. Common components
+      ↓
+8. Cards
+      ↓
+9. Header / navigation
+      ↓
+10. Footer
+      ↓
+11. Sections
+      ↓
+12. Hero variants
+      ↓
+13. Templates
+      ↓
+14. API client
+      ↓
+15. Dynamic routing
+      ↓
+16. Loading/error/empty states
+      ↓
+17. Accessibility
+      ↓
+18. Motion
+🏁 THE THREE-PHASE MILESTONE
+
+Don't consider these phases complete just because files exist.
+
+You should reach this:
+
+                    PHASE 1
+               DATABASE + API
+                      │
+                      ▼
+              GET AI BEES DATA
+                      │
+                      ▼
+                    PHASE 2
+                  CMS / ADMIN
+                      │
+                      ▼
+             EDIT AI BEES CONTENT
+                      │
+                      ▼
+                    PHASE 3
+               DESIGN SYSTEM
+                      │
+                      ▼
+              PRACTICE TEMPLATE
+                      │
+                      ▼
+               NEXT.JS FRONTEND
+                      │
+                      ▼
+             /practices/ai-bees
+
+Then the killer test:
+
+CMS
+ ↓
+Create another Practice
+ ↓
+Publish
+ ↓
+Database
+ ↓
+API
+ ↓
+Next.js
+ ↓
+Same PracticeTemplate
+ ↓
+NEW URL automatically works
+
+If that works, you have built the actual foundation of the TeamBees software.
+
+📌 What NOT to build yet
+
+For now, do not spend time on:
+
+❌ 300 individual pages
+❌ Fancy animations
+❌ Advanced chatbot
+❌ Complex analytics dashboard
+❌ Every CMS feature
+❌ Every industry
+❌ Every region
+❌ Every case study
+❌ Pixel-perfect page variations
+
+Instead:
+
+ONE Practice
+       ↓
+ONE complete API
+       ↓
+ONE CMS workflow
+       ↓
+ONE reusable template
+       ↓
+SEVEN practices
+
+Then expand.
+
+Your immediate development roadmap
+
+I would now follow this exact sequence:
+
+WEEK / SPRINT 1
+────────────────────────
+Practice database
+Practice model
+Practice relationships
+Practice seed data
+Practice API
+
+
+SPRINT 2
+────────────────────────
+Industry
+Region
+Technology
+Relationships
+API resources
+Services
+Validation
+
+
+SPRINT 3
+────────────────────────
+CMS authentication
+Practice CRUD
+Practice editor
+Publish/unpublish
+Preview
+
+
+SPRINT 4
+────────────────────────
+Design tokens
+Typography
+Spacing
+Grid
+Buttons
+Forms
+Cards
+
+
+SPRINT 5
+────────────────────────
+Header
+Navigation
+Footer
+Hero
+Sections
+Common components
+
+
+SPRINT 6
+────────────────────────
+PracticeTemplate
+Dynamic [slug]
+API integration
+7 Practice pages
+
+
+SPRINT 7+
+────────────────────────
+Industry
+Practice × Industry
+Region
+Region × Practice
+Case Studies
+Careers
+Contact
+Search
+SEO

@@ -1,9 +1,33 @@
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
+import { useState, useEffect } from "react";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import RotatingBadge from "@/components/ui/RotatingBadge";
 
+const SLIDER_IMAGES = [
+  "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop", // Data dashboard
+  "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=2070&auto=format&fit=crop", // Tech workplace
+  "https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=2070&auto=format&fit=crop"  // Team meeting
+];
+
+const CheckmarkIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="12" fill="#FACC15"/>
+    <path d="M7.5 12L10.5 15L16.5 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
 export default function HeroSection() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % SLIDER_IMAGES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section className="relative pt-24 pb-32 overflow-hidden px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
       <div className="absolute left-0 top-32 hidden lg:block"></div>
@@ -33,47 +57,77 @@ export default function HeroSection() {
           </ScrollReveal>
         </div>
       </div>
-      {/* Hero Image */}
+      
+      {/* Hero Image Slider */}
       <ScrollReveal delay={0.3} yOffset={50}>
-        <div className="mt-16 w-full h-[60vh] relative z-0 rounded-[2rem]">
-          <Image
-            className="w-full h-full object-cover rounded-[2rem] shadow-sm"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEPCdue5nTpfie_At2ijMW01kDtuwhXTFt824mpkXrjUnBXHgBSv0kLSPyb4TCPaflw1M-YEOnvRPqiOKOxL9I7hae7lv1yNMXagp3E2xWqBwZy6EjG9GFFqmmAT3-YFGCOmAkRBiaxSWgP9sO0ti10Yw2irN-uJG-IE1B7gaRwp2ml0lZ3N2RooWi4lyaigPOl7exMtAtpApcaIt7KSaJlMV75RYmV9CpDqox2woqdSLIdouPQ_BlwuqC_iuntInsRiEWQUAgqKV4nQ"
-            alt="A massive, high-fidelity corporate office interior"
-            fill
-            priority
-          />
+        <div className="mt-16 w-full h-[85vh] relative z-0 rounded-[2rem] overflow-hidden bg-black">
+          {SLIDER_IMAGES.map((src, index) => (
+            <div 
+              key={src}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                index === currentSlide ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <Image
+                className="w-full h-full object-cover"
+                src={src}
+                alt={`Hero background slide ${index + 1}`}
+                fill
+                priority={index === 0}
+              />
+              {/* Gradient overlay for better text readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            </div>
+          ))}
+
+          {/* Cards */}
           <div className="absolute bottom-8 left-0 w-full px-8 grid grid-cols-1 md:grid-cols-3 gap-6 z-20">
-            <div className="bg-glass-dark backdrop-blur-xl border border-white/10 rounded-lg p-6 shadow-lg flex flex-col items-start text-white hover:-translate-y-2 hover:bg-glass-dark/90 transition-all duration-300">
-              <div className="w-10 h-10 bg-gold-muted/20 rounded-full flex items-center justify-center mb-4">
-                <span className="material-symbols-outlined text-gold-muted" style={{ fontVariationSettings: '"FILL" 1' }}>check_circle</span>
+            {/* Card 1 */}
+            <div className="bg-[#1A1D20]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col items-start text-white transition-all duration-300">
+              <div className="flex items-center gap-3 mb-3">
+                <CheckmarkIcon />
+                <h3 className="font-bold text-[17px] leading-tight">Pre-Trained & Deployment-<br/>Ready</h3>
               </div>
-              <h3 className="font-title-md text-title-md mb-2">Top-Tier Talent</h3>
-              <p className="text-surface-variant text-sm mb-6 flex-grow">Access the top 1% of engineering professionals vetted for enterprise scale.</p>
-              <Link className="text-secondary-fixed text-sm font-semibold hover:text-white transition-colors flex items-center gap-1 group" href="#">
-                Discover More <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
-              </Link>
+              <p className="text-white/80 text-sm leading-relaxed font-medium">
+                AI-trained marketing experts ready to execute from day one with zero onboarding delays.
+              </p>
             </div>
-            <div className="bg-glass-dark backdrop-blur-xl border border-white/10 rounded-lg p-6 shadow-lg flex flex-col items-start text-white hover:-translate-y-2 hover:bg-glass-dark/90 transition-all duration-300">
-              <div className="w-10 h-10 bg-gold-muted/20 rounded-full flex items-center justify-center mb-4">
-                <span className="material-symbols-outlined text-gold-muted" style={{ fontVariationSettings: '"FILL" 1' }}>check_circle</span>
+            
+            {/* Card 2 */}
+            <div className="bg-[#1A1D20]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col items-start text-white transition-all duration-300">
+              <div className="flex items-center gap-3 mb-3">
+                <CheckmarkIcon />
+                <h3 className="font-bold text-[17px] leading-tight">Dedicated In-House Extension</h3>
               </div>
-              <h3 className="font-title-md text-title-md mb-2">Production AI Agents</h3>
-              <p className="text-surface-variant text-sm mb-6 flex-grow">Deploy custom AI agents integrated directly into your production workflows.</p>
-              <Link className="text-secondary-fixed text-sm font-semibold hover:text-white transition-colors flex items-center gap-1 group" href="#">
-                Discover More <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
-              </Link>
+              <p className="text-white/80 text-sm leading-relaxed font-medium">
+                Full-time digital specialists working transparently and exclusively as part of your team.
+              </p>
             </div>
-            <div className="bg-glass-dark backdrop-blur-xl border border-white/10 rounded-lg p-6 shadow-lg flex flex-col items-start text-white hover:-translate-y-2 hover:bg-glass-dark/90 transition-all duration-300">
-              <div className="w-10 h-10 bg-gold-muted/20 rounded-full flex items-center justify-center mb-4">
-                <span className="material-symbols-outlined text-gold-muted" style={{ fontVariationSettings: '"FILL" 1' }}>check_circle</span>
+            
+            {/* Card 3 */}
+            <div className="bg-[#1A1D20]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col items-start text-white transition-all duration-300">
+              <div className="flex items-center gap-3 mb-3">
+                <CheckmarkIcon />
+                <h3 className="font-bold text-[17px] leading-tight">Cost-Efficient & Scalable</h3>
               </div>
-              <h3 className="font-title-md text-title-md mb-2">End-to-End Delivery</h3>
-              <p className="text-surface-variant text-sm mb-6 flex-grow">Full lifecycle management from initial architecture to final deployment.</p>
-              <Link className="text-secondary-fixed text-sm font-semibold hover:text-white transition-colors flex items-center gap-1 group" href="#">
-                Discover More <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
-              </Link>
+              <p className="text-white/80 text-sm leading-relaxed font-medium">
+                Eliminate heavy agency overheads and easily scale your team based on active business needs.
+              </p>
             </div>
+          </div>
+
+          {/* Slider Pagination Indicators */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+            {SLIDER_IMAGES.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  index === currentSlide ? "bg-[#FACC15] w-6" : "bg-white/50 hover:bg-white/80"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
           </div>
         </div>
       </ScrollReveal>

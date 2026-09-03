@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Modules\CaseStudy\Models\CaseStudy;
 use App\Modules\Industry\Models\Industry;
 use App\Modules\Practice\Models\Practice;
 use App\Modules\Region\Models\Region;
@@ -70,6 +71,69 @@ class EntityRelationSeeder extends Seeder
             $this->link($practice, Industry::class, $links['industries'], 'serves');
             $this->link($practice, Technology::class, $links['technologies'], 'built-with');
             $this->link($practice, Region::class, $links['regions'], 'delivered-in');
+        }
+
+        $this->linkCaseStudies();
+    }
+
+    /**
+     * Wire the flagship case studies into the graph so practice / industry /
+     * technology / region detail pages surface relevant proof. Matches
+     * {@see CaseStudySeeder}.
+     */
+    private function linkCaseStudies(): void
+    {
+        // case study => [practices, industries, technologies, regions]
+        $graph = [
+            'global-bank-ai-servicing-agents' => [
+                'practices' => ['ai-bees'],
+                'industries' => ['banking-financial-services'],
+                'technologies' => ['openai', 'aws'],
+                'regions' => ['uk'],
+            ],
+            'insurer-core-platform-replatform' => [
+                'practices' => ['digital-bees'],
+                'industries' => ['insurance'],
+                'technologies' => ['microsoft-azure', 'kubernetes'],
+                'regions' => ['uk', 'europe'],
+            ],
+            'saas-scale-engineering-pods' => [
+                'practices' => ['talent-bees'],
+                'industries' => ['technology-software'],
+                'technologies' => ['react', 'aws'],
+                'regions' => ['usa'],
+            ],
+            'retailer-demand-generation-engine' => [
+                'practices' => ['marketing-bees'],
+                'industries' => ['retail-ecommerce'],
+                'technologies' => ['salesforce'],
+                'regions' => ['usa', 'uk'],
+            ],
+            'telecom-release-assurance-automation' => [
+                'practices' => ['quality-bees'],
+                'industries' => ['telecom'],
+                'technologies' => ['kubernetes', 'terraform'],
+                'regions' => ['europe'],
+            ],
+            'utility-etrm-modernisation' => [
+                'practices' => ['energy-bees'],
+                'industries' => ['energy-utilities'],
+                'technologies' => ['aws', 'snowflake'],
+                'regions' => ['uk', 'uae'],
+            ],
+        ];
+
+        foreach ($graph as $caseStudySlug => $links) {
+            $study = $this->find(CaseStudy::class, $caseStudySlug);
+
+            if ($study === null) {
+                continue;
+            }
+
+            $this->link($study, Practice::class, $links['practices'], 'featured-in');
+            $this->link($study, Industry::class, $links['industries'], 'featured-in');
+            $this->link($study, Technology::class, $links['technologies'], 'featured-in');
+            $this->link($study, Region::class, $links['regions'], 'featured-in');
         }
     }
 

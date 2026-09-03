@@ -2,24 +2,37 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Modules\Industry\Http\Resources\IndustryDetailResource;
+use App\Modules\Industry\Http\Resources\IndustrySummaryResource;
+use App\Modules\Industry\Services\IndustryService;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Backed by the Industry module (app/Modules/Industry): Controller -> Service -> Repository.
- * Stub: returns the standard envelope so the frontend route map is live
- * before the data layer lands.
+ * Read API for the Industry taxonomy. Controller -> Service -> Repository.
  */
 class IndustryController extends ApiController
 {
-    public function index(Request $request): JsonResponse
+    public function __construct(private readonly IndustryService $industries) {}
+
+    /** GET /api/v1/industries */
+    public function index(): JsonResponse
     {
-        return ApiResponse::notImplemented('IndustryService::list() then IndustryControllerResource::collection(); GET /api/v1/industries');
+        return ApiResponse::collection(
+            IndustrySummaryResource::collection($this->industries->list()),
+        );
     }
 
+    /** GET /api/v1/industries/{industry} */
     public function show(string $industry): JsonResponse
     {
-        return ApiResponse::notImplemented('IndustryService::findBySlug(industry) then IndustryControllerResource; GET /api/v1/industries/{slug}');
+        $detail = $this->industries->detailBySlug($industry);
+
+        if ($detail === null) {
+            throw new NotFoundHttpException("Industry [{$industry}] not found.");
+        }
+
+        return ApiResponse::item(new IndustryDetailResource($detail));
     }
 }

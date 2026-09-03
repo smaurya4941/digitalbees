@@ -2,24 +2,37 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Modules\Technology\Http\Resources\TechnologyDetailResource;
+use App\Modules\Technology\Http\Resources\TechnologySummaryResource;
+use App\Modules\Technology\Services\TechnologyService;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Backed by the Technology module (app/Modules/Technology): Controller -> Service -> Repository.
- * Stub: returns the standard envelope so the frontend route map is live
- * before the data layer lands.
+ * Read API for the Technology taxonomy. Controller -> Service -> Repository.
  */
 class TechnologyController extends ApiController
 {
-    public function index(Request $request): JsonResponse
+    public function __construct(private readonly TechnologyService $technologies) {}
+
+    /** GET /api/v1/technologies */
+    public function index(): JsonResponse
     {
-        return ApiResponse::notImplemented('TechnologyService::list() then TechnologyControllerResource::collection(); GET /api/v1/technologies');
+        return ApiResponse::collection(
+            TechnologySummaryResource::collection($this->technologies->list()),
+        );
     }
 
+    /** GET /api/v1/technologies/{technology} */
     public function show(string $technology): JsonResponse
     {
-        return ApiResponse::notImplemented('TechnologyService::findBySlug(technology) then TechnologyControllerResource; GET /api/v1/technologies/{slug}');
+        $detail = $this->technologies->detailBySlug($technology);
+
+        if ($detail === null) {
+            throw new NotFoundHttpException("Technology [{$technology}] not found.");
+        }
+
+        return ApiResponse::item(new TechnologyDetailResource($detail));
     }
 }

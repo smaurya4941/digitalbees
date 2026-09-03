@@ -21,10 +21,13 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call([
+            RoleSeeder::class,
             PracticeSeeder::class,
             IndustrySeeder::class,
             RegionSeeder::class,
             TechnologySeeder::class,
+            LocationSeeder::class,
+            CaseStudySeeder::class,
             EntityRelationSeeder::class,
             PageTemplateSeeder::class,
             NavigationSeeder::class,

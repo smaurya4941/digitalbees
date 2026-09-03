@@ -2,6 +2,7 @@
 
 namespace App\Modules\Practice\Services;
 
+use App\Modules\CaseStudy\Services\CaseStudyService;
 use App\Modules\Industry\Models\Industry;
 use App\Modules\Practice\Data\PracticeDetail;
 use App\Modules\Practice\Models\Practice;
@@ -17,7 +18,10 @@ use Illuminate\Support\Collection;
  */
 final class PracticeService
 {
-    public function __construct(private readonly PracticeRepository $practices) {}
+    public function __construct(
+        private readonly PracticeRepository $practices,
+        private readonly CaseStudyService $caseStudies,
+    ) {}
 
     /** @return Collection<int, Practice> */
     public function list(): Collection
@@ -39,7 +43,7 @@ final class PracticeService
             technologies: $practice->related(Technology::class, 'built-with'),
             regions: $practice->related(Region::class, 'delivered-in'),
             relatedPractices: $this->practices->siblingsOf($practice),
-            caseStudies: collect(), // Case Study module lands in a later slice.
+            caseStudies: $this->caseStudies->forSubject($practice->getMorphClass(), $practice->id),
         );
     }
 
