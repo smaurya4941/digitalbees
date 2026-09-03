@@ -1,9 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { ReactNode } from 'react';
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -13,7 +13,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
@@ -33,15 +33,15 @@ interface StaggerContainerProps {
 }
 
 export function StaggerContainer({ children, className = '', delay = 0 }: StaggerContainerProps) {
-  const delayedContainerVariants = {
-    ...containerVariants,
+  const delayedContainerVariants: Variants = {
+    hidden: { opacity: 0 },
     visible: {
-      ...containerVariants.visible,
+      opacity: 1,
       transition: {
-        ...containerVariants.visible.transition,
+        staggerChildren: 0.1,
         delayChildren: delay,
-      }
-    }
+      },
+    },
   };
 
   return (
