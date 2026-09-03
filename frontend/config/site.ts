@@ -5,17 +5,17 @@ import { clientEnv } from './environment';
  * fetched from the API — this is only what the app itself needs to boot.
  */
 export const siteConfig = {
-  name: 'TeamBees',
-  legalName: 'TeamBees Corp',
+  name: 'The Digital Bees',
+  legalName: 'The Digital Bees Corp',
   tagline: 'Talent + Technology from the same partner.',
   description:
-    'TeamBees is a high-end B2B enterprise services partner for technology, digital transformation, AI, quality engineering, ServiceNow, marketing and energy.',
+    'The Digital Bees is a high-end B2B enterprise services partner for technology, digital transformation, AI, quality engineering, ServiceNow, marketing and energy.',
   url: clientEnv.NEXT_PUBLIC_SITE_URL,
   ogImage: '/opengraph-image',
   locale: 'en_US',
   contact: {
-    email: 'contact@teambees.corp',
-    phone: '+1 (800) 886 9600',
+    email: 'contact@digitalbees.in',
+    phone: '+91 836 879 0581',
   },
   social: {
     linkedin: 'https://www.linkedin.com/company/teambees',

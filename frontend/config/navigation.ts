@@ -30,14 +30,11 @@ const practiceLinks: NavLink[] = [
 ];
 
 export const headerNav: NavLink[] = [
-  { label: 'Practices', href: routes.practices() },
-  { label: 'Industries', href: routes.industries() },
-  { label: 'Technologies', href: routes.technologies() },
-  { label: 'Regions', href: routes.regions() },
-  { label: 'Case Studies', href: routes.caseStudies() },
-  { label: 'Insights', href: routes.insights() },
-  { label: 'Careers', href: routes.careers() },
-  { label: 'About', href: routes.about() },
+  { label: 'Home', href: routes.home() },
+  { label: 'About Us', href: routes.about() },
+  { label: 'Services', href: routes.practices() },
+  { label: 'How We Work', href: '/how-we-work' },
+  { label: 'Contact Us', href: routes.contact() },
 ];
 
 /** The one mega menu (Practices). Other header items are plain links for v1. */
