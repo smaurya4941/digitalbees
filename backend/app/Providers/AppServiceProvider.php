@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\User;
 use App\Modules\CaseStudy\Models\CaseStudy;
 use App\Modules\Industry\Models\Industry;
+use App\Modules\Media\Repositories\Contracts\MediaRepository;
+use App\Modules\Media\Repositories\Eloquent\EloquentMediaRepository;
 use App\Modules\Practice\Models\Practice;
 use App\Modules\Practice\Models\SubService;
 use App\Modules\Region\Models\Location;
@@ -18,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->bind(MediaRepository::class, EloquentMediaRepository::class);
     }
 
     public function boot(): void

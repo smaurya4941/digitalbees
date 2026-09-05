@@ -36,7 +36,7 @@ const primaryNav: NavItem[] = [
   { label: 'Regions', href: '/admin/regions', icon: Globe2 },
   { label: 'Technologies', href: '/admin/technologies', icon: Cpu },
   { label: 'Case Studies', href: '/admin/case-studies', icon: FileText },
-  { label: 'Media', href: '/admin/media', icon: ImageIcon, soon: true },
+  { label: 'Media', href: '/admin/media', icon: ImageIcon },
 ];
 
 const adminNav: NavItem[] = [

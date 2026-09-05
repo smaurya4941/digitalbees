@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Admin\LeadAdminController;
 use App\Http\Controllers\Api\V1\Admin\RegionAdminController;
 use App\Http\Controllers\Api\V1\Admin\TechnologyAdminController;
 use App\Http\Controllers\Api\V1\Admin\CaseStudyAdminController;
+use App\Http\Controllers\Api\V1\Admin\MediaAdminController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CareerController;
 use App\Http\Controllers\Api\V1\CaseStudyController;
@@ -40,6 +41,8 @@ Route::get('navigation', [NavigationController::class, 'index'])->name('navigati
 Route::get('redirects', [RedirectController::class, 'index'])->name('redirects');
 Route::get('sitemap', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('pages/resolve', [PageController::class, 'resolve'])->name('pages.resolve');
+
+
 
 // --- Taxonomy / content (read) ------------------------------------------------
 Route::get('practices', [PracticeController::class, 'index'])->name('practices.index');
@@ -192,6 +195,17 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::patch('admin/leads/{id}/status', [LeadAdminController::class, 'updateStatus'])
         ->middleware('permission:content.update')
         ->name('admin.leads.updateStatus');
+
+    // Media Library
+    Route::get('admin/media', [MediaAdminController::class, 'index'])
+        ->middleware('permission:content.update|content.publish')
+        ->name('admin.media.index');
+    Route::post('admin/media', [MediaAdminController::class, 'store'])
+        ->middleware('permission:content.create')
+        ->name('admin.media.store');
+    Route::delete('admin/media/{id}', [MediaAdminController::class, 'destroy'])
+        ->middleware('permission:content.delete')
+        ->name('admin.media.destroy');
 });
 
 // --- Conversion / write (throttled) -------------------------------------------
