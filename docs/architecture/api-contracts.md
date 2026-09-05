@@ -111,21 +111,72 @@ Same envelope, same conventions. Full request/response schemas in
   industries, case studies, SEO.
 - `GET /case-studies` + `/{slug}` — `case-study` template: hero, challenge/solution/
   results, metrics, linked practices/industries/technologies/regions, SEO.
-- `POST /auth/login`, `GET /auth/me`, `POST /auth/logout` — Sanctum token auth for
-  the CMS/admin surface.
-- `GET /admin/{type}` and `PATCH /admin/{type}/{slug}/status` — role-gated
-  (`auth:sanctum` + `role:`) draft/published/archived lifecycle for
-  practices/industries/regions/technologies/case-studies.
-
 Related entities resolve through `entity_relations`
 (`IsContentEntity::related()` / `relatedInbound()`); relation types
 `serves` / `built-with` / `delivered-in` / `featured-in`.
 
-### Roles
+---
 
-`Super Admin` · `Admin` · `Editor` (edit only) · `SEO Manager` (SEO fields) ·
-`Reviewer` (publish/unpublish). Seeded by `RoleSeeder`; the seeded
-`test@example.com` user is `Super Admin`.
+## Authentication — Laravel Sanctum (SPA, stateful cookie)
+
+The Next.js **admin panel** (`/admin/*`) authenticates against the API with the
+Sanctum SPA flow. No tokens touch the browser — the session lives in an
+encrypted, HTTP-only cookie. The public website never authenticates.
+
+```
+Next.js /admin  ──1── GET  /sanctum/csrf-cookie        → sets XSRF-TOKEN cookie
+                ──2── POST /api/v1/login   {email,password}  (X-XSRF-TOKEN header)
+                ──3── GET  /api/v1/user    → { id, name, email, role, permissions[] }
+                ──4── POST /api/v1/logout
+```
+
+- `bootstrap/app.php` → `statefulApi()` (EnsureFrontendRequestsAreStateful).
+- `SANCTUM_STATEFUL_DOMAINS`, `SESSION_DOMAIN`, `SESSION_SAME_SITE` and CORS
+  `supports_credentials=true` must all agree for the cookie to round-trip.
+- `throttle:auth` — 5 attempts / min / (email+IP).
+- `active` middleware logs out and 403s suspended/invited accounts mid-session.
+
+### Endpoints
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| `GET` | `/sanctum/csrf-cookie` | — | Sanctum, outside `/v1` |
+| `POST` | `/api/v1/login` | guest | `{ email, password, remember? }` → profile |
+| `GET` | `/api/v1/user` | cookie | current user + `permissions[]` |
+| `POST` | `/api/v1/logout` | cookie | invalidates the session |
+
+## Authorization — roles + permissions (`spatie/laravel-permission`)
+
+Two roles; the granularity is in the **permissions**, so tightening what staff
+can do is a data change (`RoleSeeder`), never a code change. `admin` bypasses
+every check via `Gate::before`.
+
+| Permission | `admin` | `staff` |
+|---|:---:|:---:|
+| `content.create` / `content.update` / `content.publish` | ✅ | ✅ |
+| `media.upload` · `seo.update` · `navigation.update` · `inquiries.view` | ✅ | ✅ |
+| `content.delete` · `media.delete` · `inquiries.manage` | ✅ | — |
+| `settings.manage` · `users.manage` · `roles.manage` | ✅ | — |
+
+Seeded accounts: `ADMIN_EMAIL` (`admin`); `staff@digitalbees.in` (`staff`, local/testing only).
+
+### Protected write endpoints
+
+Writes sit on the **same URLs** as the public reads — access is decided by
+permission, not URL shape (`auth:sanctum` + `active` + `permission:`).
+
+| Method | Path | Permission |
+|---|---|---|
+| `GET` | `/api/v1/admin/practices` · `/admin/practices/{slug}` | `content.update` \| `content.publish` |
+| `POST` | `/api/v1/practices` | `content.create` |
+| `PUT`/`PATCH` | `/api/v1/practices/{slug}` | `content.update` (+ `content.publish` to change published state) |
+| `DELETE` | `/api/v1/practices/{slug}` | `content.delete` (admin only) |
+| `GET` | `/api/v1/admin/content/{type}` | `content.update` \| `content.publish` |
+| `PATCH` | `/api/v1/admin/content/{type}/{slug}/status` | `content.publish` |
+
+`{type}` ∈ `practices` · `industries` · `regions` · `technologies` · `case-studies`.
+Practices is the reference CRUD; the other taxonomies expose the status endpoint
+and gain full CRUD by copying the Practice module.
 
 ## Still stubbed (envelope with `meta.stub = true`)
 

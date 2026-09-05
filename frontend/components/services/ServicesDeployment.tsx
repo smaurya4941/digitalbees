@@ -58,7 +58,7 @@ export default function ServicesDeployment() {
               </span>
             </div>
             
-            <h2 className="text-[40px] md:text-[48px] leading-[1.2] text-ink tracking-tight mb-6">
+            <h2 className="text-[32px] md:text-[48px] leading-[1.2] text-ink tracking-tight mb-6">
               Dedicated Digital <span className="font-bold">Experts Committed To Ownership,</span> Execution, and Growth
             </h2>
             
@@ -96,7 +96,7 @@ export default function ServicesDeployment() {
         </div>
 
         {/* Right Column: Image */}
-        <div className="w-full lg:w-1/2 relative min-h-[500px] lg:min-h-[600px] mt-8 lg:mt-0">
+        <div className="w-full lg:w-1/2 relative min-h-[400px] lg:min-h-[600px] mt-8 lg:mt-0">
           <ScrollReveal delay={0.2}>
             <div className="w-full h-full absolute inset-0 rounded-[2rem] overflow-hidden shadow-2xl">
               <Image

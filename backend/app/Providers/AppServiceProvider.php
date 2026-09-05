@@ -11,6 +11,7 @@ use App\Modules\Region\Models\Location;
 use App\Modules\Region\Models\Region;
 use App\Modules\Technology\Models\Technology;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -34,5 +35,11 @@ class AppServiceProvider extends ServiceProvider
             'location' => Location::class,
             'user' => User::class,
         ]);
+
+        // `admin` is the highest-privilege role: it passes every permission
+        // and policy check without each one being granted explicitly.
+        Gate::before(function (User $user, string $ability): ?bool {
+            return $user->hasRole('admin') ? true : null;
+        });
     }
 }

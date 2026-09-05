@@ -2,6 +2,7 @@
 
 namespace App\Modules\Practice\Services;
 
+use App\Jobs\NotifyFrontendRevalidate;
 use App\Modules\CaseStudy\Services\CaseStudyService;
 use App\Modules\Industry\Models\Industry;
 use App\Modules\Practice\Data\PracticeDetail;
@@ -10,7 +11,9 @@ use App\Modules\Practice\Models\SubService;
 use App\Modules\Practice\Repositories\Contracts\PracticeRepository;
 use App\Modules\Region\Models\Region;
 use App\Modules\Technology\Models\Technology;
+use App\Support\Enums\ContentStatus;
 use Illuminate\Support\Collection;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Application use-cases for practices. Controllers call this; it orchestrates
@@ -50,5 +53,53 @@ final class PracticeService
     public function subService(string $practiceSlug, string $subServiceSlug): ?SubService
     {
         return $this->practices->findPublishedSubService($practiceSlug, $subServiceSlug);
+    }
+
+    // --- Back-office use-cases ----------------------------------------------
+
+    /** @return Collection<int, Practice> */
+    public function listForAdmin(): Collection
+    {
+        return $this->practices->allForAdmin();
+    }
+
+    public function findForAdmin(string $slug): Practice
+    {
+        return $this->practices->findAnyBySlug($slug)
+            ?? throw new NotFoundHttpException("Practice [{$slug}] not found.");
+    }
+
+    /** @param  array<string, mixed>  $attributes */
+    public function create(array $attributes): Practice
+    {
+        $practice = $this->practices->create($attributes);
+        $this->flush($practice);
+
+        return $practice;
+    }
+
+    /** @param  array<string, mixed>  $attributes */
+    public function update(Practice $practice, array $attributes): Practice
+    {
+        $practice = $this->practices->update($practice, $attributes);
+        $this->flush($practice);
+
+        return $practice;
+    }
+
+    public function delete(Practice $practice): void
+    {
+        $this->practices->delete($practice);
+        $this->flush($practice);
+    }
+
+    private function flush(Practice $practice): void
+    {
+        NotifyFrontendRevalidate::dispatch(['practices', "practice:{$practice->slug}"]);
+    }
+
+    public function statuses(): array
+    {
+        return ContentStatus::values();
     }
 }

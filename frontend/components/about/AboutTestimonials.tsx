@@ -18,7 +18,7 @@ export default function AboutTestimonials() {
               </span>
             </div>
             
-            <h2 className="text-[40px] md:text-[48px] leading-[1.2] text-ink tracking-tight mb-10">
+            <h2 className="text-[32px] md:text-[48px] leading-[1.2] text-ink tracking-tight mb-10">
               Reliable, <span className="font-bold">Professional,<br/> And Truly Cared About</span><br/> Every Detail
             </h2>
 

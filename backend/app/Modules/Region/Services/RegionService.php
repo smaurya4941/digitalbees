@@ -37,4 +37,52 @@ final class RegionService
             caseStudies: $this->caseStudies->forSubject($region->getMorphClass(), $region->id),
         );
     }
+
+    // --- Back-office use-cases ----------------------------------------------
+
+    /** @return Collection<int, Region> */
+    public function listForAdmin(): Collection
+    {
+        return $this->regions->allForAdmin();
+    }
+
+    public function findForAdmin(string $slug): Region
+    {
+        return $this->regions->findAnyBySlug($slug)
+            ?? throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Region [{$slug}] not found.");
+    }
+
+    /** @param  array<string, mixed>  $attributes */
+    public function create(array $attributes): Region
+    {
+        $region = $this->regions->create($attributes);
+        $this->flush($region);
+
+        return $region;
+    }
+
+    /** @param  array<string, mixed>  $attributes */
+    public function update(Region $region, array $attributes): Region
+    {
+        $region = $this->regions->update($region, $attributes);
+        $this->flush($region);
+
+        return $region;
+    }
+
+    public function delete(Region $region): void
+    {
+        $this->regions->delete($region);
+        $this->flush($region);
+    }
+
+    private function flush(Region $region): void
+    {
+        \App\Jobs\NotifyFrontendRevalidate::dispatch(['regions', "region:{$region->slug}"]);
+    }
+
+    public function statuses(): array
+    {
+        return \App\Support\Enums\ContentStatus::values();
+    }
 }

@@ -45,7 +45,7 @@ export default function ServicesFAQ() {
                   HAVE QUESTIONS?
                 </span>
               </div>
-              <h2 className="text-[36px] md:text-[48px] leading-[1.2] text-ink tracking-tight max-w-3xl">
+              <h2 className="text-[32px] md:text-[48px] leading-[1.2] text-ink tracking-tight max-w-3xl">
                 How We <span className="font-bold">Guarantee Continuous Workflow</span> & Quality Control
               </h2>
             </div>

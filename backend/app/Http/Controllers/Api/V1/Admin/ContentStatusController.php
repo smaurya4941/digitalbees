@@ -17,10 +17,11 @@ use Illuminate\Validation\Rule;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Minimal admin surface for Phase 1: move a content entity through its
- * draft / published / archived lifecycle. Full CRUD is Phase 2 (CMS).
+ * Cross-taxonomy lifecycle endpoint: move any content entity through its
+ * draft / published / archived states. Per-type CRUD lives in the module
+ * admin controllers (see {@see PracticeAdminController}).
  *
- * Guarded by `auth:sanctum` + `role:` in the route definition.
+ * Guarded by `auth:sanctum` + `active` + `permission:content.publish`.
  */
 class ContentStatusController extends ApiController
 {

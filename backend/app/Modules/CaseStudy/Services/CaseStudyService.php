@@ -46,4 +46,52 @@ final class CaseStudyService
     {
         return $this->caseStudies->forSubject($morphType, $id, $limit);
     }
+
+    // --- Back-office use-cases ----------------------------------------------
+
+    /** @return Collection<int, CaseStudy> */
+    public function listForAdmin(): Collection
+    {
+        return $this->caseStudies->allForAdmin();
+    }
+
+    public function findForAdmin(string $slug): CaseStudy
+    {
+        return $this->caseStudies->findAnyBySlug($slug)
+            ?? throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("CaseStudy [{$slug}] not found.");
+    }
+
+    /** @param  array<string, mixed>  $attributes */
+    public function create(array $attributes): CaseStudy
+    {
+        $caseStudy = $this->caseStudies->create($attributes);
+        $this->flush($caseStudy);
+
+        return $caseStudy;
+    }
+
+    /** @param  array<string, mixed>  $attributes */
+    public function update(CaseStudy $caseStudy, array $attributes): CaseStudy
+    {
+        $caseStudy = $this->caseStudies->update($caseStudy, $attributes);
+        $this->flush($caseStudy);
+
+        return $caseStudy;
+    }
+
+    public function delete(CaseStudy $caseStudy): void
+    {
+        $this->caseStudies->delete($caseStudy);
+        $this->flush($caseStudy);
+    }
+
+    private function flush(CaseStudy $caseStudy): void
+    {
+        \App\Jobs\NotifyFrontendRevalidate::dispatch(['case-studies', "case-study:{$caseStudy->slug}"]);
+    }
+
+    public function statuses(): array
+    {
+        return \App\Support\Enums\ContentStatus::values();
+    }
 }

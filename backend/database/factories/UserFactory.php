@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Support\Enums\UserStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -29,8 +30,27 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'status' => UserStatus::Active->value,
             'remember_token' => Str::random(10),
         ];
+    }
+
+    /** A suspended account (cannot authenticate). */
+    public function suspended(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => UserStatus::Suspended->value,
+        ]);
+    }
+
+    public function admin(): static
+    {
+        return $this->afterCreating(fn (User $user) => $user->syncRoles(['admin']));
+    }
+
+    public function staff(): static
+    {
+        return $this->afterCreating(fn (User $user) => $user->syncRoles(['staff']));
     }
 
     /**

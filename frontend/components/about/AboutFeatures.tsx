@@ -65,7 +65,7 @@ export default function AboutFeatures() {
               OUR FEATURES
             </span>
           </div>
-          <h2 className="text-[40px] md:text-[48px] leading-[1.2] text-ink tracking-tight mb-16 max-w-2xl">
+          <h2 className="text-[32px] md:text-[48px] leading-[1.2] text-ink tracking-tight mb-16 max-w-2xl">
             Genuine <span className="font-bold">Partner In Every Aspect</span> Of Digital Growth
           </h2>
         </ScrollReveal>

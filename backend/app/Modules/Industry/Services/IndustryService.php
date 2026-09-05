@@ -51,4 +51,52 @@ final class IndustryService
             caseStudies: $this->caseStudies->forSubject($industry->getMorphClass(), $industry->id),
         );
     }
+
+    // --- Back-office use-cases ----------------------------------------------
+
+    /** @return Collection<int, Industry> */
+    public function listForAdmin(): Collection
+    {
+        return $this->industries->allForAdmin();
+    }
+
+    public function findForAdmin(string $slug): Industry
+    {
+        return $this->industries->findAnyBySlug($slug)
+            ?? throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Industry [{$slug}] not found.");
+    }
+
+    /** @param  array<string, mixed>  $attributes */
+    public function create(array $attributes): Industry
+    {
+        $industry = $this->industries->create($attributes);
+        $this->flush($industry);
+
+        return $industry;
+    }
+
+    /** @param  array<string, mixed>  $attributes */
+    public function update(Industry $industry, array $attributes): Industry
+    {
+        $industry = $this->industries->update($industry, $attributes);
+        $this->flush($industry);
+
+        return $industry;
+    }
+
+    public function delete(Industry $industry): void
+    {
+        $this->industries->delete($industry);
+        $this->flush($industry);
+    }
+
+    private function flush(Industry $industry): void
+    {
+        \App\Jobs\NotifyFrontendRevalidate::dispatch(['industries', "industry:{$industry->slug}"]);
+    }
+
+    public function statuses(): array
+    {
+        return \App\Support\Enums\ContentStatus::values();
+    }
 }

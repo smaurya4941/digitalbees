@@ -21,4 +21,19 @@ interface PracticeRepository
 
     /** @return Collection<int, Practice> Other published practices, for "related practices". */
     public function siblingsOf(Practice $practice, int $limit = 6): Collection;
+
+    // --- Back-office (any status) --------------------------------------------
+
+    /** @return Collection<int, Practice> Every practice, newest-updated first. */
+    public function allForAdmin(): Collection;
+
+    public function findAnyBySlug(string $slug): ?Practice;
+
+    /** @param  array<string, mixed>  $attributes */
+    public function create(array $attributes): Practice;
+
+    /** @param  array<string, mixed>  $attributes */
+    public function update(Practice $practice, array $attributes): Practice;
+
+    public function delete(Practice $practice): void;
 }

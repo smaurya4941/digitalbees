@@ -48,7 +48,7 @@ export default function AboutSection() {
       </div>
 
       {/* Right Content */}
-      <div className="w-full lg:w-[55%] py-20 px-8 lg:px-20 flex flex-col justify-center">
+      <div className="w-full lg:w-[55%] py-12 lg:py-20 px-6 sm:px-8 lg:px-20 flex flex-col justify-center">
         <ScrollReveal delay={0.1}>
           
           {/* Eyebrow */}
@@ -89,7 +89,7 @@ export default function AboutSection() {
                   <div className="text-gray-400 font-bold text-[10px] uppercase tracking-widest mb-6">
                     {card.title}
                   </div>
-                  <div className="text-white text-[32px] md:text-[36px] font-extrabold mb-4 tracking-tight whitespace-pre-line leading-[1.1]">
+                  <div className="text-white text-[28px] sm:text-[32px] md:text-[36px] font-extrabold mb-4 tracking-tight whitespace-pre-line leading-[1.1]">
                     {card.value}
                   </div>
                   <div className="text-gray-400 text-[13px] leading-relaxed whitespace-pre-line">

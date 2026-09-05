@@ -18,7 +18,7 @@ export default function ProjectsSection() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Project Card 1 */}
         <ScrollReveal delay={0.1}>
-          <div className="bg-surface-container-low rounded-[2rem] p-12 flex flex-col justify-between relative overflow-hidden min-h-[400px] hover:-translate-y-2 hover:shadow-xl transition-all duration-300 h-full group">
+          <div className="bg-surface-container-low rounded-[2rem] p-8 md:p-12 flex flex-col justify-between relative overflow-hidden min-h-[350px] md:min-h-[400px] hover:-translate-y-2 hover:shadow-xl transition-all duration-300 h-full group">
             <div className="text-on-surface-variant font-medium text-sm">Under Construction</div>
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <span className="text-[120px] font-bold text-outline-variant/20 group-hover:text-outline-variant/30 transition-colors duration-300">01</span>
@@ -33,7 +33,7 @@ export default function ProjectsSection() {
         </ScrollReveal>
         {/* Project Card 2 (Featured) */}
         <ScrollReveal delay={0.2}>
-          <div className="relative rounded-[2rem] p-12 flex flex-col justify-between overflow-hidden min-h-[400px] hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 h-full group cursor-pointer">
+          <div className="relative rounded-[2rem] p-8 md:p-12 flex flex-col justify-between overflow-hidden min-h-[350px] md:min-h-[400px] hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 h-full group cursor-pointer">
             <Image
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIePKkkHNKVqVxirZWVnzjBamhHfRZaUwRWiqvw7k3Rg4_Rc7lYC0nHk_RW7G_iVL9_R6n46ZXSY1aGHaVgxs9yKLMMX9_8DPR1sdGSmLjLsCPfJfLiM1vdwyCiPeT5ODsvhPtHT_DrDGS1MqnMZGVxph8rWNtI0xrAVBvdekoriEYzstNr8TYXJxnV17FbRG1sR6uhEtCYzZSCoxKnovzF3Db7PBw8o2DTD0w0vKgHwALdF5fia5nyVTXjRLIssbxXQ"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -57,7 +57,7 @@ export default function ProjectsSection() {
         </ScrollReveal>
         {/* Project Card 3 */}
         <ScrollReveal delay={0.3}>
-          <div className="bg-surface-container-low rounded-[2rem] p-12 flex flex-col justify-between relative overflow-hidden min-h-[400px] hover:-translate-y-2 hover:shadow-xl transition-all duration-300 h-full group">
+          <div className="bg-surface-container-low rounded-[2rem] p-8 md:p-12 flex flex-col justify-between relative overflow-hidden min-h-[350px] md:min-h-[400px] hover:-translate-y-2 hover:shadow-xl transition-all duration-300 h-full group">
             <div className="text-on-surface-variant font-medium text-sm">Under Construction</div>
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <span className="text-[120px] font-bold text-outline-variant/20 group-hover:text-outline-variant/30 transition-colors duration-300">03</span>

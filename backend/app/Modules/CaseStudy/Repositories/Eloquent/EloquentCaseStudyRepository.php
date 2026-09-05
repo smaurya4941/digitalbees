@@ -60,4 +60,30 @@ final class EloquentCaseStudyRepository implements CaseStudyRepository
             ->limit($limit)
             ->get();
     }
+
+    public function allForAdmin(): Collection
+    {
+        return CaseStudy::query()->orderBy('sort_order')->get();
+    }
+
+    public function findAnyBySlug(string $slug): ?CaseStudy
+    {
+        return CaseStudy::query()->where('slug', $slug)->first();
+    }
+
+    public function create(array $attributes): CaseStudy
+    {
+        return CaseStudy::create($attributes);
+    }
+
+    public function update(CaseStudy $caseStudy, array $attributes): CaseStudy
+    {
+        $caseStudy->update($attributes);
+        return $caseStudy;
+    }
+
+    public function delete(CaseStudy $caseStudy): void
+    {
+        $caseStudy->delete();
+    }
 }

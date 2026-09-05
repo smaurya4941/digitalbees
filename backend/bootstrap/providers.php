@@ -7,4 +7,5 @@ return [
     App\Modules\Region\Providers\RegionServiceProvider::class,
     App\Modules\Technology\Providers\TechnologyServiceProvider::class,
     App\Modules\CaseStudy\Providers\CaseStudyServiceProvider::class,
+    App\Modules\Lead\Providers\LeadServiceProvider::class,
 ];

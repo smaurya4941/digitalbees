@@ -29,10 +29,15 @@ tags:
 
 components:
   securitySchemes:
-    sanctumToken:
-      type: http
-      scheme: bearer
-      description: Sanctum personal access token from `POST /auth/login`.
+    sanctumSession:
+      type: apiKey
+      in: cookie
+      name: teambees_session
+      description: >
+        Laravel Sanctum SPA session. Obtained by calling GET /sanctum/csrf-cookie
+        then POST /api/v1/login. The session rides in an HTTP-only cookie;
+        mutating requests must also echo the XSRF-TOKEN cookie in the
+        X-XSRF-TOKEN header and send credentials.
   schemas:
     Envelope:
       type: object
@@ -50,6 +55,47 @@ components:
           additionalProperties:
             type: array
             items: { type: string }
+    AuthUser:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: string, format: email }
+        department: { type: [string, "null"] }
+        status: { type: string, enum: [active, invited, suspended] }
+        role: { type: [string, "null"], enum: [admin, staff, null] }
+        permissions:
+          type: array
+          items: { type: string }
+          example: [content.create, content.update, content.publish]
+    AdminPractice:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        slug: { type: string }
+        tagline: { type: [string, "null"] }
+        summary: { type: [string, "null"] }
+        icon: { type: [string, "null"] }
+        color_token: { type: [string, "null"] }
+        sort_order: { type: integer }
+        status: { type: string, enum: [draft, published, archived] }
+        sub_services_count: { type: integer }
+        href: { type: string }
+        created_at: { type: [string, "null"], format: date-time }
+        updated_at: { type: [string, "null"], format: date-time }
+    PracticeInput:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, maxLength: 100 }
+        slug: { type: string, maxLength: 100, description: "auto-derived from name when omitted" }
+        tagline: { type: [string, "null"], maxLength: 255 }
+        summary: { type: [string, "null"], maxLength: 2000 }
+        icon: { type: [string, "null"] }
+        color_token: { type: [string, "null"] }
+        sort_order: { type: integer, minimum: 0 }
+        status: { type: string, enum: [draft, published, archived] }
     SeoBlock:
       type: object
       properties:
@@ -465,10 +511,13 @@ paths:
                   - properties: { data: { $ref: '#/components/schemas/CaseStudyDetail' } }
         "404": { $ref: '#/components/responses/NotFound' }
 
-  /auth/login:
+  /login:
     post:
       tags: [Auth]
-      summary: Exchange credentials for a Sanctum token.
+      summary: Start a Sanctum SPA session (HTTP-only cookie).
+      description: >
+        Call GET /sanctum/csrf-cookie first. Send credentials with
+        `credentials: include` and the `X-XSRF-TOKEN` header.
       requestBody:
         required: true
         content:
@@ -479,7 +528,53 @@ paths:
               properties:
                 email: { type: string, format: email }
                 password: { type: string }
-                device_name: { type: string }
+                remember: { type: boolean }
+      responses:
+        "200":
+          description: Session started; body is the user profile.
+          headers:
+            Set-Cookie:
+              schema: { type: string }
+              description: HTTP-only session cookie.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties: { data: { $ref: '#/components/schemas/AuthUser' } }
+        "422": { $ref: '#/components/responses/ValidationError' }
+        "429": { description: Too many attempts (throttle:auth — 5/min). }
+  /user:
+    get:
+      tags: [Auth]
+      security: [{ sanctumSession: [] }]
+      summary: The authenticated user with role and flat permission list.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties: { data: { $ref: '#/components/schemas/AuthUser' } }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "403": { description: Account suspended/invited (active middleware). }
+  /logout:
+    post:
+      tags: [Auth]
+      security: [{ sanctumSession: [] }]
+      summary: Invalidate the current session.
+      responses:
+        "200": { description: OK }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+
+  /admin/practices:
+    get:
+      tags: [Admin]
+      security: [{ sanctumSession: [] }]
+      summary: Every practice (all statuses), newest-updated first.
+      description: "Permission: `content.update` or `content.publish`."
       responses:
         "200":
           description: OK
@@ -489,45 +584,91 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/Envelope'
                   - properties:
-                      data:
+                      data: { type: array, items: { $ref: '#/components/schemas/AdminPractice' } }
+                      meta:
                         type: object
                         properties:
-                          token: { type: string }
-                          user:
-                            type: object
-                            properties:
-                              id: { type: integer }
-                              name: { type: string }
-                              email: { type: string }
-                              department: { type: [string, "null"] }
-                              roles: { type: array, items: { type: string } }
-                              permissions: { type: array, items: { type: string } }
-        "422": { $ref: '#/components/responses/ValidationError' }
-  /auth/me:
-    get:
-      tags: [Auth]
-      security: [{ sanctumToken: [] }]
-      summary: The authenticated user, roles and permissions.
-      responses:
-        "200": { description: OK }
+                          count: { type: integer }
+                          statuses: { type: array, items: { type: string } }
         "401": { $ref: '#/components/responses/Unauthorized' }
-  /auth/logout:
-    post:
-      tags: [Auth]
-      security: [{ sanctumToken: [] }]
-      summary: Revoke the current token.
-      responses:
-        "200": { description: OK }
-        "401": { $ref: '#/components/responses/Unauthorized' }
-
-  /admin/{type}:
+        "403": { $ref: '#/components/responses/Forbidden' }
+  /admin/practices/{slug}:
     get:
       tags: [Admin]
-      security: [{ sanctumToken: [] }]
+      security: [{ sanctumSession: [] }]
+      summary: One practice (any status) for the editor.
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - properties: { data: { $ref: '#/components/schemas/AdminPractice' } }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "403": { $ref: '#/components/responses/Forbidden' }
+        "404": { $ref: '#/components/responses/NotFound' }
+  /practices:
+    post:
+      tags: [Admin]
+      security: [{ sanctumSession: [] }]
+      summary: Create a practice.
+      description: "Permission: `content.create`. Creating as `published` also needs `content.publish`."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PracticeInput' }
+      responses:
+        "201": { description: Created }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "403": { $ref: '#/components/responses/Forbidden' }
+        "422": { $ref: '#/components/responses/ValidationError' }
+  /practices/{slug}:
+    put:
+      tags: [Admin]
+      security: [{ sanctumSession: [] }]
+      summary: Update a practice.
+      description: >
+        Permission: `content.update`. Changing to/from `published` also needs
+        `content.publish`. Dispatches frontend cache revalidation.
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PracticeInput' }
+      responses:
+        "200": { description: OK }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "403": { $ref: '#/components/responses/Forbidden' }
+        "404": { $ref: '#/components/responses/NotFound' }
+        "422": { $ref: '#/components/responses/ValidationError' }
+    delete:
+      tags: [Admin]
+      security: [{ sanctumSession: [] }]
+      summary: Soft-delete a practice.
+      description: "Permission: `content.delete` (admin only)."
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        "200": { description: OK }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "403": { $ref: '#/components/responses/Forbidden' }
+        "404": { $ref: '#/components/responses/NotFound' }
+
+  /admin/content/{type}:
+    get:
+      tags: [Admin]
+      security: [{ sanctumSession: [] }]
       summary: >
-        Every row (any status) for a content type. `type` is one of
-        practices, industries, regions, technologies, case-studies.
-        Roles: Super Admin, Admin, Editor, Reviewer.
+        Rows (any status) for a taxonomy. `type` ∈ practices, industries,
+        regions, technologies, case-studies. Permission:
+        `content.update` or `content.publish`.
       parameters:
         - { name: type, in: path, required: true, schema: { type: string } }
         - { name: status, in: query, required: false, schema: { type: string, enum: [draft, published, archived] } }
@@ -535,14 +676,13 @@ paths:
         "200": { description: OK }
         "401": { $ref: '#/components/responses/Unauthorized' }
         "403": { $ref: '#/components/responses/Forbidden' }
-  /admin/{type}/{slug}/status:
+  /admin/content/{type}/{slug}/status:
     patch:
       tags: [Admin]
-      security: [{ sanctumToken: [] }]
+      security: [{ sanctumSession: [] }]
       summary: >
-        Move a content entity through its draft/published/archived lifecycle.
-        Roles: Super Admin, Admin, Reviewer. Dispatches frontend cache
-        revalidation.
+        Move any content entity through draft/published/archived. Permission:
+        `content.publish`. Dispatches frontend cache revalidation.
       parameters:
         - { name: type, in: path, required: true, schema: { type: string } }
         - { name: slug, in: path, required: true, schema: { type: string } }

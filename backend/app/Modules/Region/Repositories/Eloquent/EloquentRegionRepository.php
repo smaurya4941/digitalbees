@@ -21,4 +21,30 @@ final class EloquentRegionRepository implements RegionRepository
             ->where('slug', $slug)
             ->first();
     }
+
+    public function allForAdmin(): Collection
+    {
+        return Region::query()->orderBy('sort_order')->get();
+    }
+
+    public function findAnyBySlug(string $slug): ?Region
+    {
+        return Region::query()->where('slug', $slug)->first();
+    }
+
+    public function create(array $attributes): Region
+    {
+        return Region::create($attributes);
+    }
+
+    public function update(Region $region, array $attributes): Region
+    {
+        $region->update($attributes);
+        return $region;
+    }
+
+    public function delete(Region $region): void
+    {
+        $region->delete();
+    }
 }

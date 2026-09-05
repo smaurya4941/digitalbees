@@ -23,6 +23,12 @@ const clientSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.string().url().default('http://localhost:3000'),
   /** API base the browser calls directly (search, form posts). */
   NEXT_PUBLIC_API_BASE_URL: z.string().url().default('http://localhost:8000/api/v1'),
+  /**
+   * Laravel application origin (no /api/v1). The admin SPA needs this for the
+   * Sanctum CSRF-cookie endpoint (`/sanctum/csrf-cookie`), which lives outside
+   * the versioned API prefix.
+   */
+  NEXT_PUBLIC_API_ORIGIN: z.string().url().default('http://localhost:8000'),
   NEXT_PUBLIC_GA_ID: z.string().optional(),
 });
 
@@ -39,6 +45,7 @@ function parse<T extends z.ZodTypeAny>(schema: T, source: Record<string, unknown
 export const clientEnv = parse(clientSchema, {
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  NEXT_PUBLIC_API_ORIGIN: process.env.NEXT_PUBLIC_API_ORIGIN,
   NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID,
 });
 

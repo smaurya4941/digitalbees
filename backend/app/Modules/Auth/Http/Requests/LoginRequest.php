@@ -3,6 +3,7 @@
 namespace App\Modules\Auth\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class LoginRequest extends FormRequest
 {
@@ -17,7 +18,14 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'email', 'max:150'],
             'password' => ['required', 'string'],
-            'device_name' => ['nullable', 'string', 'max:100'],
+            'remember' => ['sometimes', 'boolean'],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('email')) {
+            $this->merge(['email' => Str::lower(trim((string) $this->input('email')))]);
+        }
     }
 }

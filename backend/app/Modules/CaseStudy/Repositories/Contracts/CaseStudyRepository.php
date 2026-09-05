@@ -22,4 +22,17 @@ interface CaseStudyRepository
      * @return Collection<int, CaseStudy>
      */
     public function forSubject(string $subjectType, int $subjectId, int $limit = 6): Collection;
+
+    /** @return Collection<int, CaseStudy> All case studies for the back-office. */
+    public function allForAdmin(): Collection;
+
+    public function findAnyBySlug(string $slug): ?CaseStudy;
+
+    /** @param array<string, mixed> $attributes */
+    public function create(array $attributes): CaseStudy;
+
+    /** @param array<string, mixed> $attributes */
+    public function update(CaseStudy $caseStudy, array $attributes): CaseStudy;
+
+    public function delete(CaseStudy $caseStudy): void;
 }

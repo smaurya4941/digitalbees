@@ -42,7 +42,7 @@ export default function HeroSection() {
                 NEXT-GENERATION DIGITAL WORKFORCE SOLUTIONS
               </span>
             </div>
-            <h1 className="text-[64px] text-primary max-w-4xl leading-[1.1] tracking-tight">
+            <h1 className="text-[42px] md:text-[64px] text-primary max-w-4xl leading-[1.1] tracking-tight">
               <span className="font-medium">Build</span> <span className="font-bold">Your Digital Team.</span><br />
               <span className="font-bold">The Smarter</span> <span className="font-light">Way.</span>
             </h1>
@@ -60,7 +60,7 @@ export default function HeroSection() {
       
       {/* Hero Image Slider */}
       <ScrollReveal delay={0.3} yOffset={50}>
-        <div className="mt-16 w-full h-[85vh] relative z-0 rounded-[2rem] overflow-hidden bg-black">
+        <div className="mt-16 w-full h-[600px] md:h-[85vh] relative z-0 rounded-[2rem] overflow-hidden bg-black">
           {SLIDER_IMAGES.map((src, index) => (
             <div 
               key={src}
@@ -81,7 +81,7 @@ export default function HeroSection() {
           ))}
 
           {/* Cards */}
-          <div className="absolute bottom-8 left-0 w-full px-8 grid grid-cols-1 md:grid-cols-3 gap-6 z-20">
+          <div className="relative md:absolute bottom-0 md:bottom-8 left-0 w-full px-4 md:px-8 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 z-20 mt-auto pb-12 md:pb-0 pt-32 md:pt-0">
             {/* Card 1 */}
             <div className="bg-[#1A1D20]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col items-start text-white transition-all duration-300">
               <div className="flex items-center gap-3 mb-3">

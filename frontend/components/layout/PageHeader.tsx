@@ -42,7 +42,7 @@ export default function PageHeader({ title, breadcrumb }: PageHeaderProps) {
         </div>
 
         <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop relative z-10 flex flex-col items-center justify-center text-center">
-          <h1 className="text-[44px] md:text-[56px] font-bold text-ink mb-4 tracking-tight">
+          <h1 className="text-[36px] md:text-[56px] font-bold text-ink mb-4 tracking-tight">
             {title}
           </h1>
           <div className="flex items-center gap-2 text-[14px] font-semibold tracking-wide">

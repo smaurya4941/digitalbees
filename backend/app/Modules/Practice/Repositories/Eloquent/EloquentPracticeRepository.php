@@ -62,4 +62,34 @@ final class EloquentPracticeRepository implements PracticeRepository
             ->limit($limit)
             ->get();
     }
+
+    public function allForAdmin(): Collection
+    {
+        return Practice::query()
+            ->withCount('subServices')
+            ->orderByDesc('updated_at')
+            ->get();
+    }
+
+    public function findAnyBySlug(string $slug): ?Practice
+    {
+        return Practice::query()->where('slug', $slug)->first();
+    }
+
+    public function create(array $attributes): Practice
+    {
+        return Practice::create($attributes);
+    }
+
+    public function update(Practice $practice, array $attributes): Practice
+    {
+        $practice->fill($attributes)->save();
+
+        return $practice->refresh();
+    }
+
+    public function delete(Practice $practice): void
+    {
+        $practice->delete();
+    }
 }

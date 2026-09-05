@@ -45,4 +45,52 @@ final class TechnologyService
             caseStudies: $this->caseStudies->forSubject($technology->getMorphClass(), $technology->id),
         );
     }
+
+    // --- Back-office use-cases ----------------------------------------------
+
+    /** @return Collection<int, Technology> */
+    public function listForAdmin(): Collection
+    {
+        return $this->technologies->allForAdmin();
+    }
+
+    public function findForAdmin(string $slug): Technology
+    {
+        return $this->technologies->findAnyBySlug($slug)
+            ?? throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Technology [{$slug}] not found.");
+    }
+
+    /** @param  array<string, mixed>  $attributes */
+    public function create(array $attributes): Technology
+    {
+        $technology = $this->technologies->create($attributes);
+        $this->flush($technology);
+
+        return $technology;
+    }
+
+    /** @param  array<string, mixed>  $attributes */
+    public function update(Technology $technology, array $attributes): Technology
+    {
+        $technology = $this->technologies->update($technology, $attributes);
+        $this->flush($technology);
+
+        return $technology;
+    }
+
+    public function delete(Technology $technology): void
+    {
+        $this->technologies->delete($technology);
+        $this->flush($technology);
+    }
+
+    private function flush(Technology $technology): void
+    {
+        \App\Jobs\NotifyFrontendRevalidate::dispatch(['technologies', "technology:{$technology->slug}"]);
+    }
+
+    public function statuses(): array
+    {
+        return \App\Support\Enums\ContentStatus::values();
+    }
 }

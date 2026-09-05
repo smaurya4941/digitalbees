@@ -34,7 +34,7 @@ export default function ServicesSection() {
   return (
     <section className="py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto bg-white">
       <ScrollReveal>
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16">
           <div className="max-w-4xl">
             <div className="flex items-center gap-2 mb-4">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#FACC15]">
@@ -44,12 +44,12 @@ export default function ServicesSection() {
                 WHAT WE OFFER
               </span>
             </div>
-            <h2 className="text-[48px] leading-[1.2] text-ink tracking-tight">
-              Take A Brief <span className="font-bold">Look At The Digital</span><br/>
+            <h2 className="text-[36px] md:text-[48px] leading-[1.2] text-ink tracking-tight">
+              Take A Brief <span className="font-bold">Look At The Digital</span><br className="hidden md:block"/>
               <span className="font-bold">Growth Solutions</span> We Offer
             </h2>
           </div>
-          <div className="flex gap-4 mt-6 md:mt-0">
+          <div className="flex gap-4 mt-8 lg:mt-0">
             <button className="w-12 h-12 rounded-full bg-transparent border border-[#FACC15]/40 text-[#FACC15] flex items-center justify-center transition-colors hover:bg-[#FACC15] hover:text-white">
               <ArrowLeft size={20} strokeWidth={1.5} />
             </button>

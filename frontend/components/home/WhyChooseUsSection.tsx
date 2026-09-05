@@ -44,12 +44,12 @@ export default function WhyChooseUsSection() {
             </ScrollReveal>
           </div>
           <ScrollReveal delay={0.5}>
-            <div className="flex items-center gap-6">
-              <Link className="bg-navy-deep text-white font-title-md text-title-md px-8 py-3 rounded hover:bg-primary hover:scale-105 transition-all" href="#">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <Link className="bg-navy-deep text-white font-title-md text-title-md px-8 py-3 rounded hover:bg-primary hover:scale-105 transition-all text-center w-full sm:w-auto" href="#">
                 More About Us
               </Link>
               <div className="flex items-center gap-4 border-l-2 border-outline-variant/30 pl-6">
-                <div className="w-12 h-12 bg-surface-container rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-surface-container rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="material-symbols-outlined text-gold-muted">format_quote</span>
                 </div>
                 <div>
@@ -63,7 +63,7 @@ export default function WhyChooseUsSection() {
         {/* Right */}
         <div className="relative">
           <ScrollReveal delay={0.2} yOffset={40}>
-            <div className="w-full h-[600px] rounded-2xl overflow-hidden shadow-lg relative">
+            <div className="w-full h-[400px] lg:h-[600px] rounded-2xl overflow-hidden shadow-lg relative mt-12 lg:mt-0">
               <Image
                 alt="Enterprise Tech"
                 className="w-full h-full object-cover"

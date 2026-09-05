@@ -15,7 +15,7 @@ export default function AboutUsHero() {
         {/* Left Content: Image */}
         <div className="w-full lg:w-[45%]">
           <ScrollReveal>
-            <div className="w-full h-[600px] lg:h-[700px] relative rounded-[2rem] overflow-hidden shadow-lg">
+            <div className="w-full h-[400px] md:h-[600px] lg:h-[700px] relative rounded-[2rem] overflow-hidden shadow-lg">
               <Image
                 className="w-full h-full object-cover"
                 src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop"
@@ -38,7 +38,7 @@ export default function AboutUsHero() {
               </span>
             </div>
             
-            <h2 className="text-[36px] md:text-[44px] leading-[1.2] text-ink tracking-tight mb-6">
+            <h2 className="text-[32px] md:text-[44px] leading-[1.2] text-ink tracking-tight mb-6">
               At The Digital Bees, <span className="font-bold">our commitment to bridging the gap between digital workforce solutions</span> and exceptional talent is unwavering.
             </h2>
             
