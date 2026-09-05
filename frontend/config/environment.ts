@@ -21,14 +21,12 @@ const serverSchema = z.object({
 const clientSchema = z.object({
   /** Canonical public origin, e.g. https://www.teambees.com (no trailing slash). */
   NEXT_PUBLIC_SITE_URL: z.string().url().default('http://localhost:3000'),
-  /** API base the browser calls directly (search, form posts). */
-  NEXT_PUBLIC_API_BASE_URL: z.string().url().default('http://localhost:8000/api/v1'),
+  /** API base the browser calls directly (search, form posts). Proxy route. */
+  NEXT_PUBLIC_API_BASE_URL: z.string().default('/backend/api/v1'),
   /**
-   * Laravel application origin (no /api/v1). The admin SPA needs this for the
-   * Sanctum CSRF-cookie endpoint (`/sanctum/csrf-cookie`), which lives outside
-   * the versioned API prefix.
+   * Laravel application origin (no /api/v1). Proxy route.
    */
-  NEXT_PUBLIC_API_ORIGIN: z.string().url().default('http://localhost:8000'),
+  NEXT_PUBLIC_API_ORIGIN: z.string().default('/backend'),
   NEXT_PUBLIC_GA_ID: z.string().optional(),
 });
 
