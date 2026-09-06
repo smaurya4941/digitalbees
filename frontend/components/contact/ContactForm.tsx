@@ -1,8 +1,15 @@
 "use client";
 
 import ScrollReveal from "@/components/ui/ScrollReveal";
-import Image from "next/image";
+import dynamic from "next/dynamic";
 import { ArrowRight } from "lucide-react";
+
+const Map = dynamic(() => import("@/components/contact/Map"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full min-h-[400px] bg-[#F3F4F6] animate-pulse rounded-[2rem]" />
+  ),
+});
 
 export default function ContactForm() {
   return (
@@ -85,18 +92,11 @@ export default function ContactForm() {
           </ScrollReveal>
         </div>
 
-        {/* Right Column - Image */}
-        <div className="w-full lg:w-1/2 relative min-h-[400px] lg:min-h-auto mt-8 lg:mt-0">
+        {/* Right Column - Map */}
+        <div className="w-full lg:w-1/2 relative min-h-[400px] lg:min-h-auto mt-8 lg:mt-0 z-0">
           <ScrollReveal delay={0.2}>
-            <div className="absolute inset-0 rounded-[2rem] overflow-hidden shadow-[0_20px_60px_rgb(0,0,0,0.1)]">
-              {/* Using the glowing orange texture from previous components as it perfectly matches the vibe */}
-              <Image 
-                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop"
-                alt="Digital Network Grid"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#f59e0b]/40 to-transparent mix-blend-overlay"></div>
+            <div className="absolute inset-0 rounded-[2rem] overflow-hidden shadow-[0_20px_60px_rgb(0,0,0,0.1)] z-0">
+              <Map />
             </div>
           </ScrollReveal>
         </div>

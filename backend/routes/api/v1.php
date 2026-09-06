@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\Admin\RegionAdminController;
 use App\Http\Controllers\Api\V1\Admin\TechnologyAdminController;
 use App\Http\Controllers\Api\V1\Admin\CaseStudyAdminController;
 use App\Http\Controllers\Api\V1\Admin\MediaAdminController;
+use App\Http\Controllers\Api\V1\Admin\PageAdminController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CareerController;
 use App\Http\Controllers\Api\V1\CaseStudyController;
@@ -206,6 +207,10 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::delete('admin/media/{id}', [MediaAdminController::class, 'destroy'])
         ->middleware('permission:content.delete')
         ->name('admin.media.destroy');
+
+    // Pages Library
+    Route::apiResource('pages', PageAdminController::class)->only(['index', 'show', 'update'])
+        ->middleware('permission:content.update');
 });
 
 // --- Conversion / write (throttled) -------------------------------------------

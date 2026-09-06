@@ -21,6 +21,27 @@ class PageController extends ApiController
     {
         $request->validate(['path' => ['required', 'string', 'max:500']]);
 
-        return ApiResponse::notImplemented("PageResolver::resolve('{$request->string('path')}') -> { template_key, sections[], primary, secondary, seo } | 404; GET /api/v1/pages/resolve?path=");
+        $path = $request->string('path')->toString();
+
+        $page = \App\Modules\Page\Models\Page::with(['template', 'sections'])
+            ->where('url_path', $path)
+            ->where('status', 'published')
+            ->first();
+
+        if (!$page) {
+            return ApiResponse::error('Page not found', 404);
+        }
+
+        $sections = $page->sections->mapWithKeys(function ($section) {
+            return [$section->section_key => $section->content];
+        });
+
+        return ApiResponse::item([
+            'id' => $page->id,
+            'url_path' => $page->url_path,
+            'title' => $page->title,
+            'template_key' => $page->template?->key_name,
+            'sections' => $sections,
+        ]);
     }
 }
