@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Admin\DashboardController;
 use App\Http\Controllers\Api\V1\Admin\IndustryAdminController;
 use App\Http\Controllers\Api\V1\Admin\LeadAdminController;
 use App\Http\Controllers\Api\V1\Admin\MediaAdminController;
+use App\Http\Controllers\Api\V1\Admin\NavigationAdminController;
 use App\Http\Controllers\Api\V1\Admin\PageAdminController;
 use App\Http\Controllers\Api\V1\Admin\PracticeAdminController;
 use App\Http\Controllers\Api\V1\Admin\RedirectAdminController;
@@ -252,6 +253,12 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
         ->middleware('permission:users.manage')->name('admin.users.reactivate');
     Route::delete('admin/users/{id}', [UserAdminController::class, 'destroy'])
         ->middleware('permission:users.manage')->name('admin.users.destroy');
+
+    // Navigation menus
+    Route::get('admin/navigation', [NavigationAdminController::class, 'index'])
+        ->middleware('permission:navigation.update')->name('admin.navigation.index');
+    Route::match(['put', 'patch'], 'admin/navigation/{menu}', [NavigationAdminController::class, 'update'])
+        ->middleware('permission:navigation.update')->name('admin.navigation.update');
 
     // Site settings
     Route::get('admin/settings', [SettingAdminController::class, 'index'])

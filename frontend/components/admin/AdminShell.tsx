@@ -14,6 +14,7 @@ import {
   History,
   Image as ImageIcon,
   LayoutDashboard,
+  ListTree,
   LogOut,
   Menu,
   Mail,
@@ -25,12 +26,15 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { useAuth } from './providers';
+import type { Permission } from '@/lib/admin/types';
 
 type NavItem = {
   label: string;
   href: string;
   icon: typeof LayoutDashboard;
   soon?: boolean;
+  /** Shown only when the account holds this permission (admin always). */
+  permission?: Permission;
 };
 
 const primaryNav: NavItem[] = [
@@ -45,12 +49,13 @@ const primaryNav: NavItem[] = [
 ];
 
 const adminNav: NavItem[] = [
-  { label: 'Inbox / CRM', href: '/admin/leads', icon: Mail },
-  { label: 'Activity', href: '/admin/activity', icon: History },
-  { label: 'Accounts', href: '/admin/users', icon: Users },
-  { label: 'Roles', href: '/admin/roles', icon: ShieldCheck },
-  { label: 'Redirects', href: '/admin/redirects', icon: Signpost },
-  { label: 'Settings', href: '/admin/settings', icon: Settings },
+  { label: 'Inbox / CRM', href: '/admin/leads', icon: Mail, permission: 'inquiries.view' },
+  { label: 'Activity', href: '/admin/activity', icon: History, permission: 'audit.view' },
+  { label: 'Accounts', href: '/admin/users', icon: Users, permission: 'users.manage' },
+  { label: 'Roles', href: '/admin/roles', icon: ShieldCheck, permission: 'roles.manage' },
+  { label: 'Navigation', href: '/admin/navigation', icon: ListTree, permission: 'navigation.update' },
+  { label: 'Redirects', href: '/admin/redirects', icon: Signpost, permission: 'settings.manage' },
+  { label: 'Settings', href: '/admin/settings', icon: Settings, permission: 'settings.manage' },
 ];
 
 function NavLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {
@@ -95,7 +100,8 @@ function NavLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void 
 }
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
-  const { user, isAdmin } = useAuth();
+  const { user, can } = useAuth();
+  const visibleAdminNav = adminNav.filter((item) => !item.permission || can(item.permission));
 
   return (
     <div className="flex h-full flex-col bg-brand-navy-deep">
@@ -117,12 +123,12 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           <NavLink key={item.href} item={item} onNavigate={onNavigate} />
         ))}
 
-        {isAdmin && (
+        {visibleAdminNav.length > 0 && (
           <>
             <p className="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
               Administration
             </p>
-            {adminNav.map((item) => (
+            {visibleAdminNav.map((item) => (
               <NavLink key={item.href} item={item} onNavigate={onNavigate} />
             ))}
           </>
