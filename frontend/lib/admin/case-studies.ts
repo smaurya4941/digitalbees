@@ -1,12 +1,13 @@
 'use client';
 
-import { adminApi } from './http';
-import type { ContentStatus } from './types';
+import { adminApi, type AdminPaginated } from './http';
+import type { ContentStatus, TaxonomyListFilters } from './types';
 
 const KEY = ['admin', 'case-studies'] as const;
 
 export const caseStudyQueryKeys = {
   all: KEY,
+  list: (filters: TaxonomyListFilters) => [...KEY, 'list', filters] as const,
   detail: (slug: string) => [...KEY, slug] as const,
 };
 
@@ -39,8 +40,19 @@ export type CaseStudyInput = {
   sort_order?: number;
 };
 
-export function listCaseStudies(signal?: AbortSignal): Promise<AdminCaseStudy[]> {
-  return adminApi.get<AdminCaseStudy[]>('admin/case-studies', signal);
+export function listCaseStudies(
+  filters: TaxonomyListFilters,
+  signal?: AbortSignal,
+): Promise<AdminPaginated<AdminCaseStudy>> {
+  return adminApi.getPage<AdminCaseStudy>('admin/case-studies', {
+    signal,
+    query: {
+      q: filters.q || undefined,
+      status: filters.status || undefined,
+      page: filters.page,
+      sort: filters.sort,
+    },
+  });
 }
 
 export function getCaseStudy(slug: string, signal?: AbortSignal): Promise<AdminCaseStudy> {

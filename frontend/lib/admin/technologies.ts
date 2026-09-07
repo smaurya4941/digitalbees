@@ -1,12 +1,13 @@
 'use client';
 
-import { adminApi } from './http';
-import type { ContentStatus } from './types';
+import { adminApi, type AdminPaginated } from './http';
+import type { ContentStatus, TaxonomyListFilters } from './types';
 
 const KEY = ['admin', 'technologies'] as const;
 
 export const technologyQueryKeys = {
   all: KEY,
+  list: (filters: TaxonomyListFilters) => [...KEY, 'list', filters] as const,
   detail: (slug: string) => [...KEY, slug] as const,
 };
 
@@ -31,8 +32,19 @@ export type TechnologyInput = {
   sort_order?: number;
 };
 
-export function listTechnologies(signal?: AbortSignal): Promise<AdminTechnology[]> {
-  return adminApi.get<AdminTechnology[]>('admin/technologies', signal);
+export function listTechnologies(
+  filters: TaxonomyListFilters,
+  signal?: AbortSignal,
+): Promise<AdminPaginated<AdminTechnology>> {
+  return adminApi.getPage<AdminTechnology>('admin/technologies', {
+    signal,
+    query: {
+      q: filters.q || undefined,
+      status: filters.status || undefined,
+      page: filters.page,
+      sort: filters.sort,
+    },
+  });
 }
 
 export function getTechnology(slug: string, signal?: AbortSignal): Promise<AdminTechnology> {

@@ -1,12 +1,13 @@
 'use client';
 
-import { adminApi } from './http';
-import type { ContentStatus } from './types';
+import { adminApi, type AdminPaginated } from './http';
+import type { ContentStatus, TaxonomyListFilters } from './types';
 
 const KEY = ['admin', 'regions'] as const;
 
 export const regionQueryKeys = {
   all: KEY,
+  list: (filters: TaxonomyListFilters) => [...KEY, 'list', filters] as const,
   detail: (slug: string) => [...KEY, slug] as const,
 };
 
@@ -31,8 +32,19 @@ export type RegionInput = {
   sort_order?: number;
 };
 
-export function listRegions(signal?: AbortSignal): Promise<AdminRegion[]> {
-  return adminApi.get<AdminRegion[]>('admin/regions', signal);
+export function listRegions(
+  filters: TaxonomyListFilters,
+  signal?: AbortSignal,
+): Promise<AdminPaginated<AdminRegion>> {
+  return adminApi.getPage<AdminRegion>('admin/regions', {
+    signal,
+    query: {
+      q: filters.q || undefined,
+      status: filters.status || undefined,
+      page: filters.page,
+      sort: filters.sort,
+    },
+  });
 }
 
 export function getRegion(slug: string, signal?: AbortSignal): Promise<AdminRegion> {

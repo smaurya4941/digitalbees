@@ -101,15 +101,37 @@ class PracticeAdminTest extends TestCase
         $this->assertSoftDeleted('practices', ['slug' => 'energy-bees']);
     }
 
-    public function test_admin_index_lists_every_status(): void
+    public function test_admin_index_paginates_filters_and_searches(): void
     {
         Practice::query()->where('slug', 'ai-bees')->update(['status' => ContentStatus::Draft->value]);
 
         $this->actingAs($this->user('admin'))
             ->getJson('/api/v1/admin/practices')
             ->assertOk()
-            ->assertJsonPath('meta.count', 7)
-            ->assertJsonPath('meta.statuses', ['draft', 'published', 'archived']);
+            ->assertJsonPath('meta.total', 7)
+            ->assertJsonPath('meta.statuses', ['draft', 'published', 'archived'])
+            ->assertJsonStructure(['data', 'meta' => ['current_page', 'last_page', 'per_page', 'total'], 'links']);
+
+        // status filter
+        $this->actingAs($this->user('admin'))
+            ->getJson('/api/v1/admin/practices?status=draft')
+            ->assertOk()
+            ->assertJsonPath('meta.total', 1)
+            ->assertJsonPath('data.0.slug', 'ai-bees');
+
+        // free-text search
+        $this->actingAs($this->user('admin'))
+            ->getJson('/api/v1/admin/practices?q=energy')
+            ->assertOk()
+            ->assertJsonPath('meta.total', 1)
+            ->assertJsonPath('data.0.slug', 'energy-bees');
+
+        // pagination
+        $page2 = $this->actingAs($this->user('admin'))
+            ->getJson('/api/v1/admin/practices?per_page=5&page=2')
+            ->assertOk();
+        $this->assertSame(2, $page2->json('meta.current_page'));
+        $this->assertCount(2, $page2->json('data'));
     }
 
     public function test_cross_taxonomy_status_endpoint_is_permission_gated(): void

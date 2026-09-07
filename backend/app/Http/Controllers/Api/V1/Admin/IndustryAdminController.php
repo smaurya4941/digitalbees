@@ -8,10 +8,13 @@ use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\Industry\Http\Requests\StoreIndustryRequest;
 use App\Modules\Industry\Http\Requests\UpdateIndustryRequest;
 use App\Modules\Industry\Http\Resources\IndustryAdminResource;
+use App\Modules\Industry\Models\Industry;
 use App\Modules\Industry\Services\IndustryService;
 use App\Support\Enums\ContentStatus;
+use App\Support\Http\AdminListQuery;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class IndustryAdminController extends ApiController
 {
@@ -21,10 +24,15 @@ class IndustryAdminController extends ApiController
     public function __construct(private readonly IndustryService $industries) {}
 
     /** GET /api/v1/admin/industries */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return ApiResponse::collection(
-            IndustryAdminResource::collection($this->industries->listForAdmin()),
+        $paginator = AdminListQuery::for($request, Industry::class, ['name', 'slug'], ['updated_at', 'name', 'sort_order'])
+            ->paginate(AdminListQuery::perPage($request))
+            ->withQueryString();
+
+        return ApiResponse::page(
+            $paginator,
+            fn (Industry $industry) => (new IndustryAdminResource($industry))->resolve(),
             ['statuses' => ContentStatus::values()],
         );
     }

@@ -20,6 +20,14 @@ export type Role = string;
 
 export type ContentStatus = 'draft' | 'published' | 'archived';
 
+/** Query params accepted by the paginated back-office list endpoints. */
+export interface TaxonomyListFilters {
+  q?: string;
+  status?: string;
+  page?: number;
+  sort?: string;
+}
+
 export interface AuthUser {
   id: number;
   name: string;

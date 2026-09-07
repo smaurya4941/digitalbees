@@ -8,10 +8,13 @@ use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\Region\Http\Requests\StoreRegionRequest;
 use App\Modules\Region\Http\Requests\UpdateRegionRequest;
 use App\Modules\Region\Http\Resources\RegionAdminResource;
+use App\Modules\Region\Models\Region;
 use App\Modules\Region\Services\RegionService;
 use App\Support\Enums\ContentStatus;
+use App\Support\Http\AdminListQuery;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class RegionAdminController extends ApiController
 {
@@ -20,10 +23,15 @@ class RegionAdminController extends ApiController
 
     public function __construct(private readonly RegionService $regions) {}
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return ApiResponse::collection(
-            RegionAdminResource::collection($this->regions->listForAdmin()),
+        $paginator = AdminListQuery::for($request, Region::class, ['name', 'slug', 'iso_code'], ['updated_at', 'name', 'sort_order'])
+            ->paginate(AdminListQuery::perPage($request))
+            ->withQueryString();
+
+        return ApiResponse::page(
+            $paginator,
+            fn (Region $region) => (new RegionAdminResource($region))->resolve(),
             ['statuses' => ContentStatus::values()],
         );
     }
