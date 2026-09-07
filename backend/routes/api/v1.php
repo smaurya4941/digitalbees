@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Admin\MediaAdminController;
 use App\Http\Controllers\Api\V1\Admin\PageAdminController;
 use App\Http\Controllers\Api\V1\Admin\PracticeAdminController;
 use App\Http\Controllers\Api\V1\Admin\RegionAdminController;
+use App\Http\Controllers\Api\V1\Admin\RoleAdminController;
 use App\Http\Controllers\Api\V1\Admin\TechnologyAdminController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CareerController;
@@ -217,6 +218,18 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::get('admin/audit-logs', [AuditLogController::class, 'index'])
         ->middleware('permission:audit.view')
         ->name('admin.audit-logs.index');
+
+    // Roles & permissions
+    Route::get('admin/roles', [RoleAdminController::class, 'index'])
+        ->middleware('permission:roles.manage')->name('admin.roles.index');
+    Route::post('admin/roles', [RoleAdminController::class, 'store'])
+        ->middleware('permission:roles.manage')->name('admin.roles.store');
+    Route::get('admin/roles/{id}', [RoleAdminController::class, 'show'])
+        ->middleware('permission:roles.manage')->name('admin.roles.show');
+    Route::match(['put', 'patch'], 'admin/roles/{id}', [RoleAdminController::class, 'update'])
+        ->middleware('permission:roles.manage')->name('admin.roles.update');
+    Route::delete('admin/roles/{id}', [RoleAdminController::class, 'destroy'])
+        ->middleware('permission:roles.manage')->name('admin.roles.destroy');
 
     // Pages Library — editor-only resource; no public read, so it stays under admin/.
     Route::get('admin/pages', [PageAdminController::class, 'index'])

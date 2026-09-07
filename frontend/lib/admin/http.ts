@@ -184,6 +184,11 @@ export const adminApi = {
     const { signal, query } = normalizeGetArgs(arg);
     return rawEnvelope<AdminPaginated<T>>(withQuery(path, query), { method: 'GET', signal });
   },
+  /** GET keeping the full envelope, for non-paginated `{ data, meta }` responses. */
+  getEnvelope: <T>(path: string, arg?: AbortSignal | GetOptions) => {
+    const { signal, query } = normalizeGetArgs(arg);
+    return rawEnvelope<T>(withQuery(path, query), { method: 'GET', signal });
+  },
   post: <T>(path: string, body?: unknown) => raw<T>(path, { method: 'POST', body }),
   put: <T>(path: string, body?: unknown) => raw<T>(path, { method: 'PUT', body }),
   patch: <T>(path: string, body?: unknown) => raw<T>(path, { method: 'PATCH', body }),
