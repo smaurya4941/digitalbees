@@ -59,6 +59,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const queryClient = useQueryClient();
   const onLoginPage = pathname === '/admin/login';
+  const onPublicPage = onLoginPage || pathname === '/admin/accept-invite';
 
   const query = useQuery({
     queryKey: AUTH_KEY,
@@ -100,10 +101,10 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Bounce to login once we know there is no session.
   useEffect(() => {
-    if (unauthenticated && !onLoginPage) {
+    if (unauthenticated && !onPublicPage) {
       router.replace(`/admin/login?next=${encodeURIComponent(pathname)}`);
     }
-  }, [unauthenticated, onLoginPage, pathname, router]);
+  }, [unauthenticated, onPublicPage, pathname, router]);
 
   // A signed-in user has no business on the login screen.
   useEffect(() => {

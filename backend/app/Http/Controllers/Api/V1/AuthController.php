@@ -49,6 +49,8 @@ class AuthController extends ApiController
             $request->session()->regenerate();
         }
 
+        $user->forceFill(['last_login_at' => now()])->saveQuietly();
+
         return ApiResponse::item($this->profile($user));
     }
 

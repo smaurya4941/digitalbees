@@ -15,10 +15,13 @@ import type { NextRequest } from 'next/server';
  */
 const SESSION_COOKIE = process.env.NEXT_PUBLIC_ADMIN_SESSION_COOKIE || 'teambees-session';
 
+/** Reachable without a session — login and the invitation-acceptance flow. */
+const PUBLIC_ADMIN_PATHS = ['/admin/login', '/admin/accept-invite'];
+
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
-  if (pathname === '/admin/login') {
+  if (PUBLIC_ADMIN_PATHS.includes(pathname)) {
     return NextResponse.next();
   }
 

@@ -40,12 +40,16 @@ class User extends Authenticatable
         'password',
         'department',
         'status',
+        'invitation_token',
+        'invitation_sent_at',
+        'last_login_at',
     ];
 
     /** @var list<string> */
     protected $hidden = [
         'password',
         'remember_token',
+        'invitation_token',
     ];
 
     /** @return array<string, string> */
@@ -53,6 +57,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'invitation_sent_at' => 'datetime',
+            'last_login_at' => 'datetime',
             'password' => 'hashed',
             'status' => UserStatus::class,
         ];

@@ -11,12 +11,14 @@ use App\Http\Controllers\Api\V1\Admin\PracticeAdminController;
 use App\Http\Controllers\Api\V1\Admin\RegionAdminController;
 use App\Http\Controllers\Api\V1\Admin\RoleAdminController;
 use App\Http\Controllers\Api\V1\Admin\TechnologyAdminController;
+use App\Http\Controllers\Api\V1\Admin\UserAdminController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CareerController;
 use App\Http\Controllers\Api\V1\CaseStudyController;
 use App\Http\Controllers\Api\V1\ChatbotController;
 use App\Http\Controllers\Api\V1\IndustryController;
 use App\Http\Controllers\Api\V1\InsightController;
+use App\Http\Controllers\Api\V1\InvitationController;
 use App\Http\Controllers\Api\V1\LeadController;
 use App\Http\Controllers\Api\V1\LocationController;
 use App\Http\Controllers\Api\V1\NavigationController;
@@ -83,6 +85,12 @@ Route::get('search', [SearchController::class, 'index'])->name('search');
 Route::post('login', [AuthController::class, 'login'])
     ->middleware('throttle:auth')
     ->name('login');
+
+// Account invitations — the opaque token is the credential (no session).
+Route::get('invitations/{token}', [InvitationController::class, 'show'])->name('invitations.show');
+Route::post('invitations/accept', [InvitationController::class, 'accept'])
+    ->middleware('throttle:auth')
+    ->name('invitations.accept');
 
 Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::get('user', [AuthController::class, 'me'])->name('user');
@@ -218,6 +226,24 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::get('admin/audit-logs', [AuditLogController::class, 'index'])
         ->middleware('permission:audit.view')
         ->name('admin.audit-logs.index');
+
+    // Staff accounts
+    Route::get('admin/users', [UserAdminController::class, 'index'])
+        ->middleware('permission:users.manage')->name('admin.users.index');
+    Route::post('admin/users', [UserAdminController::class, 'store'])
+        ->middleware('permission:users.manage')->name('admin.users.store');
+    Route::get('admin/users/{id}', [UserAdminController::class, 'show'])
+        ->middleware('permission:users.manage')->name('admin.users.show');
+    Route::match(['put', 'patch'], 'admin/users/{id}', [UserAdminController::class, 'update'])
+        ->middleware('permission:users.manage')->name('admin.users.update');
+    Route::post('admin/users/{id}/resend-invite', [UserAdminController::class, 'resendInvite'])
+        ->middleware('permission:users.manage')->name('admin.users.resend-invite');
+    Route::post('admin/users/{id}/suspend', [UserAdminController::class, 'suspend'])
+        ->middleware('permission:users.manage')->name('admin.users.suspend');
+    Route::post('admin/users/{id}/reactivate', [UserAdminController::class, 'reactivate'])
+        ->middleware('permission:users.manage')->name('admin.users.reactivate');
+    Route::delete('admin/users/{id}', [UserAdminController::class, 'destroy'])
+        ->middleware('permission:users.manage')->name('admin.users.destroy');
 
     // Roles & permissions
     Route::get('admin/roles', [RoleAdminController::class, 'index'])

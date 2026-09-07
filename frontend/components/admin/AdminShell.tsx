@@ -20,6 +20,7 @@ import {
   Settings,
   ShieldCheck,
   Sparkles,
+  Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { useAuth } from './providers';
@@ -45,6 +46,7 @@ const primaryNav: NavItem[] = [
 const adminNav: NavItem[] = [
   { label: 'Inbox / CRM', href: '/admin/leads', icon: Mail },
   { label: 'Activity', href: '/admin/activity', icon: History },
+  { label: 'Accounts', href: '/admin/users', icon: Users },
   { label: 'Roles', href: '/admin/roles', icon: ShieldCheck },
   { label: 'Settings', href: '/admin/settings', icon: Settings, soon: true },
 ];
