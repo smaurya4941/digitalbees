@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Modules\Career\Models\JobPosting;
 use App\Modules\CaseStudy\Models\CaseStudy;
 use App\Modules\Industry\Models\Industry;
 use App\Modules\Media\Models\Media;
@@ -39,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
             'technology' => Technology::class,
             'case_study' => CaseStudy::class,
             'resource' => Resource::class,
+            'job_posting' => JobPosting::class,
             'location' => Location::class,
             'page' => Page::class,
             'media' => Media::class,

@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   BookOpen,
+  Briefcase,
   Building2,
   ChevronsUpDown,
   Cpu,
@@ -47,6 +48,7 @@ const primaryNav: NavItem[] = [
   { label: 'Technologies', href: '/admin/technologies', icon: Cpu },
   { label: 'Case Studies', href: '/admin/case-studies', icon: FileText },
   { label: 'Resources', href: '/admin/resources', icon: BookOpen },
+  { label: 'Careers', href: '/admin/careers', icon: Briefcase },
   { label: 'Pages', href: '/admin/pages', icon: FileText },
   { label: 'Media', href: '/admin/media', icon: ImageIcon },
 ];

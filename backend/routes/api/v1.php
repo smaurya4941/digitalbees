@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Admin\AuditLogController;
+use App\Http\Controllers\Api\V1\Admin\CareerAdminController;
 use App\Http\Controllers\Api\V1\Admin\CaseStudyAdminController;
 use App\Http\Controllers\Api\V1\Admin\ContentStatusController;
 use App\Http\Controllers\Api\V1\Admin\DashboardController;
@@ -213,6 +214,26 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::delete('resources/{slug}', [ResourceAdminController::class, 'destroy'])
         ->middleware('permission:content.delete')
         ->name('resources.destroy');
+
+    // Job postings (careers)
+    Route::get('admin/careers', [CareerAdminController::class, 'index'])
+        ->middleware('permission:content.update|content.publish')
+        ->name('admin.careers.index');
+    Route::get('admin/careers/{slug}', [CareerAdminController::class, 'show'])
+        ->middleware('permission:content.update|content.publish')
+        ->name('admin.careers.show');
+    Route::get('admin/careers/{slug}/applications', [CareerAdminController::class, 'applications'])
+        ->middleware('permission:inquiries.view')
+        ->name('admin.careers.applications');
+    Route::post('careers', [CareerAdminController::class, 'store'])
+        ->middleware('permission:content.create')
+        ->name('careers.store');
+    Route::match(['put', 'patch'], 'careers/{slug}', [CareerAdminController::class, 'update'])
+        ->middleware('permission:content.update')
+        ->name('careers.update');
+    Route::delete('careers/{slug}', [CareerAdminController::class, 'destroy'])
+        ->middleware('permission:content.delete')
+        ->name('careers.destroy');
 
     // Cross-taxonomy publish lifecycle (industries, regions, technologies, case-studies, practices).
     Route::get('admin/content/{type}', [ContentStatusController::class, 'index'])

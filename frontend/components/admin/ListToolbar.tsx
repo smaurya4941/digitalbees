@@ -10,18 +10,25 @@ interface ListToolbarProps {
   onQ: (value: string) => void;
   status?: string;
   onStatus?: (value: string) => void;
+  /** Override the status filter options (defaults to the content triple). */
+  statusOptions?: { value: string; label: string }[];
   placeholder?: string;
   /** Extra controls rendered after the built-in filters. */
   children?: ReactNode;
 }
 
-const STATUSES: ContentStatus[] = ['draft', 'published', 'archived'];
+const CONTENT_STATUSES: ContentStatus[] = ['draft', 'published', 'archived'];
+const DEFAULT_OPTIONS = CONTENT_STATUSES.map((s) => ({
+  value: s,
+  label: s[0].toUpperCase() + s.slice(1),
+}));
 
 export function ListToolbar({
   q,
   onQ,
   status,
   onStatus,
+  statusOptions = DEFAULT_OPTIONS,
   placeholder = 'Search',
   children,
 }: ListToolbarProps) {
@@ -39,9 +46,9 @@ export function ListToolbar({
       {onStatus && (
         <Select className="h-10 w-40" value={status ?? ''} onChange={(e) => onStatus(e.target.value)}>
           <option value="">All statuses</option>
-          {STATUSES.map((s) => (
-            <option key={s} value={s}>
-              {s[0].toUpperCase() + s.slice(1)}
+          {statusOptions.map((s) => (
+            <option key={s.value} value={s.value}>
+              {s.label}
             </option>
           ))}
         </Select>

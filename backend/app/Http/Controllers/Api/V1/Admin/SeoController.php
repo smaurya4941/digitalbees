@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Api\V1\ApiController;
 use App\Jobs\NotifyFrontendRevalidate;
+use App\Modules\Career\Models\JobPosting;
 use App\Modules\CaseStudy\Models\CaseStudy;
 use App\Modules\Industry\Models\Industry;
 use App\Modules\Practice\Models\Practice;
@@ -35,6 +36,7 @@ class SeoController extends ApiController
         'technologies' => [Technology::class, '/technologies'],
         'case-studies' => [CaseStudy::class, '/case-studies'],
         'resources' => [Resource::class, '/resources'],
+        'careers' => [JobPosting::class, '/careers'],
     ];
 
     public function __construct(
