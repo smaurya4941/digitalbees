@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\Admin\AuditLogController;
 use App\Http\Controllers\Api\V1\Admin\CaseStudyAdminController;
 use App\Http\Controllers\Api\V1\Admin\ContentStatusController;
+use App\Http\Controllers\Api\V1\Admin\DashboardController;
 use App\Http\Controllers\Api\V1\Admin\IndustryAdminController;
 use App\Http\Controllers\Api\V1\Admin\LeadAdminController;
 use App\Http\Controllers\Api\V1\Admin\MediaAdminController;
@@ -101,6 +102,9 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
 // Writes live on the same resource URLs as the public reads — no /admin/ prefix
 // in the path; access is decided by permission, not by URL shape.
 Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
+    // Dashboard — any authenticated, active account.
+    Route::get('admin/dashboard', [DashboardController::class, 'show'])->name('admin.dashboard');
+
     // Practice CRUD — reference implementation for every content type.
     Route::get('admin/practices', [PracticeAdminController::class, 'index'])
         ->middleware('permission:content.update|content.publish')
