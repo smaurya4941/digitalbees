@@ -2,12 +2,14 @@
 
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { RefreshCw } from 'lucide-react';
 import {
   type SettingField,
   listSettings,
   settingsQueryKey,
   updateSettings,
 } from '@/lib/admin/settings';
+import { revalidate } from '@/lib/admin/revalidation';
 import { AdminApiError } from '@/lib/admin/http';
 import { useAuth } from '@/components/admin/providers';
 import {
@@ -43,9 +45,41 @@ export default function AdminSettingsPage() {
       ) : isError || !data ? (
         <EmptyState title="Couldn’t load settings" description="Refresh the page to try again." />
       ) : (
-        <SettingsForm groups={data.groups} />
+        <>
+          <SettingsForm groups={data.groups} />
+          {can('content.publish') && <CachePanel />}
+        </>
       )}
     </div>
+  );
+}
+
+function CachePanel() {
+  const toast = useToast();
+  const mutation = useMutation({
+    mutationFn: () => revalidate({ all: true }),
+    onSuccess: () => toast.success('Cache purge queued — the public site will refresh shortly.'),
+    onError: () => toast.error('Could not queue the cache purge.'),
+  });
+
+  return (
+    <Panel className="flex flex-wrap items-center justify-between gap-4 p-6">
+      <div>
+        <h2 className="text-sm font-semibold text-ink">Public cache</h2>
+        <p className="mt-0.5 text-xs text-ink-subtle">
+          Content edits revalidate automatically. Use this only if a published change looks stale.
+        </p>
+      </div>
+      <AdminButton
+        type="button"
+        variant="secondary"
+        loading={mutation.isPending}
+        iconLeft={<RefreshCw className="size-4" />}
+        onClick={() => mutation.mutate()}
+      >
+        Purge public cache
+      </AdminButton>
+    </Panel>
   );
 }
 

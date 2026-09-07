@@ -24,23 +24,32 @@ class NotifyFrontendRevalidate implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    /** @param  list<string>  $tags */
-    public function __construct(public array $tags) {}
+    /**
+     * @param  list<string>  $tags
+     * @param  list<string>  $paths
+     */
+    public function __construct(public array $tags, public array $paths = []) {}
 
     public function handle(): void
     {
         $url = (string) config('frontend.revalidate.url');
         $secret = (string) config('frontend.revalidate.secret');
 
-        if ($url === '' || $secret === '' || $this->tags === []) {
-            Log::info('NotifyFrontendRevalidate skipped (not configured or no tags)', ['tags' => $this->tags]);
+        if ($url === '' || $secret === '' || ($this->tags === [] && $this->paths === [])) {
+            Log::info('NotifyFrontendRevalidate skipped (not configured or nothing to purge)', [
+                'tags' => $this->tags,
+                'paths' => $this->paths,
+            ]);
 
             return;
         }
 
         Http::timeout((int) config('frontend.revalidate.timeout', 5))
             ->withHeaders(['x-revalidate-secret' => $secret])
-            ->post($url, ['tags' => array_values(array_unique($this->tags))])
+            ->post($url, [
+                'tags' => array_values(array_unique($this->tags)),
+                'paths' => array_values(array_unique($this->paths)),
+            ])
             ->throw();
     }
 }

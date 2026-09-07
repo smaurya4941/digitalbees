@@ -8,6 +8,7 @@ use App\Modules\Lead\Models\Lead;
 use App\Modules\Media\Models\Media;
 use App\Modules\Page\Models\Page;
 use App\Modules\Practice\Models\Practice;
+use App\Modules\Region\Models\Location;
 use App\Modules\Region\Models\Region;
 use App\Modules\Resource\Models\Resource;
 use App\Modules\Technology\Models\Technology;
@@ -28,6 +29,7 @@ final class DashboardService
         'technologies' => [Technology::class, 'Technologies'],
         'case-studies' => [CaseStudy::class, 'Case studies'],
         'resources' => [Resource::class, 'Resources & insights'],
+        'locations' => [Location::class, 'Offices'],
         'pages' => [Page::class, 'Pages'],
     ];
 

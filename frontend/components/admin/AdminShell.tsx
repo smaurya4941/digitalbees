@@ -18,6 +18,7 @@ import {
   LayoutDashboard,
   ListTree,
   LogOut,
+  MapPin,
   Menu,
   Mail,
   Search,
@@ -49,6 +50,7 @@ const primaryNav: NavItem[] = [
   { label: 'Case Studies', href: '/admin/case-studies', icon: FileText },
   { label: 'Resources', href: '/admin/resources', icon: BookOpen },
   { label: 'Careers', href: '/admin/careers', icon: Briefcase },
+  { label: 'Offices', href: '/admin/locations', icon: MapPin },
   { label: 'Pages', href: '/admin/pages', icon: FileText },
   { label: 'Media', href: '/admin/media', icon: ImageIcon },
 ];

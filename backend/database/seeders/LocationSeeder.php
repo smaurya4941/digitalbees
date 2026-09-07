@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Modules\Region\Models\Location;
 use App\Modules\Region\Models\Region;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 /**
  * One or two delivery locations per region. Idempotent on (region, city).
@@ -34,6 +35,7 @@ class LocationSeeder extends Seeder
                 ['region_id' => $region->id, 'city' => $city],
                 [
                     'name' => "TeamBees {$city}",
+                    'slug' => Str::slug($city),
                     'address' => $address,
                     'country' => $country,
                     'lat' => $lat,

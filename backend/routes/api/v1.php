@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Admin\ContentStatusController;
 use App\Http\Controllers\Api\V1\Admin\DashboardController;
 use App\Http\Controllers\Api\V1\Admin\IndustryAdminController;
 use App\Http\Controllers\Api\V1\Admin\LeadAdminController;
+use App\Http\Controllers\Api\V1\Admin\LocationAdminController;
 use App\Http\Controllers\Api\V1\Admin\MediaAdminController;
 use App\Http\Controllers\Api\V1\Admin\NavigationAdminController;
 use App\Http\Controllers\Api\V1\Admin\PageAdminController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Api\V1\Admin\PracticeAdminController;
 use App\Http\Controllers\Api\V1\Admin\RedirectAdminController;
 use App\Http\Controllers\Api\V1\Admin\RegionAdminController;
 use App\Http\Controllers\Api\V1\Admin\ResourceAdminController;
+use App\Http\Controllers\Api\V1\Admin\RevalidationController;
 use App\Http\Controllers\Api\V1\Admin\RoleAdminController;
 use App\Http\Controllers\Api\V1\Admin\SeoController;
 use App\Http\Controllers\Api\V1\Admin\SettingAdminController;
@@ -214,6 +216,28 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::delete('resources/{slug}', [ResourceAdminController::class, 'destroy'])
         ->middleware('permission:content.delete')
         ->name('resources.destroy');
+
+    // Offices / locations
+    Route::get('admin/locations', [LocationAdminController::class, 'index'])
+        ->middleware('permission:content.update|content.publish')
+        ->name('admin.locations.index');
+    Route::get('admin/locations/{slug}', [LocationAdminController::class, 'show'])
+        ->middleware('permission:content.update|content.publish')
+        ->name('admin.locations.show');
+    Route::post('locations', [LocationAdminController::class, 'store'])
+        ->middleware('permission:content.create')
+        ->name('locations.store');
+    Route::match(['put', 'patch'], 'locations/{slug}', [LocationAdminController::class, 'update'])
+        ->middleware('permission:content.update')
+        ->name('locations.update');
+    Route::delete('locations/{slug}', [LocationAdminController::class, 'destroy'])
+        ->middleware('permission:content.delete')
+        ->name('locations.destroy');
+
+    // Manual cache revalidation
+    Route::post('admin/revalidate', [RevalidationController::class, 'store'])
+        ->middleware('permission:content.publish')
+        ->name('admin.revalidate');
 
     // Job postings (careers)
     Route::get('admin/careers', [CareerAdminController::class, 'index'])

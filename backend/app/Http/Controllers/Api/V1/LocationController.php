@@ -2,24 +2,32 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Modules\Region\Http\Resources\LocationPublicResource;
+use App\Modules\Region\Services\LocationService;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Backed by the Location module (app/Modules/Location): Controller -> Service -> Repository.
- * Stub: returns the standard envelope so the frontend route map is live
- * before the data layer lands.
+ * Public list of TeamBees offices. `LocalBusiness` schema is emitted by the
+ * frontend from this payload.
  */
 class LocationController extends ApiController
 {
-    public function index(Request $request): JsonResponse
+    public function __construct(private readonly LocationService $locations) {}
+
+    public function index(): JsonResponse
     {
-        return ApiResponse::notImplemented('LocationService::list() then LocationControllerResource::collection(); GET /api/v1/locations');
+        return ApiResponse::collection(
+            $this->locations->listPublished()->map(fn ($location) => (new LocationPublicResource($location))->resolve()),
+        );
     }
 
     public function show(string $location): JsonResponse
     {
-        return ApiResponse::notImplemented('LocationService::findBySlug(location) then LocationControllerResource; GET /api/v1/locations/{slug}');
+        $model = $this->locations->detailBySlug($location)
+            ?? throw new NotFoundHttpException("Location [{$location}] not found.");
+
+        return ApiResponse::item(new LocationPublicResource($model));
     }
 }

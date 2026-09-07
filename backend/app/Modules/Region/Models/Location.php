@@ -2,15 +2,20 @@
 
 namespace App\Modules\Region\Models;
 
-use Illuminate\Database\Eloquent\Builder;
+use App\Support\Concerns\Auditable;
+use App\Support\Concerns\IsContentEntity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * A physical office / delivery centre inside a {@see Region} (schema.sql Module 2).
+ * A physical office / delivery centre inside a {@see Region} (schema.sql
+ * Module 2). `slug` is the public route key; `status` is `draft` / `published`.
  */
 class Location extends Model
 {
+    use Auditable;
+    use IsContentEntity;
+
     protected $guarded = [];
 
     protected $casts = [
@@ -18,12 +23,6 @@ class Location extends Model
         'lng' => 'float',
         'region_id' => 'integer',
     ];
-
-    /** @param  Builder<static>  $query */
-    public function scopePublished(Builder $query): void
-    {
-        $query->where('status', 'published');
-    }
 
     public function region(): BelongsTo
     {
