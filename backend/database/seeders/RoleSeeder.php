@@ -43,6 +43,7 @@ class RoleSeeder extends Seeder
         'settings.manage' => ['Change site-wide settings', 'System'],
         'users.manage' => ['Create, edit and disable staff accounts', 'System'],
         'roles.manage' => ['Change roles and permissions', 'System'],
+        'audit.view' => ['View the activity / audit log', 'System'],
     ];
 
     /** @var array<string, string> role name => description */

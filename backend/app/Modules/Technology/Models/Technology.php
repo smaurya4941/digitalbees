@@ -2,6 +2,7 @@
 
 namespace App\Modules\Technology\Models;
 
+use App\Support\Concerns\Auditable;
 use App\Support\Concerns\IsContentEntity;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Technology extends Model
 {
+    use Auditable;
     use IsContentEntity;
 
     protected $table = 'technologies';

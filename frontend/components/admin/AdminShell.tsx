@@ -11,6 +11,7 @@ import {
   FileText,
   Globe2,
   Hexagon,
+  History,
   Image as ImageIcon,
   LayoutDashboard,
   LogOut,
@@ -42,6 +43,7 @@ const primaryNav: NavItem[] = [
 
 const adminNav: NavItem[] = [
   { label: 'Inbox / CRM', href: '/admin/leads', icon: Mail },
+  { label: 'Activity', href: '/admin/activity', icon: History },
   { label: 'Settings', href: '/admin/settings', icon: Settings, soon: true },
 ];
 

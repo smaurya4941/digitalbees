@@ -13,9 +13,10 @@ export type Permission =
   | 'inquiries.manage'
   | 'settings.manage'
   | 'users.manage'
-  | 'roles.manage';
+  | 'roles.manage'
+  | 'audit.view';
 
-export type Role = 'admin' | 'staff';
+export type Role = string;
 
 export type ContentStatus = 'draft' | 'published' | 'archived';
 

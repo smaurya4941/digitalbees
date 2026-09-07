@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\AuditLogController;
 use App\Http\Controllers\Api\V1\Admin\CaseStudyAdminController;
 use App\Http\Controllers\Api\V1\Admin\ContentStatusController;
 use App\Http\Controllers\Api\V1\Admin\IndustryAdminController;
@@ -211,6 +212,11 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::delete('admin/media/{id}', [MediaAdminController::class, 'destroy'])
         ->middleware('permission:media.delete')
         ->name('admin.media.destroy');
+
+    // Activity / audit log (read-only)
+    Route::get('admin/audit-logs', [AuditLogController::class, 'index'])
+        ->middleware('permission:audit.view')
+        ->name('admin.audit-logs.index');
 
     // Pages Library — editor-only resource; no public read, so it stays under admin/.
     Route::get('admin/pages', [PageAdminController::class, 'index'])

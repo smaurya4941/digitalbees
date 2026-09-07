@@ -3,12 +3,15 @@
 namespace App\Modules\Media\Models;
 
 use App\Models\User;
+use App\Support\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
 class Media extends Model
 {
+    use Auditable;
+
     protected $table = 'assets';
 
     protected $fillable = [
