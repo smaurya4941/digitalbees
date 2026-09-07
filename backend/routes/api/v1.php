@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\V1\Admin\PracticeAdminController;
 use App\Http\Controllers\Api\V1\Admin\RedirectAdminController;
 use App\Http\Controllers\Api\V1\Admin\RegionAdminController;
 use App\Http\Controllers\Api\V1\Admin\RoleAdminController;
+use App\Http\Controllers\Api\V1\Admin\SeoController;
 use App\Http\Controllers\Api\V1\Admin\SettingAdminController;
 use App\Http\Controllers\Api\V1\Admin\TechnologyAdminController;
 use App\Http\Controllers\Api\V1\Admin\UserAdminController;
@@ -253,6 +254,14 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
         ->middleware('permission:users.manage')->name('admin.users.reactivate');
     Route::delete('admin/users/{id}', [UserAdminController::class, 'destroy'])
         ->middleware('permission:users.manage')->name('admin.users.destroy');
+
+    // SEO metadata + site-wide lint
+    Route::get('admin/seo/issues', [SeoController::class, 'issues'])
+        ->middleware('permission:seo.update')->name('admin.seo.issues');
+    Route::get('admin/seo/{type}/{slug}', [SeoController::class, 'show'])
+        ->middleware('permission:content.update|seo.update')->name('admin.seo.show');
+    Route::match(['put', 'patch'], 'admin/seo/{type}/{slug}', [SeoController::class, 'update'])
+        ->middleware('permission:seo.update')->name('admin.seo.update');
 
     // Navigation menus
     Route::get('admin/navigation', [NavigationAdminController::class, 'index'])

@@ -74,7 +74,7 @@ class RoleSeeder extends Seeder
             'media.upload', 'seo.update', 'navigation.update', 'inquiries.view',
         ],
         'editor' => [
-            'content.create', 'content.update', 'content.review', 'media.upload', 'seo.update',
+            'content.create', 'content.update', 'content.review', 'media.upload',
         ],
         'seo-manager' => [
             'content.update', 'seo.update',

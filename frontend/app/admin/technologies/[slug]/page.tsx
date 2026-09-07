@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { getTechnology, technologyQueryKeys } from '@/lib/admin/technologies';
 import { TechnologyForm } from '@/components/admin/TechnologyForm';
+import { SeoPanel } from '@/components/admin/SeoPanel';
 import { EmptyState, Spinner } from '@/components/admin/ui';
 import { AdminApiError } from '@/lib/admin/http';
 
@@ -43,5 +44,10 @@ export default function EditTechnologyPage() {
     return null;
   }
 
-  return <TechnologyForm technology={data} />;
+  return (
+    <div className="space-y-6">
+      <TechnologyForm technology={data} />
+      <SeoPanel type="technologies" slug={data.slug} />
+    </div>
+  );
 }

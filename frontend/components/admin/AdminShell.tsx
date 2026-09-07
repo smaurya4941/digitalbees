@@ -18,6 +18,7 @@ import {
   LogOut,
   Menu,
   Mail,
+  Search,
   Settings,
   ShieldCheck,
   Signpost,
@@ -54,6 +55,7 @@ const adminNav: NavItem[] = [
   { label: 'Accounts', href: '/admin/users', icon: Users, permission: 'users.manage' },
   { label: 'Roles', href: '/admin/roles', icon: ShieldCheck, permission: 'roles.manage' },
   { label: 'Navigation', href: '/admin/navigation', icon: ListTree, permission: 'navigation.update' },
+  { label: 'SEO health', href: '/admin/seo', icon: Search, permission: 'seo.update' },
   { label: 'Redirects', href: '/admin/redirects', icon: Signpost, permission: 'settings.manage' },
   { label: 'Settings', href: '/admin/settings', icon: Settings, permission: 'settings.manage' },
 ];
