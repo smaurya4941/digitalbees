@@ -8,6 +8,7 @@ import { getResource, resourceQueryKeys } from '@/lib/admin/resources';
 import { AdminApiError } from '@/lib/admin/http';
 import { ResourceForm } from '@/components/admin/ResourceForm';
 import { SeoPanel } from '@/components/admin/SeoPanel';
+import { RevisionHistory } from '@/components/admin/RevisionHistory';
 import { EmptyState, PageHeading, Spinner } from '@/components/admin/ui';
 
 export default function EditResourcePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -56,6 +57,7 @@ export default function EditResourcePage({ params }: { params: Promise<{ slug: s
       </div>
       <ResourceForm resource={data} />
       <SeoPanel type="resources" slug={data.slug} />
+      <RevisionHistory type="resources" slug={data.slug} />
     </div>
   );
 }

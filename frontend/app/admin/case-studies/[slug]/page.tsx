@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getCaseStudy, caseStudyQueryKeys } from '@/lib/admin/case-studies';
 import { CaseStudyForm } from '@/components/admin/CaseStudyForm';
 import { SeoPanel } from '@/components/admin/SeoPanel';
+import { RevisionHistory } from '@/components/admin/RevisionHistory';
 import { EmptyState, Spinner } from '@/components/admin/ui';
 import { AdminApiError } from '@/lib/admin/http';
 
@@ -48,6 +49,7 @@ export default function EditCaseStudyPage() {
     <div className="space-y-6">
       <CaseStudyForm caseStudy={data} />
       <SeoPanel type="case-studies" slug={data.slug} />
+      <RevisionHistory type="case-studies" slug={data.slug} />
     </div>
   );
 }

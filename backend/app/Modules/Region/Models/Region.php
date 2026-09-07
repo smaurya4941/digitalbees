@@ -3,6 +3,7 @@
 namespace App\Modules\Region\Models;
 
 use App\Support\Concerns\Auditable;
+use App\Support\Concerns\HasRevisions;
 use App\Support\Concerns\IsContentEntity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Region extends Model
 {
     use Auditable;
+    use HasRevisions;
     use IsContentEntity;
 
     protected $guarded = [];

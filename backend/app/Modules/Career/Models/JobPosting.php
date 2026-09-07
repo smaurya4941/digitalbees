@@ -5,6 +5,7 @@ namespace App\Modules\Career\Models;
 use App\Modules\Career\Enums\JobStatus;
 use App\Modules\Region\Models\Location;
 use App\Support\Concerns\Auditable;
+use App\Support\Concerns\HasRevisions;
 use App\Support\Models\SeoMetadata;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 class JobPosting extends Model
 {
     use Auditable;
+    use HasRevisions;
 
     protected $table = 'job_postings';
 

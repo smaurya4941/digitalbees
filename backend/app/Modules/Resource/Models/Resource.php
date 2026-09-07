@@ -4,6 +4,7 @@ namespace App\Modules\Resource\Models;
 
 use App\Modules\Resource\Enums\ResourceType;
 use App\Support\Concerns\Auditable;
+use App\Support\Concerns\HasRevisions;
 use App\Support\Concerns\IsContentEntity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Resource extends Model
 {
     use Auditable;
+    use HasRevisions;
     use IsContentEntity;
     use SoftDeletes;
 

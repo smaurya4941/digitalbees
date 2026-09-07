@@ -8,6 +8,7 @@ import { getLocation, locationQueryKeys } from '@/lib/admin/locations';
 import { AdminApiError } from '@/lib/admin/http';
 import { LocationForm } from '@/components/admin/LocationForm';
 import { SeoPanel } from '@/components/admin/SeoPanel';
+import { RevisionHistory } from '@/components/admin/RevisionHistory';
 import { EmptyState, PageHeading, Spinner } from '@/components/admin/ui';
 
 export default function EditLocationPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -56,6 +57,7 @@ export default function EditLocationPage({ params }: { params: Promise<{ slug: s
       </div>
       <LocationForm location={data} />
       <SeoPanel type="locations" slug={data.slug} />
+      <RevisionHistory type="locations" slug={data.slug} />
     </div>
   );
 }

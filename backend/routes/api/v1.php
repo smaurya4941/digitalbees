@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\V1\Admin\RedirectAdminController;
 use App\Http\Controllers\Api\V1\Admin\RegionAdminController;
 use App\Http\Controllers\Api\V1\Admin\ResourceAdminController;
 use App\Http\Controllers\Api\V1\Admin\RevalidationController;
+use App\Http\Controllers\Api\V1\Admin\RevisionController;
 use App\Http\Controllers\Api\V1\Admin\RoleAdminController;
 use App\Http\Controllers\Api\V1\Admin\SeoController;
 use App\Http\Controllers\Api\V1\Admin\SettingAdminController;
@@ -266,6 +267,21 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::patch('admin/content/{type}/{slug}/status', [ContentStatusController::class, 'update'])
         ->middleware('permission:content.publish')
         ->name('admin.content.status');
+
+    // Version history + rollback (P2-1) — any registered slug-keyed content type.
+    Route::prefix('admin/{type}/{slug}/revisions')
+        ->whereIn('type', App\Support\Content\ContentType::keys())
+        ->group(function (): void {
+            Route::get('/', [RevisionController::class, 'index'])
+                ->middleware('permission:content.update')
+                ->name('admin.revisions.index');
+            Route::get('{revision}', [RevisionController::class, 'show'])
+                ->middleware('permission:content.update')
+                ->name('admin.revisions.show');
+            Route::post('{revision}/restore', [RevisionController::class, 'restore'])
+                ->middleware('permission:content.update')
+                ->name('admin.revisions.restore');
+        });
 
     // CRM / Leads — reading is `inquiries.view`; mutating status/export is `inquiries.manage`.
     Route::get('admin/leads', [LeadAdminController::class, 'index'])

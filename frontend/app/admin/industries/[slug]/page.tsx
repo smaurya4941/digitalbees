@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getIndustry, industryQueryKeys } from '@/lib/admin/industries';
 import { IndustryForm } from '@/components/admin/IndustryForm';
 import { SeoPanel } from '@/components/admin/SeoPanel';
+import { RevisionHistory } from '@/components/admin/RevisionHistory';
 import { EmptyState, Spinner } from '@/components/admin/ui';
 import { AdminApiError } from '@/lib/admin/http';
 
@@ -48,6 +49,7 @@ export default function EditIndustryPage() {
     <div className="space-y-6">
       <IndustryForm industry={data} />
       <SeoPanel type="industries" slug={data.slug} />
+      <RevisionHistory type="industries" slug={data.slug} />
     </div>
   );
 }
