@@ -41,10 +41,52 @@ export class AdminApiError extends Error {
   }
 }
 
+/** Page-number pagination envelope returned by back-office list endpoints. */
+export interface AdminPaginated<T> {
+  data: T[];
+  meta: {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    from: number | null;
+    to: number | null;
+  } & Record<string, unknown>;
+  links: { prev: string | null; next: string | null };
+}
+
+type QueryValue = string | number | boolean | null | undefined;
+export type Query = Record<string, QueryValue>;
+
+interface GetOptions {
+  signal?: AbortSignal;
+  query?: Query;
+}
+
 function readCookie(name: string): string | null {
   if (typeof document === 'undefined') return null;
   const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
   return match ? decodeURIComponent(match[1]) : null;
+}
+
+function withQuery(path: string, query?: Query): string {
+  if (!query) return path;
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(query)) {
+    if (value !== undefined && value !== null && value !== '') {
+      params.set(key, String(value));
+    }
+  }
+  const qs = params.toString();
+  if (!qs) return path;
+  return `${path}${path.includes('?') ? '&' : '?'}${qs}`;
+}
+
+/** GET calls take either an AbortSignal (legacy) or an options object. */
+function normalizeGetArgs(arg?: AbortSignal | GetOptions): GetOptions {
+  if (!arg) return {};
+  if (arg instanceof AbortSignal) return { signal: arg };
+  return arg;
 }
 
 let csrfPrimed = false;
@@ -64,16 +106,29 @@ type RequestOptions = {
   signal?: AbortSignal;
 };
 
-async function raw<T>(path: string, options: RequestOptions, retryOnCsrf = true): Promise<T> {
+type Envelope = {
+  data?: unknown;
+  meta?: unknown;
+  links?: unknown;
+  message?: string;
+  errors?: Record<string, string[]>;
+};
+
+/**
+ * Performs the request and returns the parsed envelope. Throws AdminApiError
+ * on any non-2xx response. Callers decide whether they want `.data` only
+ * (`raw`) or the whole envelope (`rawEnvelope`).
+ */
+async function send(path: string, options: RequestOptions, retryOnCsrf = true): Promise<Envelope> {
   const method = options.method ?? 'GET';
   const mutating = method !== 'GET';
+  const isForm = options.body instanceof FormData;
 
   if (mutating) await ensureCsrfCookie();
 
-  const headers: Record<string, string> = {
-    Accept: 'application/json',
-  };
-  if (options.body !== undefined) headers['Content-Type'] = 'application/json';
+  const headers: Record<string, string> = { Accept: 'application/json' };
+  // Let the browser set the multipart boundary for FormData bodies.
+  if (options.body !== undefined && !isForm) headers['Content-Type'] = 'application/json';
 
   const xsrf = readCookie('XSRF-TOKEN');
   if (mutating && xsrf) headers['X-XSRF-TOKEN'] = xsrf;
@@ -82,19 +137,22 @@ async function raw<T>(path: string, options: RequestOptions, retryOnCsrf = true)
     method,
     credentials: 'include',
     headers,
-    body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+    body:
+      options.body === undefined
+        ? undefined
+        : isForm
+          ? (options.body as FormData)
+          : JSON.stringify(options.body),
     signal: options.signal,
   });
 
   // Stale CSRF token — re-prime once and retry.
   if (response.status === 419 && retryOnCsrf) {
     await ensureCsrfCookie(true);
-    return raw<T>(path, options, false);
+    return send(path, options, false);
   }
 
-  const payload = (await response.json().catch(() => null)) as
-    | { data?: unknown; message?: string; errors?: Record<string, string[]> }
-    | null;
+  const payload = (await response.json().catch(() => null)) as Envelope | null;
 
   if (!response.ok) {
     throw new AdminApiError(
@@ -104,11 +162,28 @@ async function raw<T>(path: string, options: RequestOptions, retryOnCsrf = true)
     );
   }
 
-  return (payload?.data ?? null) as T;
+  return payload ?? {};
+}
+
+async function raw<T>(path: string, options: RequestOptions): Promise<T> {
+  const payload = await send(path, options);
+  return (payload.data ?? null) as T;
+}
+
+async function rawEnvelope<T>(path: string, options: RequestOptions): Promise<T> {
+  return (await send(path, options)) as T;
 }
 
 export const adminApi = {
-  get: <T>(path: string, signal?: AbortSignal) => raw<T>(path, { method: 'GET', signal }),
+  get: <T>(path: string, arg?: AbortSignal | GetOptions) => {
+    const { signal, query } = normalizeGetArgs(arg);
+    return raw<T>(withQuery(path, query), { method: 'GET', signal });
+  },
+  /** GET a list endpoint, keeping the `{ data, meta, links }` envelope intact. */
+  getPage: <T>(path: string, arg?: AbortSignal | GetOptions) => {
+    const { signal, query } = normalizeGetArgs(arg);
+    return rawEnvelope<AdminPaginated<T>>(withQuery(path, query), { method: 'GET', signal });
+  },
   post: <T>(path: string, body?: unknown) => raw<T>(path, { method: 'POST', body }),
   put: <T>(path: string, body?: unknown) => raw<T>(path, { method: 'PUT', body }),
   patch: <T>(path: string, body?: unknown) => raw<T>(path, { method: 'PATCH', body }),

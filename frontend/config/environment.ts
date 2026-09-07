@@ -27,6 +27,12 @@ const clientSchema = z.object({
    * Laravel application origin (no /api/v1). Proxy route.
    */
   NEXT_PUBLIC_API_ORIGIN: z.string().default('/backend'),
+  /**
+   * Name of the Laravel session cookie. `proxy.ts` checks for its presence to
+   * keep the admin shell from streaming to logged-out visitors. Must match the
+   * backend's `SESSION_COOKIE` (defaults to `Str::slug(APP_NAME)-session`).
+   */
+  NEXT_PUBLIC_ADMIN_SESSION_COOKIE: z.string().default('teambees-session'),
   NEXT_PUBLIC_GA_ID: z.string().optional(),
 });
 
@@ -44,6 +50,7 @@ export const clientEnv = parse(clientSchema, {
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
   NEXT_PUBLIC_API_ORIGIN: process.env.NEXT_PUBLIC_API_ORIGIN,
+  NEXT_PUBLIC_ADMIN_SESSION_COOKIE: process.env.NEXT_PUBLIC_ADMIN_SESSION_COOKIE,
   NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID,
 });
 

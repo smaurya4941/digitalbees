@@ -1,6 +1,6 @@
 'use client';
 
-import { adminApi } from './http';
+import { adminApi, type AdminPaginated } from './http';
 
 export type LeadStatus = 'new' | 'synced' | 'failed' | 'duplicate';
 
@@ -22,15 +22,8 @@ export type AdminLead = {
   updated_at: string;
 };
 
-export type PaginatedLeads = {
-  data: AdminLead[];
-  meta: {
-    current_page: number;
-    last_page: number;
-    per_page: number;
-    total: number;
-  };
-  statuses: LeadStatus[];
+export type PaginatedLeads = AdminPaginated<AdminLead> & {
+  meta: { statuses: LeadStatus[] };
 };
 
 const KEY = ['admin', 'leads'] as const;
@@ -41,12 +34,14 @@ export const leadQueryKeys = {
   detail: (id: number) => [...KEY, 'detail', id] as const,
 };
 
-export function listLeads(filters: { status?: string; page?: number }, signal?: AbortSignal): Promise<PaginatedLeads> {
-  const params = new URLSearchParams();
-  if (filters.status) params.append('status', filters.status);
-  if (filters.page) params.append('page', filters.page.toString());
-  
-  return adminApi.get<PaginatedLeads>(`admin/leads?${params.toString()}`, signal);
+export function listLeads(
+  filters: { status?: string; page?: number },
+  signal?: AbortSignal,
+): Promise<PaginatedLeads> {
+  return adminApi.getPage<AdminLead>('admin/leads', {
+    signal,
+    query: { status: filters.status || undefined, page: filters.page },
+  }) as Promise<PaginatedLeads>;
 }
 
 export function getLead(id: number, signal?: AbortSignal): Promise<AdminLead> {

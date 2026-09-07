@@ -17,18 +17,16 @@ class PageAdminController extends ApiController
         $pages = Page::query()
             ->with('template')
             ->orderBy('url_path')
-            ->paginate(50);
+            ->paginate((int) request()->integer('per_page', 50));
 
-        return ApiResponse::paginated($pages, function (Page $page) {
-            return [
-                'id' => $page->id,
-                'url_path' => $page->url_path,
-                'title' => $page->title,
-                'status' => $page->status,
-                'template' => $page->template?->key_name,
-                'updated_at' => $page->updated_at,
-            ];
-        });
+        return ApiResponse::page($pages, fn (Page $page) => [
+            'id' => $page->id,
+            'url_path' => $page->url_path,
+            'title' => $page->title,
+            'status' => $page->status,
+            'template' => $page->template?->key_name,
+            'updated_at' => $page->updated_at,
+        ]);
     }
 
     public function show(int $id): JsonResponse

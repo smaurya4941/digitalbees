@@ -31,7 +31,7 @@ export default function AdminLeadsPage() {
   const leads = data?.data ?? [];
   const meta = data?.meta;
 
-  const canView = can('content.update'); // Using content.update as CRM view permission proxy
+  const canView = can('inquiries.view');
 
   if (!canView) {
     return (

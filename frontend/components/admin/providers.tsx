@@ -105,6 +105,14 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [unauthenticated, onLoginPage, pathname, router]);
 
+  // A signed-in user has no business on the login screen.
+  useEffect(() => {
+    if (status === 'authenticated' && onLoginPage) {
+      const next = new URLSearchParams(window.location.search).get('next');
+      router.replace(next && next.startsWith('/admin') ? next : '/admin');
+    }
+  }, [status, onLoginPage, router]);
+
   const value = useMemo<AuthContextValue>(
     () => ({ user, status, can, isAdmin: user?.role === 'admin', signOut }),
     [user, status, can, signOut],
