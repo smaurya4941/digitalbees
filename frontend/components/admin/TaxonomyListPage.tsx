@@ -1,6 +1,6 @@
 'use client';
 
-import { useDeferredValue, useState } from 'react';
+import { type ReactNode, useDeferredValue, useState } from 'react';
 import Link from 'next/link';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
@@ -38,6 +38,8 @@ export function TaxonomyListPage<T extends TaxonomyRow>({
   primaryColumn,
   extraColumns = [],
   minWidth = 720,
+  extraQuery,
+  toolbarExtra,
 }: {
   title: string;
   description: string;
@@ -50,6 +52,10 @@ export function TaxonomyListPage<T extends TaxonomyRow>({
   primaryColumn: Column<T>;
   extraColumns?: Column<T>[];
   minWidth?: number;
+  /** Merged into the list query + query key (e.g. { type }). */
+  extraQuery?: Record<string, string | undefined>;
+  /** Extra controls rendered in the toolbar (e.g. a type <Select/>). */
+  toolbarExtra?: ReactNode;
 }) {
   const { can } = useAuth();
   const toast = useToast();
@@ -62,10 +68,11 @@ export function TaxonomyListPage<T extends TaxonomyRow>({
 
   const dq = useDeferredValue(q);
   const filters: TaxonomyListFilters = { q: dq, status, page };
+  const query = { ...filters, ...(extraQuery ?? {}) };
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: queryKeys.list(filters),
-    queryFn: ({ signal }) => listFn(filters, signal),
+    queryKey: queryKeys.list(query as TaxonomyListFilters),
+    queryFn: ({ signal }) => listFn(query as TaxonomyListFilters, signal),
   });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: queryKeys.all });
@@ -189,7 +196,9 @@ export function TaxonomyListPage<T extends TaxonomyRow>({
           setPage(1);
         }}
         placeholder={`Search ${title.toLowerCase()}`}
-      />
+      >
+        {toolbarExtra}
+      </ListToolbar>
 
       <DataTable
         columns={[primaryColumn, ...extraColumns, statusColumn, actionsColumn]}

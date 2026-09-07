@@ -13,6 +13,7 @@ use App\Modules\Practice\Models\Practice;
 use App\Modules\Practice\Models\SubService;
 use App\Modules\Region\Models\Location;
 use App\Modules\Region\Models\Region;
+use App\Modules\Resource\Models\Resource;
 use App\Modules\Seo\Models\Redirect;
 use App\Modules\Technology\Models\Technology;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -37,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
             'region' => Region::class,
             'technology' => Technology::class,
             'case_study' => CaseStudy::class,
+            'resource' => Resource::class,
             'location' => Location::class,
             'page' => Page::class,
             'media' => Media::class,

@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\Admin\PageAdminController;
 use App\Http\Controllers\Api\V1\Admin\PracticeAdminController;
 use App\Http\Controllers\Api\V1\Admin\RedirectAdminController;
 use App\Http\Controllers\Api\V1\Admin\RegionAdminController;
+use App\Http\Controllers\Api\V1\Admin\ResourceAdminController;
 use App\Http\Controllers\Api\V1\Admin\RoleAdminController;
 use App\Http\Controllers\Api\V1\Admin\SeoController;
 use App\Http\Controllers\Api\V1\Admin\SettingAdminController;
@@ -195,6 +196,23 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::delete('case-studies/{slug}', [CaseStudyAdminController::class, 'destroy'])
         ->middleware('permission:content.delete')
         ->name('case-studies.destroy');
+
+    // Resource / Insight CRUD (one table; resource_type=blog is "Insights")
+    Route::get('admin/resources', [ResourceAdminController::class, 'index'])
+        ->middleware('permission:content.update|content.publish')
+        ->name('admin.resources.index');
+    Route::get('admin/resources/{slug}', [ResourceAdminController::class, 'show'])
+        ->middleware('permission:content.update|content.publish')
+        ->name('admin.resources.show');
+    Route::post('resources', [ResourceAdminController::class, 'store'])
+        ->middleware('permission:content.create')
+        ->name('resources.store');
+    Route::match(['put', 'patch'], 'resources/{slug}', [ResourceAdminController::class, 'update'])
+        ->middleware('permission:content.update')
+        ->name('resources.update');
+    Route::delete('resources/{slug}', [ResourceAdminController::class, 'destroy'])
+        ->middleware('permission:content.delete')
+        ->name('resources.destroy');
 
     // Cross-taxonomy publish lifecycle (industries, regions, technologies, case-studies, practices).
     Route::get('admin/content/{type}', [ContentStatusController::class, 'index'])

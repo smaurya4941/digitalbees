@@ -8,6 +8,7 @@ use App\Modules\CaseStudy\Models\CaseStudy;
 use App\Modules\Industry\Models\Industry;
 use App\Modules\Practice\Models\Practice;
 use App\Modules\Region\Models\Region;
+use App\Modules\Resource\Models\Resource;
 use App\Modules\Seo\Http\Requests\SeoRequest;
 use App\Modules\Seo\Services\SeoLintService;
 use App\Modules\Seo\Services\SeoService;
@@ -33,6 +34,7 @@ class SeoController extends ApiController
         'regions' => [Region::class, '/regions'],
         'technologies' => [Technology::class, '/technologies'],
         'case-studies' => [CaseStudy::class, '/case-studies'],
+        'resources' => [Resource::class, '/resources'],
     ];
 
     public function __construct(

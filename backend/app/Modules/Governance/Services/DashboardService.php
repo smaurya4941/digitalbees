@@ -9,6 +9,7 @@ use App\Modules\Media\Models\Media;
 use App\Modules\Page\Models\Page;
 use App\Modules\Practice\Models\Practice;
 use App\Modules\Region\Models\Region;
+use App\Modules\Resource\Models\Resource;
 use App\Modules\Technology\Models\Technology;
 use App\Support\Enums\ContentStatus;
 use App\Support\Models\AuditLog;
@@ -26,6 +27,7 @@ final class DashboardService
         'regions' => [Region::class, 'Regions'],
         'technologies' => [Technology::class, 'Technologies'],
         'case-studies' => [CaseStudy::class, 'Case studies'],
+        'resources' => [Resource::class, 'Resources & insights'],
         'pages' => [Page::class, 'Pages'],
     ];
 
