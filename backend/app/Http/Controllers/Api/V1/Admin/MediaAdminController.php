@@ -15,25 +15,15 @@ class MediaAdminController extends ApiController
 
     public function index(): JsonResponse
     {
-        // For simplicity, we just return the paginated list wrapped in our ApiResponse format.
-        $paginator = $this->media->listForAdmin();
-
-        return response()->json([
-            'data' => MediaAdminResource::collection($paginator->items()),
-            'meta' => [
-                'current_page' => $paginator->currentPage(),
-                'last_page' => $paginator->lastPage(),
-                'per_page' => $paginator->perPage(),
-                'total' => $paginator->total(),
-            ]
-        ]);
+        return ApiResponse::page(
+            $this->media->listForAdmin(),
+            fn ($media) => (new MediaAdminResource($media))->resolve(),
+        );
     }
 
     public function store(StoreMediaRequest $request): JsonResponse
     {
-        $file = $request->file('file');
-        
-        $media = $this->media->upload($file);
+        $media = $this->media->upload($request->file('file'));
 
         return ApiResponse::item(new MediaAdminResource($media), ['created' => true])
             ->setStatusCode(201);
@@ -41,14 +31,8 @@ class MediaAdminController extends ApiController
 
     public function destroy(int $id): JsonResponse
     {
-        $media = $this->media->findForAdmin($id);
-        
-        // Ensure user has delete permission
-        if (request()->user()?->cannot('content.delete')) {
-            abort(403, 'Deleting media requires the content.delete permission.');
-        }
-
-        $this->media->delete($media);
+        // Access is gated by `permission:media.delete` on the route.
+        $this->media->delete($this->media->findForAdmin($id));
 
         return ApiResponse::item(['deleted' => true, 'id' => $id]);
     }

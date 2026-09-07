@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Http\Controllers\Api\V1\Admin\Concerns\GuardsPublishing;
 use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\Practice\Http\Requests\StorePracticeRequest;
 use App\Modules\Practice\Http\Requests\UpdatePracticeRequest;
@@ -10,7 +11,6 @@ use App\Modules\Practice\Services\PracticeService;
 use App\Support\Enums\ContentStatus;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 /**
  * Back-office CRUD for practices — the reference implementation for every
@@ -26,6 +26,8 @@ use Illuminate\Http\Request;
  */
 class PracticeAdminController extends ApiController
 {
+    use GuardsPublishing;
+
     public function __construct(private readonly PracticeService $practices) {}
 
     /** GET /api/v1/admin/practices */
@@ -79,22 +81,5 @@ class PracticeAdminController extends ApiController
         $this->practices->delete($practice);
 
         return ApiResponse::item(['deleted' => true, 'slug' => $practice->slug]);
-    }
-
-    /**
-     * Only users with `content.publish` may set or clear the `published` state.
-     */
-    private function guardPublish(Request $request, ?string $next, ?string $current = null): void
-    {
-        if ($next === null || $next === $current) {
-            return;
-        }
-
-        $touchesPublished = $next === ContentStatus::Published->value
-            || $current === ContentStatus::Published->value;
-
-        if ($touchesPublished && $request->user()?->cannot('content.publish')) {
-            abort(403, 'Publishing content requires the content.publish permission.');
-        }
     }
 }

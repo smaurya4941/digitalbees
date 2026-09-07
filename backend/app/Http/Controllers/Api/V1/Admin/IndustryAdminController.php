@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Http\Controllers\Api\V1\Admin\Concerns\GuardsPublishing;
 use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\Industry\Http\Requests\StoreIndustryRequest;
 use App\Modules\Industry\Http\Requests\UpdateIndustryRequest;
@@ -10,10 +11,11 @@ use App\Modules\Industry\Services\IndustryService;
 use App\Support\Enums\ContentStatus;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class IndustryAdminController extends ApiController
 {
+    use GuardsPublishing;
+
     public function __construct(private readonly IndustryService $industries) {}
 
     /** GET /api/v1/admin/industries */
@@ -67,22 +69,5 @@ class IndustryAdminController extends ApiController
         $this->industries->delete($industry);
 
         return ApiResponse::item(['deleted' => true, 'slug' => $industry->slug]);
-    }
-
-    /**
-     * Only users with `content.publish` may set or clear the `published` state.
-     */
-    private function guardPublish(Request $request, ?string $next, ?string $current = null): void
-    {
-        if ($next === null || $next === $current) {
-            return;
-        }
-
-        $touchesPublished = $next === ContentStatus::Published->value
-            || $current === ContentStatus::Published->value;
-
-        if ($touchesPublished && $request->user()?->cannot('content.publish')) {
-            abort(403, 'Publishing content requires the content.publish permission.');
-        }
     }
 }

@@ -66,7 +66,7 @@ class PageAdminController extends ApiController
 
             if ($request->has('sections')) {
                 $sectionsData = $request->input('sections');
-                
+
                 foreach ($sectionsData as $key => $content) {
                     PageSection::updateOrCreate(
                         ['page_id' => $page->id, 'section_key' => $key],

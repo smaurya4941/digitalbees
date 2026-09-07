@@ -1,14 +1,14 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\CaseStudyAdminController;
 use App\Http\Controllers\Api\V1\Admin\ContentStatusController;
 use App\Http\Controllers\Api\V1\Admin\IndustryAdminController;
-use App\Http\Controllers\Api\V1\Admin\PracticeAdminController;
 use App\Http\Controllers\Api\V1\Admin\LeadAdminController;
-use App\Http\Controllers\Api\V1\Admin\RegionAdminController;
-use App\Http\Controllers\Api\V1\Admin\TechnologyAdminController;
-use App\Http\Controllers\Api\V1\Admin\CaseStudyAdminController;
 use App\Http\Controllers\Api\V1\Admin\MediaAdminController;
 use App\Http\Controllers\Api\V1\Admin\PageAdminController;
+use App\Http\Controllers\Api\V1\Admin\PracticeAdminController;
+use App\Http\Controllers\Api\V1\Admin\RegionAdminController;
+use App\Http\Controllers\Api\V1\Admin\TechnologyAdminController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CareerController;
 use App\Http\Controllers\Api\V1\CaseStudyController;
@@ -42,8 +42,6 @@ Route::get('navigation', [NavigationController::class, 'index'])->name('navigati
 Route::get('redirects', [RedirectController::class, 'index'])->name('redirects');
 Route::get('sitemap', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('pages/resolve', [PageController::class, 'resolve'])->name('pages.resolve');
-
-
 
 // --- Taxonomy / content (read) ------------------------------------------------
 Route::get('practices', [PracticeController::class, 'index'])->name('practices.index');
@@ -186,26 +184,26 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
         ->middleware('permission:content.publish')
         ->name('admin.content.status');
 
-    // CRM / Leads
+    // CRM / Leads — reading is `inquiries.view`; mutating status/export is `inquiries.manage`.
     Route::get('admin/leads', [LeadAdminController::class, 'index'])
-        ->middleware('permission:content.update') // Proxying for CRM view
+        ->middleware('permission:inquiries.view')
         ->name('admin.leads.index');
     Route::get('admin/leads/{id}', [LeadAdminController::class, 'show'])
-        ->middleware('permission:content.update')
+        ->middleware('permission:inquiries.view')
         ->name('admin.leads.show');
     Route::patch('admin/leads/{id}/status', [LeadAdminController::class, 'updateStatus'])
-        ->middleware('permission:content.update')
+        ->middleware('permission:inquiries.manage')
         ->name('admin.leads.updateStatus');
 
     // Media Library
     Route::get('admin/media', [MediaAdminController::class, 'index'])
-        ->middleware('permission:content.update|content.publish')
+        ->middleware('permission:media.upload|media.delete')
         ->name('admin.media.index');
     Route::post('admin/media', [MediaAdminController::class, 'store'])
-        ->middleware('permission:content.create')
+        ->middleware('permission:media.upload')
         ->name('admin.media.store');
     Route::delete('admin/media/{id}', [MediaAdminController::class, 'destroy'])
-        ->middleware('permission:content.delete')
+        ->middleware('permission:media.delete')
         ->name('admin.media.destroy');
 
     // Pages Library

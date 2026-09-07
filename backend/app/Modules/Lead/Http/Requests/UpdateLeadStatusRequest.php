@@ -9,7 +9,7 @@ class UpdateLeadStatusRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->can('content.update') ?? false; // Using content.update as a proxy for CRM update if crm.update is absent
+        return $this->user()?->can('inquiries.manage') ?? false;
     }
 
     public function rules(): array

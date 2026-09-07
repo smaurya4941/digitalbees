@@ -19,19 +19,12 @@ class LeadAdminController extends ApiController
     {
         $filters = $request->only(['status']);
         $perPage = (int) $request->query('per_page', 15);
-        
-        $paginator = $this->leads->listPaginated($filters, $perPage);
 
-        return response()->json([
-            'data' => LeadAdminResource::collection($paginator->items()),
-            'meta' => [
-                'current_page' => $paginator->currentPage(),
-                'last_page' => $paginator->lastPage(),
-                'per_page' => $paginator->perPage(),
-                'total' => $paginator->total(),
-            ],
-            'statuses' => ['new', 'synced', 'failed', 'duplicate'],
-        ]);
+        return ApiResponse::page(
+            $this->leads->listPaginated($filters, $perPage),
+            fn ($lead) => (new LeadAdminResource($lead))->resolve(),
+            ['statuses' => ['new', 'synced', 'failed', 'duplicate']],
+        );
     }
 
     /** GET /api/v1/admin/leads/{id} */

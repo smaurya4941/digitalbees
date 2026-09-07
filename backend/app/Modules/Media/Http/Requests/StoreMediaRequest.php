@@ -8,7 +8,7 @@ class StoreMediaRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->can('content.create') ?? false;
+        return $this->user()?->can('media.upload') ?? false;
     }
 
     public function rules(): array
