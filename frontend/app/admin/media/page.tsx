@@ -3,10 +3,11 @@
 import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Check, Copy, FileText, Pencil, Trash2, Upload } from 'lucide-react';
+import { Check, Copy, FileText, FolderInput, Pencil, Trash2, Upload } from 'lucide-react';
 import {
   type AdminMedia,
   deleteMedia,
+  getMediaDetail,
   listMedia,
   mediaQueryKeys,
   updateMedia,
@@ -14,12 +15,15 @@ import {
 } from '@/lib/admin/media';
 import { AdminApiError } from '@/lib/admin/http';
 import { useAuth } from '@/components/admin/providers';
+import { Pagination } from '@/components/admin/Pagination';
+import { ListToolbar } from '@/components/admin/ListToolbar';
 import {
   AdminButton,
   EmptyState,
   Field,
   PageHeading,
   Panel,
+  Select,
   Spinner,
   TextInput,
   useToast,
@@ -38,6 +42,8 @@ export default function AdminMediaPage() {
   const queryClient = useQueryClient();
   const fileInput = useRef<HTMLInputElement>(null);
   const [page, setPage] = useState(1);
+  const [q, setQ] = useState('');
+  const [folder, setFolder] = useState<string | undefined>(undefined);
   const [editing, setEditing] = useState<AdminMedia | null>(null);
   const [copiedId, setCopiedId] = useState<number | null>(null);
 
@@ -45,14 +51,14 @@ export default function AdminMediaPage() {
   const canDelete = can('media.delete');
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: mediaQueryKeys.list(page),
-    queryFn: ({ signal }) => listMedia(page, signal),
+    queryKey: mediaQueryKeys.list({ page, q, folder }),
+    queryFn: ({ signal }) => listMedia({ page, q, folder }, signal),
   });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: mediaQueryKeys.all });
 
   const uploadMutation = useMutation({
-    mutationFn: uploadMedia,
+    mutationFn: (file: File) => uploadMedia(file, folder || undefined),
     onSuccess: () => {
       toast.success('File uploaded.');
       setPage(1);
@@ -60,28 +66,48 @@ export default function AdminMediaPage() {
     },
     onError: (error) =>
       toast.error(
-        error instanceof AdminApiError
-          ? (error.fieldError('file') ?? error.message)
-          : 'Upload failed.',
+        error instanceof AdminApiError ? (error.fieldError('file') ?? error.message) : 'Upload failed.',
       ),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: deleteMedia,
+    mutationFn: ({ id, force }: { id: number; force?: boolean }) => deleteMedia(id, force),
     onSuccess: () => {
       toast.success('File deleted.');
       void invalidate();
     },
-    onError: (error) =>
-      toast.error(
-        error instanceof AdminApiError && error.isForbidden
-          ? 'You do not have permission to delete media.'
-          : 'Could not delete the file.',
-      ),
+    onError: (error) => {
+      if (error instanceof AdminApiError && error.status === 422) {
+        toast.error(error.message);
+      } else if (error instanceof AdminApiError && error.isForbidden) {
+        toast.error('You do not have permission to delete media.');
+      } else {
+        toast.error('Could not delete the file.');
+      }
+    },
   });
 
   const items = data?.data ?? [];
   const meta = data?.meta;
+  const folders = meta?.folders ?? [];
+
+  async function requestDelete(item: AdminMedia) {
+    let confirmMessage = `Delete “${item.name}”? This cannot be undone.`;
+    try {
+      const detail = await getMediaDetail(item.id);
+      if (detail.usages.length > 0) {
+        confirmMessage =
+          `“${item.name}” is used in ${detail.usages.length} place(s):\n` +
+          detail.usages.map((u) => `• ${u.label}`).join('\n') +
+          `\n\nDelete anyway?`;
+        if (window.confirm(confirmMessage)) deleteMutation.mutate({ id: item.id, force: true });
+        return;
+      }
+    } catch {
+      /* fall through to a plain confirm */
+    }
+    if (window.confirm(confirmMessage)) deleteMutation.mutate({ id: item.id });
+  }
 
   function onCopy(item: AdminMedia) {
     void navigator.clipboard.writeText(item.url).then(() => {
@@ -114,12 +140,39 @@ export default function AdminMediaPage() {
                 loading={uploadMutation.isPending}
                 iconLeft={<Upload className="size-4" />}
               >
-                Upload
+                Upload{folder ? ` to “${folder}”` : ''}
               </AdminButton>
             </>
           ) : undefined
         }
       />
+
+      <ListToolbar
+        q={q}
+        onQ={(v) => {
+          setQ(v);
+          setPage(1);
+        }}
+        placeholder="Search files"
+      >
+        <Select
+          className="h-10 w-44"
+          value={folder ?? '__any'}
+          onChange={(e) => {
+            const v = e.target.value;
+            setFolder(v === '__any' ? undefined : v === '__none' ? '' : v);
+            setPage(1);
+          }}
+        >
+          <option value="__any">All folders</option>
+          <option value="__none">No folder</option>
+          {folders.map((f) => (
+            <option key={f} value={f}>
+              {f}
+            </option>
+          ))}
+        </Select>
+      </ListToolbar>
 
       <Panel className="p-5">
         {isLoading ? (
@@ -128,17 +181,14 @@ export default function AdminMediaPage() {
           <EmptyState title="Couldn’t load media" description="Refresh the page to try again." />
         ) : items.length === 0 ? (
           <EmptyState
-            title="No media yet"
+            title="No media"
             description={canUpload ? 'Upload your first file to get started.' : 'Nothing has been uploaded.'}
           />
         ) : (
           <>
             <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {items.map((item) => (
-                <li
-                  key={item.id}
-                  className="group overflow-hidden rounded-xl border border-hairline bg-white"
-                >
+                <li key={item.id} className="group overflow-hidden rounded-xl border border-hairline bg-white">
                   <div className="relative aspect-[4/3] bg-neutral-50">
                     {item.mime_type.startsWith('image/') ? (
                       <Image
@@ -160,11 +210,7 @@ export default function AdminMediaPage() {
                         className="grid size-8 place-items-center rounded-lg bg-white/90 text-ink hover:bg-white"
                         aria-label={`Copy URL for ${item.name}`}
                       >
-                        {copiedId === item.id ? (
-                          <Check className="size-4 text-success" />
-                        ) : (
-                          <Copy className="size-4" />
-                        )}
+                        {copiedId === item.id ? <Check className="size-4 text-success" /> : <Copy className="size-4" />}
                       </button>
                       {canUpload && (
                         <button
@@ -177,11 +223,7 @@ export default function AdminMediaPage() {
                       )}
                       {canDelete && (
                         <button
-                          onClick={() => {
-                            if (window.confirm(`Delete “${item.name}”? This cannot be undone.`)) {
-                              deleteMutation.mutate(item.id);
-                            }
-                          }}
+                          onClick={() => void requestDelete(item)}
                           className="grid size-8 place-items-center rounded-lg bg-white/90 text-danger hover:bg-white"
                           aria-label={`Delete ${item.name}`}
                         >
@@ -194,8 +236,14 @@ export default function AdminMediaPage() {
                     <p className="truncate text-sm font-medium text-ink" title={item.name}>
                       {item.name}
                     </p>
-                    <p className="mt-0.5 text-xs text-ink-subtle">
-                      {item.width && item.height ? `${item.width}×${item.height} · ` : ''}
+                    <p className="mt-0.5 flex items-center gap-1.5 text-xs text-ink-subtle">
+                      {item.folder && (
+                        <span className="inline-flex items-center gap-1 rounded bg-neutral-100 px-1.5 py-0.5 text-ink-muted">
+                          <FolderInput className="size-3" /> {item.folder}
+                        </span>
+                      )}
+                      {item.width && item.height ? `${item.width}×${item.height}` : ''}
+                      {item.width && item.height ? ' · ' : ''}
                       {formatBytes(item.size)}
                     </p>
                     {!item.alt_text && item.mime_type.startsWith('image/') && (
@@ -206,31 +254,9 @@ export default function AdminMediaPage() {
               ))}
             </ul>
 
-            {meta && meta.last_page > 1 && (
-              <div className="mt-5 flex items-center justify-between border-t border-hairline pt-4">
-                <p className="text-xs text-ink-subtle">
-                  Page {meta.current_page} of {meta.last_page} · {meta.total} files
-                </p>
-                <div className="flex gap-2">
-                  <AdminButton
-                    variant="secondary"
-                    size="sm"
-                    disabled={page <= 1}
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  >
-                    Previous
-                  </AdminButton>
-                  <AdminButton
-                    variant="secondary"
-                    size="sm"
-                    disabled={page >= meta.last_page}
-                    onClick={() => setPage((p) => p + 1)}
-                  >
-                    Next
-                  </AdminButton>
-                </div>
-              </div>
-            )}
+            <div className="mt-5">
+              <Pagination meta={meta} page={page} onPage={setPage} itemLabel="files" />
+            </div>
           </>
         )}
       </Panel>
@@ -238,6 +264,7 @@ export default function AdminMediaPage() {
       {editing && (
         <EditMediaDialog
           media={editing}
+          folders={folders}
           onClose={() => setEditing(null)}
           onSaved={() => {
             setEditing(null);
@@ -251,19 +278,23 @@ export default function AdminMediaPage() {
 
 function EditMediaDialog({
   media,
+  folders,
   onClose,
   onSaved,
 }: {
   media: AdminMedia;
+  folders: string[];
   onClose: () => void;
   onSaved: () => void;
 }) {
   const toast = useToast();
   const [name, setName] = useState(media.name);
   const [altText, setAltText] = useState(media.alt_text ?? '');
+  const [folder, setFolder] = useState(media.folder ?? '');
 
   const mutation = useMutation({
-    mutationFn: () => updateMedia(media.id, { name, alt_text: altText || null }),
+    mutationFn: () =>
+      updateMedia(media.id, { name, alt_text: altText || null, folder: folder || null }),
     onSuccess: () => {
       toast.success('Details saved.');
       onSaved();
@@ -282,6 +313,19 @@ function EditMediaDialog({
           </Field>
           <Field label="Alt text" hint="Describe the image for screen readers and SEO.">
             <TextInput value={altText} onChange={(e) => setAltText(e.target.value)} />
+          </Field>
+          <Field label="Folder" hint="Type a new name or reuse an existing one.">
+            <TextInput
+              value={folder}
+              onChange={(e) => setFolder(e.target.value)}
+              list="media-folders"
+              placeholder="e.g. Brand"
+            />
+            <datalist id="media-folders">
+              {folders.map((f) => (
+                <option key={f} value={f} />
+              ))}
+            </datalist>
           </Field>
         </div>
         <div className="mt-6 flex justify-end gap-2">

@@ -20,6 +20,7 @@ class StoreMediaRequest extends FormRequest
                 'max:'.(int) config('media.max_size_kb'),
                 'mimetypes:'.implode(',', config('media.mimetypes')),
             ],
+            'folder' => ['nullable', 'string', 'max:100'],
         ];
     }
 }

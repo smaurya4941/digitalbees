@@ -13,6 +13,7 @@ class MediaAdminResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'alt_text' => $this->alt_text,
+            'folder' => $this->folder,
             'file_name' => $this->file_name,
             'mime_type' => $this->mime_type,
             'size' => $this->size,

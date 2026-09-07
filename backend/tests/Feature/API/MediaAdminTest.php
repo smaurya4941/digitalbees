@@ -3,7 +3,9 @@
 namespace Tests\Feature\API;
 
 use App\Models\User;
+use App\Modules\Industry\Models\Industry;
 use App\Modules\Media\Models\Media;
+use App\Support\Models\SeoMetadata;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -88,14 +90,48 @@ class MediaAdminTest extends TestCase
         $this->assertDatabaseMissing('assets', ['id' => $media->id]);
     }
 
-    public function test_index_uses_the_standard_page_envelope(): void
+    public function test_index_uses_the_standard_page_envelope_and_supports_folders(): void
     {
+        Media::create(['name' => 'a', 'file_name' => 'a.jpg', 'mime_type' => 'image/jpeg', 'size' => 1, 'disk' => config('media.disk'), 'path' => 'media/a.jpg', 'folder' => 'Brand']);
+        Media::create(['name' => 'b', 'file_name' => 'b.jpg', 'mime_type' => 'image/jpeg', 'size' => 1, 'disk' => config('media.disk'), 'path' => 'media/b.jpg']);
+
         $this->actingAs($this->user('staff'))->getJson('/api/v1/admin/media')
             ->assertOk()
             ->assertJsonStructure([
                 'data',
-                'meta' => ['current_page', 'last_page', 'per_page', 'total'],
+                'meta' => ['current_page', 'last_page', 'per_page', 'total', 'folders'],
                 'links' => ['prev', 'next'],
-            ]);
+            ])
+            ->assertJsonPath('meta.folders', ['Brand']);
+
+        $this->actingAs($this->user('staff'))->getJson('/api/v1/admin/media?folder=Brand')
+            ->assertOk()
+            ->assertJsonPath('meta.total', 1)
+            ->assertJsonPath('data.0.name', 'a');
+    }
+
+    public function test_a_referenced_asset_cannot_be_deleted_without_force(): void
+    {
+        $this->seed(\Database\Seeders\IndustrySeeder::class);
+        $industry = Industry::query()->firstOrFail();
+
+        $media = Media::create(['name' => 'og.jpg', 'file_name' => 'og.jpg', 'mime_type' => 'image/jpeg', 'size' => 1, 'disk' => config('media.disk'), 'path' => 'media/og.jpg']);
+
+        SeoMetadata::create([
+            'seoable_type' => $industry->getMorphClass(),
+            'seoable_id' => $industry->id,
+            'og_image_id' => $media->id,
+        ]);
+
+        $admin = $this->user('admin');
+
+        $this->actingAs($admin)->getJson("/api/v1/admin/media/{$media->id}")
+            ->assertOk()
+            ->assertJsonPath('data.usages.0.type', 'seo_image');
+
+        $this->actingAs($admin)->deleteJson("/api/v1/admin/media/{$media->id}")->assertStatus(422);
+        $this->actingAs($admin)->deleteJson("/api/v1/admin/media/{$media->id}?force=1")->assertOk();
+
+        $this->assertDatabaseMissing('assets', ['id' => $media->id]);
     }
 }
