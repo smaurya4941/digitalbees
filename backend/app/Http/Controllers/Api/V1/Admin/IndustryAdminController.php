@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Api\V1\Admin\Concerns\GuardsPublishing;
+use App\Http\Controllers\Api\V1\Admin\Concerns\RecordsSlugRedirect;
 use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\Industry\Http\Requests\StoreIndustryRequest;
 use App\Modules\Industry\Http\Requests\UpdateIndustryRequest;
@@ -15,6 +16,7 @@ use Illuminate\Http\JsonResponse;
 class IndustryAdminController extends ApiController
 {
     use GuardsPublishing;
+    use RecordsSlugRedirect;
 
     public function __construct(private readonly IndustryService $industries) {}
 
@@ -58,6 +60,7 @@ class IndustryAdminController extends ApiController
         }
 
         $industry = $this->industries->update($industry, $data);
+        $this->recordSlugRedirect('/industries', $slug, $industry->slug);
 
         return ApiResponse::item(new IndustryAdminResource($industry));
     }

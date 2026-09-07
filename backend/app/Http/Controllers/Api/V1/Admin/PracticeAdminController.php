@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Api\V1\Admin\Concerns\GuardsPublishing;
+use App\Http\Controllers\Api\V1\Admin\Concerns\RecordsSlugRedirect;
 use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\Practice\Http\Requests\StorePracticeRequest;
 use App\Modules\Practice\Http\Requests\UpdatePracticeRequest;
@@ -27,6 +28,7 @@ use Illuminate\Http\JsonResponse;
 class PracticeAdminController extends ApiController
 {
     use GuardsPublishing;
+    use RecordsSlugRedirect;
 
     public function __construct(private readonly PracticeService $practices) {}
 
@@ -70,6 +72,7 @@ class PracticeAdminController extends ApiController
         }
 
         $practice = $this->practices->update($practice, $data);
+        $this->recordSlugRedirect('/practices', $slug, $practice->slug);
 
         return ApiResponse::item(new PracticeAdminResource($practice));
     }

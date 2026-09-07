@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Api\V1\Admin\Concerns\GuardsPublishing;
+use App\Http\Controllers\Api\V1\Admin\Concerns\RecordsSlugRedirect;
 use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\Technology\Http\Requests\StoreTechnologyRequest;
 use App\Modules\Technology\Http\Requests\UpdateTechnologyRequest;
@@ -15,6 +16,7 @@ use Illuminate\Http\JsonResponse;
 class TechnologyAdminController extends ApiController
 {
     use GuardsPublishing;
+    use RecordsSlugRedirect;
 
     public function __construct(private readonly TechnologyService $technologies) {}
 
@@ -54,6 +56,7 @@ class TechnologyAdminController extends ApiController
         }
 
         $technology = $this->technologies->update($technology, $data);
+        $this->recordSlugRedirect('/technologies', $slug, $technology->slug);
 
         return ApiResponse::item(new TechnologyAdminResource($technology));
     }

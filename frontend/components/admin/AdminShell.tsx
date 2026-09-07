@@ -19,6 +19,7 @@ import {
   Mail,
   Settings,
   ShieldCheck,
+  Signpost,
   Sparkles,
   Users,
 } from 'lucide-react';
@@ -48,7 +49,8 @@ const adminNav: NavItem[] = [
   { label: 'Activity', href: '/admin/activity', icon: History },
   { label: 'Accounts', href: '/admin/users', icon: Users },
   { label: 'Roles', href: '/admin/roles', icon: ShieldCheck },
-  { label: 'Settings', href: '/admin/settings', icon: Settings, soon: true },
+  { label: 'Redirects', href: '/admin/redirects', icon: Signpost },
+  { label: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 
 function NavLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {

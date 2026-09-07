@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Api\V1\Admin\Concerns\GuardsPublishing;
+use App\Http\Controllers\Api\V1\Admin\Concerns\RecordsSlugRedirect;
 use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\CaseStudy\Http\Requests\StoreCaseStudyRequest;
 use App\Modules\CaseStudy\Http\Requests\UpdateCaseStudyRequest;
@@ -15,6 +16,7 @@ use Illuminate\Http\JsonResponse;
 class CaseStudyAdminController extends ApiController
 {
     use GuardsPublishing;
+    use RecordsSlugRedirect;
 
     public function __construct(private readonly CaseStudyService $caseStudies) {}
 
@@ -54,6 +56,7 @@ class CaseStudyAdminController extends ApiController
         }
 
         $caseStudy = $this->caseStudies->update($caseStudy, $data);
+        $this->recordSlugRedirect('/case-studies', $slug, $caseStudy->slug);
 
         return ApiResponse::item(new CaseStudyAdminResource($caseStudy));
     }

@@ -9,8 +9,10 @@ use App\Http\Controllers\Api\V1\Admin\LeadAdminController;
 use App\Http\Controllers\Api\V1\Admin\MediaAdminController;
 use App\Http\Controllers\Api\V1\Admin\PageAdminController;
 use App\Http\Controllers\Api\V1\Admin\PracticeAdminController;
+use App\Http\Controllers\Api\V1\Admin\RedirectAdminController;
 use App\Http\Controllers\Api\V1\Admin\RegionAdminController;
 use App\Http\Controllers\Api\V1\Admin\RoleAdminController;
+use App\Http\Controllers\Api\V1\Admin\SettingAdminController;
 use App\Http\Controllers\Api\V1\Admin\TechnologyAdminController;
 use App\Http\Controllers\Api\V1\Admin\UserAdminController;
 use App\Http\Controllers\Api\V1\AuthController;
@@ -30,6 +32,7 @@ use App\Http\Controllers\Api\V1\RedirectController;
 use App\Http\Controllers\Api\V1\RegionController;
 use App\Http\Controllers\Api\V1\ResourceController;
 use App\Http\Controllers\Api\V1\SearchController;
+use App\Http\Controllers\Api\V1\SettingController;
 use App\Http\Controllers\Api\V1\SitemapController;
 use App\Http\Controllers\Api\V1\TechnologyController;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +48,7 @@ use Illuminate\Support\Facades\Route;
 // --- Site chrome -----------------------------------------------------------
 Route::get('navigation', [NavigationController::class, 'index'])->name('navigation');
 Route::get('redirects', [RedirectController::class, 'index'])->name('redirects');
+Route::get('settings', [SettingController::class, 'index'])->name('settings');
 Route::get('sitemap', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('pages/resolve', [PageController::class, 'resolve'])->name('pages.resolve');
 
@@ -248,6 +252,22 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
         ->middleware('permission:users.manage')->name('admin.users.reactivate');
     Route::delete('admin/users/{id}', [UserAdminController::class, 'destroy'])
         ->middleware('permission:users.manage')->name('admin.users.destroy');
+
+    // Site settings
+    Route::get('admin/settings', [SettingAdminController::class, 'index'])
+        ->middleware('permission:settings.manage')->name('admin.settings.index');
+    Route::match(['put', 'patch'], 'admin/settings', [SettingAdminController::class, 'update'])
+        ->middleware('permission:settings.manage')->name('admin.settings.update');
+
+    // Redirects
+    Route::get('admin/redirects', [RedirectAdminController::class, 'index'])
+        ->middleware('permission:settings.manage')->name('admin.redirects.index');
+    Route::post('admin/redirects', [RedirectAdminController::class, 'store'])
+        ->middleware('permission:settings.manage')->name('admin.redirects.store');
+    Route::match(['put', 'patch'], 'admin/redirects/{id}', [RedirectAdminController::class, 'update'])
+        ->middleware('permission:settings.manage')->name('admin.redirects.update');
+    Route::delete('admin/redirects/{id}', [RedirectAdminController::class, 'destroy'])
+        ->middleware('permission:settings.manage')->name('admin.redirects.destroy');
 
     // Roles & permissions
     Route::get('admin/roles', [RoleAdminController::class, 'index'])

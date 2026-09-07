@@ -13,6 +13,7 @@ use App\Modules\Practice\Models\Practice;
 use App\Modules\Practice\Models\SubService;
 use App\Modules\Region\Models\Location;
 use App\Modules\Region\Models\Region;
+use App\Modules\Seo\Models\Redirect;
 use App\Modules\Technology\Models\Technology;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Gate;
@@ -39,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
             'location' => Location::class,
             'page' => Page::class,
             'media' => Media::class,
+            'redirect' => Redirect::class,
             'user' => User::class,
         ]);
 

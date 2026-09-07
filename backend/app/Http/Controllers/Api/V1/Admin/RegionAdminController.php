@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Api\V1\Admin\Concerns\GuardsPublishing;
+use App\Http\Controllers\Api\V1\Admin\Concerns\RecordsSlugRedirect;
 use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\Region\Http\Requests\StoreRegionRequest;
 use App\Modules\Region\Http\Requests\UpdateRegionRequest;
@@ -15,6 +16,7 @@ use Illuminate\Http\JsonResponse;
 class RegionAdminController extends ApiController
 {
     use GuardsPublishing;
+    use RecordsSlugRedirect;
 
     public function __construct(private readonly RegionService $regions) {}
 
@@ -54,6 +56,7 @@ class RegionAdminController extends ApiController
         }
 
         $region = $this->regions->update($region, $data);
+        $this->recordSlugRedirect('/regions', $slug, $region->slug);
 
         return ApiResponse::item(new RegionAdminResource($region));
     }
