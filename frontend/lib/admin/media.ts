@@ -1,53 +1,46 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { adminApi, PaginatedResponse } from './http';
+'use client';
 
-export interface Media {
+import { adminApi, type AdminPaginated } from './http';
+
+export interface AdminMedia {
   id: number;
   name: string;
+  alt_text: string | null;
   file_name: string;
   mime_type: string;
   size: number;
+  width: number | null;
+  height: number | null;
   url: string;
+  uploaded_by: number | null;
+  uploader_name?: string | null;
   created_at: string;
 }
 
-export function useMedia(page = 1) {
-  return useQuery({
-    queryKey: ['admin', 'media', { page }],
-    queryFn: () =>
-      adminApi.get<PaginatedResponse<Media>>(`/admin/media`, {
-        params: { page },
-      }),
-  });
+const KEY = ['admin', 'media'] as const;
+
+export const mediaQueryKeys = {
+  all: KEY,
+  list: (page: number) => [...KEY, 'list', page] as const,
+};
+
+export function listMedia(page: number, signal?: AbortSignal): Promise<AdminPaginated<AdminMedia>> {
+  return adminApi.getPage<AdminMedia>('admin/media', { signal, query: { page } });
 }
 
-export function useUploadMedia() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (file: File) => {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      return adminApi.post<{ data: Media }>('/admin/media', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'media'] });
-    },
-  });
+export function uploadMedia(file: File): Promise<AdminMedia> {
+  const form = new FormData();
+  form.append('file', file);
+  return adminApi.post<AdminMedia>('admin/media', form);
 }
 
-export function useDeleteMedia() {
-  const queryClient = useQueryClient();
+export function updateMedia(
+  id: number,
+  input: { name?: string; alt_text?: string | null },
+): Promise<AdminMedia> {
+  return adminApi.patch<AdminMedia>(`admin/media/${id}`, input);
+}
 
-  return useMutation({
-    mutationFn: (id: number) => adminApi.delete(`/admin/media/${id}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'media'] });
-    },
-  });
+export function deleteMedia(id: number): Promise<{ deleted: boolean; id: number }> {
+  return adminApi.delete(`admin/media/${id}`);
 }

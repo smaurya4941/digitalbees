@@ -199,16 +199,29 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::get('admin/media', [MediaAdminController::class, 'index'])
         ->middleware('permission:media.upload|media.delete')
         ->name('admin.media.index');
+    Route::get('admin/media/{id}', [MediaAdminController::class, 'show'])
+        ->middleware('permission:media.upload|media.delete')
+        ->name('admin.media.show');
     Route::post('admin/media', [MediaAdminController::class, 'store'])
         ->middleware('permission:media.upload')
         ->name('admin.media.store');
+    Route::match(['put', 'patch'], 'admin/media/{id}', [MediaAdminController::class, 'update'])
+        ->middleware('permission:media.upload')
+        ->name('admin.media.update');
     Route::delete('admin/media/{id}', [MediaAdminController::class, 'destroy'])
         ->middleware('permission:media.delete')
         ->name('admin.media.destroy');
 
-    // Pages Library
-    Route::apiResource('pages', PageAdminController::class)->only(['index', 'show', 'update'])
-        ->middleware('permission:content.update');
+    // Pages Library — editor-only resource; no public read, so it stays under admin/.
+    Route::get('admin/pages', [PageAdminController::class, 'index'])
+        ->middleware('permission:content.update')
+        ->name('admin.pages.index');
+    Route::get('admin/pages/{id}', [PageAdminController::class, 'show'])
+        ->middleware('permission:content.update')
+        ->name('admin.pages.show');
+    Route::match(['put', 'patch'], 'admin/pages/{id}', [PageAdminController::class, 'update'])
+        ->middleware('permission:content.update')
+        ->name('admin.pages.update');
 });
 
 // --- Conversion / write (throttled) -------------------------------------------

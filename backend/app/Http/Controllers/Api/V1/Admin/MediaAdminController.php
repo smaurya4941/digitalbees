@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\Media\Http\Requests\StoreMediaRequest;
+use App\Modules\Media\Http\Requests\UpdateMediaRequest;
 use App\Modules\Media\Http\Resources\MediaAdminResource;
 use App\Modules\Media\Services\MediaService;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * Media library. Access is gated by `permission:media.upload` (read + write)
+ * and `permission:media.delete` (destroy) on the routes.
+ */
 class MediaAdminController extends ApiController
 {
     public function __construct(private readonly MediaService $media) {}
@@ -17,7 +22,14 @@ class MediaAdminController extends ApiController
     {
         return ApiResponse::page(
             $this->media->listForAdmin(),
-            fn ($media) => (new MediaAdminResource($media))->resolve(),
+            fn ($media) => (new MediaAdminResource($media->loadMissing('uploader')))->resolve(),
+        );
+    }
+
+    public function show(int $id): JsonResponse
+    {
+        return ApiResponse::item(
+            new MediaAdminResource($this->media->findForAdmin($id)->loadMissing('uploader')),
         );
     }
 
@@ -29,9 +41,15 @@ class MediaAdminController extends ApiController
             ->setStatusCode(201);
     }
 
+    public function update(UpdateMediaRequest $request, int $id): JsonResponse
+    {
+        $media = $this->media->update($this->media->findForAdmin($id), $request->validated());
+
+        return ApiResponse::item(new MediaAdminResource($media));
+    }
+
     public function destroy(int $id): JsonResponse
     {
-        // Access is gated by `permission:media.delete` on the route.
         $this->media->delete($this->media->findForAdmin($id));
 
         return ApiResponse::item(['deleted' => true, 'id' => $id]);

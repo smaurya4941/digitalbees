@@ -4,7 +4,7 @@ namespace App\Modules\Media\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreMediaRequest extends FormRequest
+class UpdateMediaRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,12 +14,8 @@ class StoreMediaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => [
-                'required',
-                'file',
-                'max:'.(int) config('media.max_size_kb'),
-                'mimetypes:'.implode(',', config('media.mimetypes')),
-            ],
+            'name' => ['sometimes', 'string', 'max:255'],
+            'alt_text' => ['sometimes', 'nullable', 'string', 'max:500'],
         ];
     }
 }

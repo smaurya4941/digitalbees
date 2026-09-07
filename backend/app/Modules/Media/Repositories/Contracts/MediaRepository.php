@@ -14,5 +14,8 @@ interface MediaRepository
     /** @param array<string, mixed> $attributes */
     public function create(array $attributes): Media;
 
+    /** @param array<string, mixed> $attributes */
+    public function update(Media $media, array $attributes): Media;
+
     public function delete(Media $media): void;
 }

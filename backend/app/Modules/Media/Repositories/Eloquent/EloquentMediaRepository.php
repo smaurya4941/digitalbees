@@ -23,6 +23,13 @@ final class EloquentMediaRepository implements MediaRepository
         return Media::create($attributes);
     }
 
+    public function update(Media $media, array $attributes): Media
+    {
+        $media->fill($attributes)->save();
+
+        return $media->refresh();
+    }
+
     public function delete(Media $media): void
     {
         $media->delete();

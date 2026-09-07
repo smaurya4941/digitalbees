@@ -1,147 +1,298 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { useMedia, useUploadMedia, useDeleteMedia } from '@/lib/admin/media';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Loader2, Upload, Trash2, Copy, Image as ImageIcon, FileText } from 'lucide-react';
-import { toast } from 'sonner';
+import { useRef, useState } from 'react';
+import Image from 'next/image';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Check, Copy, FileText, Pencil, Trash2, Upload } from 'lucide-react';
+import {
+  type AdminMedia,
+  deleteMedia,
+  listMedia,
+  mediaQueryKeys,
+  updateMedia,
+  uploadMedia,
+} from '@/lib/admin/media';
+import { AdminApiError } from '@/lib/admin/http';
+import { useAuth } from '@/components/admin/providers';
+import {
+  AdminButton,
+  EmptyState,
+  Field,
+  PageHeading,
+  Panel,
+  Spinner,
+  TextInput,
+  useToast,
+} from '@/components/admin/ui';
 
-export default function MediaLibraryPage() {
+function formatBytes(bytes: number): string {
+  if (!bytes) return '0 B';
+  const units = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.min(units.length - 1, Math.floor(Math.log(bytes) / Math.log(1024)));
+  return `${(bytes / 1024 ** i).toFixed(i === 0 ? 0 : 1)} ${units[i]}`;
+}
+
+export default function AdminMediaPage() {
+  const { can } = useAuth();
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const fileInput = useRef<HTMLInputElement>(null);
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useMedia(page);
-  const uploadMutation = useUploadMedia();
-  const deleteMutation = useDeleteMedia();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [editing, setEditing] = useState<AdminMedia | null>(null);
+  const [copiedId, setCopiedId] = useState<number | null>(null);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const canUpload = can('media.upload');
+  const canDelete = can('media.delete');
 
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error('File must be less than 10MB');
-      return;
-    }
+  const { data, isLoading, isError } = useQuery({
+    queryKey: mediaQueryKeys.list(page),
+    queryFn: ({ signal }) => listMedia(page, signal),
+  });
 
-    toast.promise(uploadMutation.mutateAsync(file), {
-      loading: 'Uploading...',
-      success: 'File uploaded successfully!',
-      error: 'Failed to upload file.',
+  const invalidate = () => queryClient.invalidateQueries({ queryKey: mediaQueryKeys.all });
+
+  const uploadMutation = useMutation({
+    mutationFn: uploadMedia,
+    onSuccess: () => {
+      toast.success('File uploaded.');
+      setPage(1);
+      void invalidate();
+    },
+    onError: (error) =>
+      toast.error(
+        error instanceof AdminApiError
+          ? (error.fieldError('file') ?? error.message)
+          : 'Upload failed.',
+      ),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteMedia,
+    onSuccess: () => {
+      toast.success('File deleted.');
+      void invalidate();
+    },
+    onError: (error) =>
+      toast.error(
+        error instanceof AdminApiError && error.isForbidden
+          ? 'You do not have permission to delete media.'
+          : 'Could not delete the file.',
+      ),
+  });
+
+  const items = data?.data ?? [];
+  const meta = data?.meta;
+
+  function onCopy(item: AdminMedia) {
+    void navigator.clipboard.writeText(item.url).then(() => {
+      setCopiedId(item.id);
+      window.setTimeout(() => setCopiedId((id) => (id === item.id ? null : id)), 1500);
     });
-
-    // Reset input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const copyUrl = (url: string) => {
-    navigator.clipboard.writeText(url);
-    toast.success('URL copied to clipboard!');
-  };
-
-  const isImage = (mime: string) => mime.startsWith('image/');
+  }
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Media Library</h1>
-          <p className="text-muted-foreground">
-            Manage images and documents for the website.
-          </p>
-        </div>
-        
-        <div>
-          <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            accept="image/jpeg,image/png,image/webp,image/svg+xml,application/pdf"
-            onChange={handleFileSelect}
+      <PageHeading
+        title="Media Library"
+        description="Images and documents used across the website."
+        actions={
+          canUpload ? (
+            <>
+              <input
+                ref={fileInput}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif,application/pdf"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) uploadMutation.mutate(file);
+                  e.target.value = '';
+                }}
+              />
+              <AdminButton
+                onClick={() => fileInput.current?.click()}
+                loading={uploadMutation.isPending}
+                iconLeft={<Upload className="size-4" />}
+              >
+                Upload
+              </AdminButton>
+            </>
+          ) : undefined
+        }
+      />
+
+      <Panel className="p-5">
+        {isLoading ? (
+          <Spinner />
+        ) : isError ? (
+          <EmptyState title="Couldn’t load media" description="Refresh the page to try again." />
+        ) : items.length === 0 ? (
+          <EmptyState
+            title="No media yet"
+            description={canUpload ? 'Upload your first file to get started.' : 'Nothing has been uploaded.'}
           />
-          <Button 
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploadMutation.isPending}
-          >
-            {uploadMutation.isPending ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Upload className="mr-2 h-4 w-4" />
+        ) : (
+          <>
+            <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+              {items.map((item) => (
+                <li
+                  key={item.id}
+                  className="group overflow-hidden rounded-xl border border-hairline bg-white"
+                >
+                  <div className="relative aspect-[4/3] bg-neutral-50">
+                    {item.mime_type.startsWith('image/') ? (
+                      <Image
+                        src={item.url}
+                        alt={item.alt_text ?? item.name}
+                        fill
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        className="object-contain"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-ink-subtle">
+                        <FileText className="size-10" />
+                      </div>
+                    )}
+                    <div className="absolute inset-x-0 bottom-0 flex justify-end gap-1 bg-gradient-to-t from-brand-navy-deep/70 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
+                      <button
+                        onClick={() => onCopy(item)}
+                        className="grid size-8 place-items-center rounded-lg bg-white/90 text-ink hover:bg-white"
+                        aria-label={`Copy URL for ${item.name}`}
+                      >
+                        {copiedId === item.id ? (
+                          <Check className="size-4 text-success" />
+                        ) : (
+                          <Copy className="size-4" />
+                        )}
+                      </button>
+                      {canUpload && (
+                        <button
+                          onClick={() => setEditing(item)}
+                          className="grid size-8 place-items-center rounded-lg bg-white/90 text-ink hover:bg-white"
+                          aria-label={`Edit ${item.name}`}
+                        >
+                          <Pencil className="size-4" />
+                        </button>
+                      )}
+                      {canDelete && (
+                        <button
+                          onClick={() => {
+                            if (window.confirm(`Delete “${item.name}”? This cannot be undone.`)) {
+                              deleteMutation.mutate(item.id);
+                            }
+                          }}
+                          className="grid size-8 place-items-center rounded-lg bg-white/90 text-danger hover:bg-white"
+                          aria-label={`Delete ${item.name}`}
+                        >
+                          <Trash2 className="size-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <div className="p-3">
+                    <p className="truncate text-sm font-medium text-ink" title={item.name}>
+                      {item.name}
+                    </p>
+                    <p className="mt-0.5 text-xs text-ink-subtle">
+                      {item.width && item.height ? `${item.width}×${item.height} · ` : ''}
+                      {formatBytes(item.size)}
+                    </p>
+                    {!item.alt_text && item.mime_type.startsWith('image/') && (
+                      <p className="mt-1 text-xs text-warning">No alt text</p>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {meta && meta.last_page > 1 && (
+              <div className="mt-5 flex items-center justify-between border-t border-hairline pt-4">
+                <p className="text-xs text-ink-subtle">
+                  Page {meta.current_page} of {meta.last_page} · {meta.total} files
+                </p>
+                <div className="flex gap-2">
+                  <AdminButton
+                    variant="secondary"
+                    size="sm"
+                    disabled={page <= 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  >
+                    Previous
+                  </AdminButton>
+                  <AdminButton
+                    variant="secondary"
+                    size="sm"
+                    disabled={page >= meta.last_page}
+                    onClick={() => setPage((p) => p + 1)}
+                  >
+                    Next
+                  </AdminButton>
+                </div>
+              </div>
             )}
-            Upload File
-          </Button>
+          </>
+        )}
+      </Panel>
+
+      {editing && (
+        <EditMediaDialog
+          media={editing}
+          onClose={() => setEditing(null)}
+          onSaved={() => {
+            setEditing(null);
+            void invalidate();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function EditMediaDialog({
+  media,
+  onClose,
+  onSaved,
+}: {
+  media: AdminMedia;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const toast = useToast();
+  const [name, setName] = useState(media.name);
+  const [altText, setAltText] = useState(media.alt_text ?? '');
+
+  const mutation = useMutation({
+    mutationFn: () => updateMedia(media.id, { name, alt_text: altText || null }),
+    onSuccess: () => {
+      toast.success('Details saved.');
+      onSaved();
+    },
+    onError: () => toast.error('Could not save the changes.'),
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-brand-navy-deep/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-md rounded-2xl border border-hairline bg-white p-6 shadow-xl">
+        <h3 className="text-lg font-semibold text-ink">Edit media</h3>
+        <div className="mt-4 space-y-4">
+          <Field label="File name">
+            <TextInput value={name} onChange={(e) => setName(e.target.value)} />
+          </Field>
+          <Field label="Alt text" hint="Describe the image for screen readers and SEO.">
+            <TextInput value={altText} onChange={(e) => setAltText(e.target.value)} />
+          </Field>
+        </div>
+        <div className="mt-6 flex justify-end gap-2">
+          <AdminButton variant="ghost" onClick={onClose} disabled={mutation.isPending}>
+            Cancel
+          </AdminButton>
+          <AdminButton onClick={() => mutation.mutate()} loading={mutation.isPending}>
+            Save
+          </AdminButton>
         </div>
       </div>
-
-      {isLoading ? (
-        <div className="flex justify-center items-center h-64">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {data?.data.map((item) => (
-            <div 
-              key={item.id} 
-              className="group relative border rounded-lg overflow-hidden bg-muted/20 hover:border-primary transition-colors"
-            >
-              <div className="aspect-square flex items-center justify-center bg-muted/50 p-4">
-                {isImage(item.mime_type) ? (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img 
-                    src={item.url} 
-                    alt={item.name} 
-                    className="w-full h-full object-contain"
-                  />
-                ) : (
-                  <FileText className="h-12 w-12 text-muted-foreground" />
-                )}
-              </div>
-              
-              <div className="p-3">
-                <p className="text-xs font-medium truncate" title={item.name}>
-                  {item.name}
-                </p>
-                <p className="text-[10px] text-muted-foreground uppercase mt-1">
-                  {(item.size / 1024).toFixed(1)} KB • {item.mime_type.split('/')[1]}
-                </p>
-              </div>
-
-              {/* Overlay Actions */}
-              <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
-                <Button 
-                  size="sm" 
-                  variant="secondary" 
-                  className="w-24"
-                  onClick={() => copyUrl(item.url)}
-                >
-                  <Copy className="mr-2 h-3 w-3" /> Copy URL
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant="destructive" 
-                  className="w-24"
-                  onClick={() => {
-                    if (confirm('Are you sure you want to delete this file?')) {
-                      deleteMutation.mutate(item.id);
-                    }
-                  }}
-                  disabled={deleteMutation.isPending}
-                >
-                  <Trash2 className="mr-2 h-3 w-3" /> Delete
-                </Button>
-              </div>
-            </div>
-          ))}
-
-          {data?.data.length === 0 && (
-            <div className="col-span-full py-12 text-center text-muted-foreground border-2 border-dashed rounded-lg">
-              <ImageIcon className="mx-auto h-12 w-12 mb-4 opacity-20" />
-              <p>No media files uploaded yet.</p>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }
