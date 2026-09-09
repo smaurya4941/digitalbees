@@ -17,6 +17,7 @@ export interface PracticeSummary {
   summary: string | null;
   icon: string | null;
   color_token: string | null;
+  featured_image: string | null;
   href: string;
   sub_services_count?: number;
 }
@@ -37,6 +38,7 @@ export interface PracticeDetail {
   name: string;
   template: 'practice';
   href: string;
+  featured_image: string | null;
   hero: Hero;
   proof_points: ProofPoint[];
   how_we_work: ProcessStep[];

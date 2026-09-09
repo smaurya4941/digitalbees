@@ -1,12 +1,17 @@
 import Link from 'next/link';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { routes } from '@/config/routes';
-import { siteConfig } from '@/config/site';
-import { footerNav } from '@/config/navigation';
 import { Container } from '@/components/ui/Container';
+import { getSettings } from '@/lib/api/settings';
+import { getPublicNavigation, PublicNavItem } from '@/lib/api/navigation';
 
-export default function Footer() {
+export default async function Footer() {
   const year = new Date().getFullYear();
+  const [settings, menus] = await Promise.all([
+    getSettings().catch(() => ({} as import('@/lib/api/settings').SiteSettings)),
+    getPublicNavigation().catch(() => ({} as Record<string, PublicNavItem[]>))
+  ]);
+  const footerGroups = menus.footer || [];
 
   return (
     <footer className="bg-brand-navy-deep text-ink-inverse">
@@ -14,22 +19,21 @@ export default function Footer() {
         <div className="grid gap-12 py-section-md md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-1">
             <span className="text-title-md font-bold tracking-tight text-brand-gold-muted">
-              {siteConfig.name}
+              {settings['site.name'] || 'The Digital Bees'}
             </span>
-            <p className="mt-3 max-w-xs text-body-sm text-neutral-300">{siteConfig.tagline}</p>
+            <p className="mt-3 max-w-xs text-body-sm text-neutral-300">
+              {settings['site.tagline'] || 'Talent + Technology from the same partner.'}
+            </p>
           </div>
 
-          {footerNav.map((group) => (
+          {footerGroups.map((group: PublicNavItem) => (
             <nav key={group.label} aria-label={group.label}>
               <h2 className="text-eyebrow uppercase text-brand-gold-muted">{group.label}</h2>
               <ul className="mt-4 space-y-3">
-                {group.links.map((link) => (
-                  <li key={link.href}>
+                {group.children?.map((link: PublicNavItem) => (
+                  <li key={link.url}>
                     <Link
-                      href={link.href}
-                      {...(link.external
-                        ? { target: '_blank', rel: 'noopener noreferrer' }
-                        : {})}
+                      href={link.url || '#'}
                       className="text-body-sm text-neutral-300 transition-colors hover:text-ink-inverse"
                     >
                       {link.label}
@@ -49,23 +53,23 @@ export default function Footer() {
             </li>
             <li className="flex items-center gap-2">
               <Mail size={16} strokeWidth={1.5} className="text-brand-gold-muted" aria-hidden />
-              <a href={`mailto:${siteConfig.contact.email}`} className="hover:text-ink-inverse">
-                {siteConfig.contact.email}
+              <a href={`mailto:${settings['contact.email'] || 'contact@digitalbees.in'}`} className="hover:text-ink-inverse">
+                {settings['contact.email'] || 'contact@digitalbees.in'}
               </a>
             </li>
             <li className="flex items-center gap-2">
               <Phone size={16} strokeWidth={1.5} className="text-brand-gold-muted" aria-hidden />
               <a
-                href={`tel:${siteConfig.contact.phone.replace(/[^+\d]/g, '')}`}
+                href={`tel:${(settings['contact.phone'] || '+91 836 879 0581').replace(/[^+\d]/g, '')}`}
                 className="hover:text-ink-inverse"
               >
-                {siteConfig.contact.phone}
+                {settings['contact.phone'] || '+91 836 879 0581'}
               </a>
             </li>
           </ul>
           <p className="flex flex-wrap gap-x-4 gap-y-1">
             <span>
-              &copy; {year} {siteConfig.legalName}. All rights reserved.
+              &copy; {year} {settings['site.legal_name'] || 'The Digital Bees Corp'}. All rights reserved.
             </span>
             <Link href={routes.privacy()} className="hover:text-ink-inverse">
               Privacy

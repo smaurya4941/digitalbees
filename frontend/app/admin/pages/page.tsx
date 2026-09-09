@@ -1,132 +1,101 @@
 'use client';
 
 import { useState } from 'react';
-import { usePages } from '@/lib/admin/pages';
-import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Edit, Eye, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
+import { Pencil } from 'lucide-react';
+import { listPages, pageQueryKeys } from '@/lib/admin/pages';
+import { AdminButton, EmptyState, PageHeading, Panel, Spinner, StatusPill } from '@/components/admin/ui';
 
-export default function PagesAdminList() {
+export default function AdminPagesPage() {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = usePages(page);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: pageQueryKeys.list(page),
+    queryFn: ({ signal }) => listPages(page, signal),
+  });
+
+  const rows = data?.data ?? [];
+  const meta = data?.meta;
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Pages</h1>
-          <p className="text-muted-foreground">
-            Manage the content of your dynamic pages.
-          </p>
-        </div>
-      </div>
+      <PageHeading
+        title="Pages"
+        description="URL-to-template bindings resolved by the public site."
+      />
 
-      <div className="border rounded-lg bg-white overflow-hidden shadow-sm">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-muted/50 hover:bg-muted/50">
-              <TableHead className="w-[300px]">URL Path</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Template</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={5} className="h-32 text-center">
-                  <Loader2 className="mx-auto h-6 w-6 animate-spin text-muted-foreground" />
-                </TableCell>
-              </TableRow>
-            ) : data?.data.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
-                  No pages found. Run the database seeders!
-                </TableCell>
-              </TableRow>
-            ) : (
-              data?.data.map((pageData) => (
-                <TableRow key={pageData.id} className="hover:bg-muted/30">
-                  <TableCell className="font-medium font-mono text-sm">
-                    {pageData.url_path}
-                  </TableCell>
-                  <TableCell>{pageData.title}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        pageData.status === 'published'
-                          ? 'default'
-                          : pageData.status === 'draft'
-                          ? 'secondary'
-                          : 'destructive'
-                      }
-                    >
-                      {pageData.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-xs bg-muted px-2 py-1 rounded-md text-muted-foreground font-mono">
-                      {pageData.template_key || 'N/A'}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="sm" asChild>
-                        <a href={pageData.url_path} target="_blank" rel="noreferrer">
-                          <Eye className="h-4 w-4" />
-                        </a>
-                      </Button>
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/admin/pages/${pageData.id}`}>
-                          <Edit className="h-4 w-4 text-blue-600" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
+      <Panel>
+        {isLoading ? (
+          <Spinner />
+        ) : isError ? (
+          <EmptyState title="Couldn’t load pages" description="Refresh the page to try again." />
+        ) : rows.length === 0 ? (
+          <EmptyState title="No pages" description="Pages are seeded from the information architecture." />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[720px] text-sm">
+              <thead>
+                <tr className="border-b border-hairline text-left text-xs font-semibold uppercase tracking-wide text-ink-subtle">
+                  <th className="px-5 py-3">Page</th>
+                  <th className="px-5 py-3">Template</th>
+                  <th className="px-5 py-3">Status</th>
+                  <th className="px-5 py-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-hairline">
+                {rows.map((row) => (
+                  <tr key={row.id} className="group transition-colors hover:bg-neutral-50">
+                    <td className="px-5 py-3.5">
+                      <div className="font-medium text-ink">{row.title || 'Untitled'}</div>
+                      <div className="text-xs text-ink-subtle">{row.url_path}</div>
+                    </td>
+                    <td className="px-5 py-3.5 text-ink-muted">{row.template ?? '—'}</td>
+                    <td className="px-5 py-3.5">
+                      <StatusPill status={row.status} />
+                    </td>
+                    <td className="px-5 py-3.5 text-right">
+                      <Link
+                        href={`/admin/pages/${row.id}`}
+                        className="grid size-9 place-items-center rounded-lg text-ink-muted hover:bg-neutral-100 hover:text-ink ml-auto"
+                        aria-label={`Edit ${row.title}`}
+                      >
+                        <Pencil className="size-4" />
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {meta && meta.last_page > 1 && (
+              <div className="flex items-center justify-between border-t border-hairline px-5 py-3">
+                <p className="text-xs text-ink-subtle">
+                  Page {meta.current_page} of {meta.last_page} · {meta.total} pages
+                </p>
+                <div className="flex gap-2">
+                  <AdminButton
+                    variant="secondary"
+                    size="sm"
+                    disabled={page <= 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  >
+                    Previous
+                  </AdminButton>
+                  <AdminButton
+                    variant="secondary"
+                    size="sm"
+                    disabled={page >= meta.last_page}
+                    onClick={() => setPage((p) => p + 1)}
+                  >
+                    Next
+                  </AdminButton>
+                </div>
+              </div>
             )}
-          </TableBody>
-        </Table>
-
-        {data?.meta && data.meta.last_page > 1 && (
-          <div className="flex items-center justify-between px-4 py-4 border-t">
-            <div className="text-sm text-muted-foreground">
-              Showing <span className="font-medium">{data.meta.from}</span> to{' '}
-              <span className="font-medium">{data.meta.to}</span> of{' '}
-              <span className="font-medium">{data.meta.total}</span> pages
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(p => p + 1)}
-                disabled={page === data.meta.last_page}
-              >
-                Next
-              </Button>
-            </div>
           </div>
         )}
-      </div>
+      </Panel>
     </div>
   );
 }

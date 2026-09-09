@@ -14,12 +14,14 @@ function FullPageLoader() {
   );
 }
 
+/** Rendered outside the authenticated shell — no session required. */
+const PUBLIC_PATHS = ['/admin/login', '/admin/accept-invite'];
+
 function Gate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { status } = useAuth();
 
-  // The login screen renders outside the authenticated shell.
-  if (pathname === '/admin/login') return <>{children}</>;
+  if (PUBLIC_PATHS.includes(pathname)) return <>{children}</>;
 
   if (status === 'loading') return <FullPageLoader />;
   if (status === 'unauthenticated') return <FullPageLoader />; // provider redirects to /admin/login

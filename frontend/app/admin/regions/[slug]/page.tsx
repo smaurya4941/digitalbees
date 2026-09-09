@@ -4,6 +4,9 @@ import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { getRegion, regionQueryKeys } from '@/lib/admin/regions';
 import { RegionForm } from '@/components/admin/RegionForm';
+import { SeoPanel } from '@/components/admin/SeoPanel';
+import { RevisionHistory } from '@/components/admin/RevisionHistory';
+import { WorkflowBar } from '@/components/admin/WorkflowBar';
 import { EmptyState, Spinner } from '@/components/admin/ui';
 import { AdminApiError } from '@/lib/admin/http';
 
@@ -43,5 +46,12 @@ export default function EditRegionPage() {
     return null;
   }
 
-  return <RegionForm region={data} />;
+  return (
+    <div className="space-y-6">
+      <WorkflowBar type="regions" slug={data.slug} />
+      <RegionForm region={data} />
+      <SeoPanel type="regions" slug={data.slug} />
+      <RevisionHistory type="regions" slug={data.slug} />
+    </div>
+  );
 }

@@ -4,6 +4,9 @@ import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { getCaseStudy, caseStudyQueryKeys } from '@/lib/admin/case-studies';
 import { CaseStudyForm } from '@/components/admin/CaseStudyForm';
+import { SeoPanel } from '@/components/admin/SeoPanel';
+import { RevisionHistory } from '@/components/admin/RevisionHistory';
+import { WorkflowBar } from '@/components/admin/WorkflowBar';
 import { EmptyState, Spinner } from '@/components/admin/ui';
 import { AdminApiError } from '@/lib/admin/http';
 
@@ -43,5 +46,12 @@ export default function EditCaseStudyPage() {
     return null;
   }
 
-  return <CaseStudyForm caseStudy={data} />;
+  return (
+    <div className="space-y-6">
+      <WorkflowBar type="case-studies" slug={data.slug} />
+      <CaseStudyForm caseStudy={data} />
+      <SeoPanel type="case-studies" slug={data.slug} />
+      <RevisionHistory type="case-studies" slug={data.slug} />
+    </div>
+  );
 }

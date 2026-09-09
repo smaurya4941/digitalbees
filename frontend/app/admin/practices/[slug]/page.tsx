@@ -6,6 +6,9 @@ import { useQuery } from '@tanstack/react-query';
 import { getPractice, practiceQueryKeys } from '@/lib/admin/practices';
 import { AdminApiError } from '@/lib/admin/http';
 import { PracticeForm } from '@/components/admin/PracticeForm';
+import { SeoPanel } from '@/components/admin/SeoPanel';
+import { RevisionHistory } from '@/components/admin/RevisionHistory';
+import { WorkflowBar } from '@/components/admin/WorkflowBar';
 import { EmptyState, Panel, Spinner } from '@/components/admin/ui';
 
 export default function EditPracticePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -43,5 +46,12 @@ export default function EditPracticePage({ params }: { params: Promise<{ slug: s
     );
   }
 
-  return <PracticeForm practice={data} />;
+  return (
+    <div className="space-y-6">
+      <WorkflowBar type="practices" slug={data.slug} />
+      <PracticeForm practice={data} />
+      <SeoPanel type="practices" slug={data.slug} />
+      <RevisionHistory type="practices" slug={data.slug} />
+    </div>
+  );
 }

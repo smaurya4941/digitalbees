@@ -46,6 +46,7 @@ class PracticeDetailResource extends JsonResource
             'name' => $practice->name,
             'template' => 'practice',
             'href' => "/practices/{$practice->slug}",
+            'featured_image' => $practice->featured_image,
 
             'hero' => [
                 'eyebrow' => self::EYEBROWS[$practice->slug] ?? 'Practice',

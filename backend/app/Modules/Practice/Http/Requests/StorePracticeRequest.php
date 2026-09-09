@@ -25,8 +25,16 @@ class StorePracticeRequest extends FormRequest
             'summary' => ['nullable', 'string', 'max:2000'],
             'icon' => ['nullable', 'string', 'max:100'],
             'color_token' => ['nullable', 'string', 'max:50'],
+            'featured_image' => ['nullable', 'string', 'max:255', 'url'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'status' => ['nullable', Rule::in(ContentStatus::values())],
+            'sub_services' => ['sometimes', 'array'],
+            'sub_services.*.id' => ['nullable', 'integer'],
+            'sub_services.*.name' => ['required', 'string', 'max:150'],
+            'sub_services.*.slug' => ['nullable', 'string', 'max:150', 'alpha_dash'],
+            'sub_services.*.summary' => ['nullable', 'string'],
+            'sub_services.*.status' => ['nullable', Rule::in(ContentStatus::values())],
+            'sub_services.*.sort_order' => ['nullable', 'integer', 'min:0'],
         ];
     }
 

@@ -3,14 +3,19 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Modules\Career\Models\JobPosting;
 use App\Modules\CaseStudy\Models\CaseStudy;
 use App\Modules\Industry\Models\Industry;
+use App\Modules\Media\Models\Media;
 use App\Modules\Media\Repositories\Contracts\MediaRepository;
 use App\Modules\Media\Repositories\Eloquent\EloquentMediaRepository;
+use App\Modules\Page\Models\Page;
 use App\Modules\Practice\Models\Practice;
 use App\Modules\Practice\Models\SubService;
 use App\Modules\Region\Models\Location;
 use App\Modules\Region\Models\Region;
+use App\Modules\Resource\Models\Resource;
+use App\Modules\Seo\Models\Redirect;
 use App\Modules\Technology\Models\Technology;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Gate;
@@ -34,7 +39,12 @@ class AppServiceProvider extends ServiceProvider
             'region' => Region::class,
             'technology' => Technology::class,
             'case_study' => CaseStudy::class,
+            'resource' => Resource::class,
+            'job_posting' => JobPosting::class,
             'location' => Location::class,
+            'page' => Page::class,
+            'media' => Media::class,
+            'redirect' => Redirect::class,
             'user' => User::class,
         ]);
 

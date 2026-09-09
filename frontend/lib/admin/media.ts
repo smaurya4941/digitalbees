@@ -1,53 +1,75 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { adminApi, PaginatedResponse } from './http';
+'use client';
 
-export interface Media {
+import { adminApi, type AdminPaginated } from './http';
+
+export interface AdminMedia {
   id: number;
   name: string;
+  alt_text: string | null;
+  folder: string | null;
   file_name: string;
   mime_type: string;
   size: number;
+  width: number | null;
+  height: number | null;
   url: string;
+  uploaded_by: number | null;
+  uploader_name?: string | null;
   created_at: string;
 }
 
-export function useMedia(page = 1) {
-  return useQuery({
-    queryKey: ['admin', 'media', { page }],
-    queryFn: () =>
-      adminApi.get<PaginatedResponse<Media>>(`/admin/media`, {
-        params: { page },
-      }),
-  });
+export interface MediaUsage {
+  type: string;
+  label: string;
 }
 
-export function useUploadMedia() {
-  const queryClient = useQueryClient();
+export type MediaDetail = AdminMedia & { usages: MediaUsage[] };
 
-  return useMutation({
-    mutationFn: async (file: File) => {
-      const formData = new FormData();
-      formData.append('file', file);
+export type MediaPage = AdminPaginated<AdminMedia> & { meta: { folders: string[] } };
 
-      return adminApi.post<{ data: Media }>('/admin/media', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'media'] });
-    },
-  });
+export interface MediaFilters {
+  q?: string;
+  folder?: string | null;
+  page?: number;
 }
 
-export function useDeleteMedia() {
-  const queryClient = useQueryClient();
+const KEY = ['admin', 'media'] as const;
 
-  return useMutation({
-    mutationFn: (id: number) => adminApi.delete(`/admin/media/${id}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'media'] });
-    },
-  });
+export const mediaQueryKeys = {
+  all: KEY,
+  list: (filters: MediaFilters) => [...KEY, 'list', filters] as const,
+  detail: (id: number) => [...KEY, 'detail', id] as const,
+};
+
+export function listMedia(filters: MediaFilters, signal?: AbortSignal): Promise<MediaPage> {
+  const query: Record<string, string | number | undefined> = {
+    q: filters.q || undefined,
+    page: filters.page,
+  };
+  // `folder=''` means "no folder"; undefined means "any".
+  if (filters.folder !== undefined && filters.folder !== null) query.folder = filters.folder;
+
+  return adminApi.getPage<AdminMedia>('admin/media', { signal, query }) as Promise<MediaPage>;
+}
+
+export function getMediaDetail(id: number, signal?: AbortSignal): Promise<MediaDetail> {
+  return adminApi.get<MediaDetail>(`admin/media/${id}`, signal);
+}
+
+export function uploadMedia(file: File, folder?: string): Promise<AdminMedia> {
+  const form = new FormData();
+  form.append('file', file);
+  if (folder) form.append('folder', folder);
+  return adminApi.post<AdminMedia>('admin/media', form);
+}
+
+export function updateMedia(
+  id: number,
+  input: { name?: string; alt_text?: string | null; folder?: string | null },
+): Promise<AdminMedia> {
+  return adminApi.patch<AdminMedia>(`admin/media/${id}`, input);
+}
+
+export function deleteMedia(id: number, force = false): Promise<{ deleted: boolean; id: number }> {
+  return adminApi.delete(`admin/media/${id}${force ? '?force=1' : ''}`);
 }

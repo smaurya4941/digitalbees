@@ -2,24 +2,36 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Http\Controllers\Api\V1\Admin\Concerns\GuardsPublishing;
+use App\Http\Controllers\Api\V1\Admin\Concerns\RecordsSlugRedirect;
 use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\Region\Http\Requests\StoreRegionRequest;
 use App\Modules\Region\Http\Requests\UpdateRegionRequest;
 use App\Modules\Region\Http\Resources\RegionAdminResource;
+use App\Modules\Region\Models\Region;
 use App\Modules\Region\Services\RegionService;
 use App\Support\Enums\ContentStatus;
+use App\Support\Http\AdminListQuery;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class RegionAdminController extends ApiController
 {
+    use GuardsPublishing;
+    use RecordsSlugRedirect;
+
     public function __construct(private readonly RegionService $regions) {}
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return ApiResponse::collection(
-            RegionAdminResource::collection($this->regions->listForAdmin()),
+        $paginator = AdminListQuery::for($request, Region::class, ['name', 'slug', 'iso_code'], ['updated_at', 'name', 'sort_order'])
+            ->paginate(AdminListQuery::perPage($request))
+            ->withQueryString();
+
+        return ApiResponse::page(
+            $paginator,
+            fn (Region $region) => (new RegionAdminResource($region))->resolve(),
             ['statuses' => ContentStatus::values()],
         );
     }
@@ -52,6 +64,7 @@ class RegionAdminController extends ApiController
         }
 
         $region = $this->regions->update($region, $data);
+        $this->recordSlugRedirect('/regions', $slug, $region->slug);
 
         return ApiResponse::item(new RegionAdminResource($region));
     }
@@ -62,19 +75,5 @@ class RegionAdminController extends ApiController
         $this->regions->delete($region);
 
         return ApiResponse::item(['deleted' => true, 'slug' => $region->slug]);
-    }
-
-    private function guardPublish(Request $request, ?string $next, ?string $current = null): void
-    {
-        if ($next === null || $next === $current) {
-            return;
-        }
-
-        $touchesPublished = $next === ContentStatus::Published->value
-            || $current === ContentStatus::Published->value;
-
-        if ($touchesPublished && $request->user()?->cannot('content.publish')) {
-            abort(403, 'Publishing content requires the content.publish permission.');
-        }
     }
 }

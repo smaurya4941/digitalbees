@@ -31,6 +31,7 @@ export default function LeadDetailPage() {
     mutationFn: (status: LeadStatus) => setLeadStatus(id, status),
     onSuccess: (updated) => {
       toast.success(`Lead marked as ${updated.status}.`);
+      queryClient.setQueryData(leadQueryKeys.detail(id), updated);
       void queryClient.invalidateQueries({ queryKey: leadQueryKeys.all });
     },
     onError: () => toast.error('Could not update lead status.'),

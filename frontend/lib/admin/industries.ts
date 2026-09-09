@@ -1,12 +1,13 @@
 'use client';
 
-import { adminApi } from './http';
-import type { ContentStatus } from './types';
+import { adminApi, type AdminPaginated } from './http';
+import type { ContentStatus, TaxonomyListFilters } from './types';
 
 const KEY = ['admin', 'industries'] as const;
 
 export const industryQueryKeys = {
   all: KEY,
+  list: (filters: TaxonomyListFilters) => [...KEY, 'list', filters] as const,
   detail: (slug: string) => [...KEY, slug] as const,
 };
 
@@ -32,8 +33,19 @@ export type IndustryInput = {
   sort_order?: number;
 };
 
-export function listIndustries(signal?: AbortSignal): Promise<AdminIndustry[]> {
-  return adminApi.get<AdminIndustry[]>('admin/industries', signal);
+export function listIndustries(
+  filters: TaxonomyListFilters,
+  signal?: AbortSignal,
+): Promise<AdminPaginated<AdminIndustry>> {
+  return adminApi.getPage<AdminIndustry>('admin/industries', {
+    signal,
+    query: {
+      q: filters.q || undefined,
+      status: filters.status || undefined,
+      page: filters.page,
+      sort: filters.sort,
+    },
+  });
 }
 
 export function getIndustry(slug: string, signal?: AbortSignal): Promise<AdminIndustry> {

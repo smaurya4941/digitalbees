@@ -2,24 +2,36 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Http\Controllers\Api\V1\Admin\Concerns\GuardsPublishing;
+use App\Http\Controllers\Api\V1\Admin\Concerns\RecordsSlugRedirect;
 use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\Technology\Http\Requests\StoreTechnologyRequest;
 use App\Modules\Technology\Http\Requests\UpdateTechnologyRequest;
 use App\Modules\Technology\Http\Resources\TechnologyAdminResource;
+use App\Modules\Technology\Models\Technology;
 use App\Modules\Technology\Services\TechnologyService;
 use App\Support\Enums\ContentStatus;
+use App\Support\Http\AdminListQuery;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class TechnologyAdminController extends ApiController
 {
+    use GuardsPublishing;
+    use RecordsSlugRedirect;
+
     public function __construct(private readonly TechnologyService $technologies) {}
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return ApiResponse::collection(
-            TechnologyAdminResource::collection($this->technologies->listForAdmin()),
+        $paginator = AdminListQuery::for($request, Technology::class, ['name', 'slug'], ['updated_at', 'name', 'sort_order'])
+            ->paginate(AdminListQuery::perPage($request))
+            ->withQueryString();
+
+        return ApiResponse::page(
+            $paginator,
+            fn (Technology $technology) => (new TechnologyAdminResource($technology))->resolve(),
             ['statuses' => ContentStatus::values()],
         );
     }
@@ -52,6 +64,7 @@ class TechnologyAdminController extends ApiController
         }
 
         $technology = $this->technologies->update($technology, $data);
+        $this->recordSlugRedirect('/technologies', $slug, $technology->slug);
 
         return ApiResponse::item(new TechnologyAdminResource($technology));
     }
@@ -62,19 +75,5 @@ class TechnologyAdminController extends ApiController
         $this->technologies->delete($technology);
 
         return ApiResponse::item(['deleted' => true, 'slug' => $technology->slug]);
-    }
-
-    private function guardPublish(Request $request, ?string $next, ?string $current = null): void
-    {
-        if ($next === null || $next === $current) {
-            return;
-        }
-
-        $touchesPublished = $next === ContentStatus::Published->value
-            || $current === ContentStatus::Published->value;
-
-        if ($touchesPublished && $request->user()?->cannot('content.publish')) {
-            abort(403, 'Publishing content requires the content.publish permission.');
-        }
     }
 }

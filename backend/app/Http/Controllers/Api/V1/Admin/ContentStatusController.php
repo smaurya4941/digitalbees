@@ -7,7 +7,9 @@ use App\Jobs\NotifyFrontendRevalidate;
 use App\Modules\CaseStudy\Models\CaseStudy;
 use App\Modules\Industry\Models\Industry;
 use App\Modules\Practice\Models\Practice;
+use App\Modules\Region\Models\Location;
 use App\Modules\Region\Models\Region;
+use App\Modules\Resource\Models\Resource;
 use App\Modules\Technology\Models\Technology;
 use App\Support\Enums\ContentStatus;
 use App\Support\Http\ApiResponse;
@@ -32,6 +34,8 @@ class ContentStatusController extends ApiController
         'regions' => Region::class,
         'technologies' => Technology::class,
         'case-studies' => CaseStudy::class,
+        'resources' => Resource::class,
+        'locations' => Location::class,
     ];
 
     /** GET /api/v1/admin/{type} — every row regardless of status. */

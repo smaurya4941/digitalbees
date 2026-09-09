@@ -73,6 +73,11 @@ final class PracticeService
     public function create(array $attributes): Practice
     {
         $practice = $this->practices->create($attributes);
+        
+        if (array_key_exists('sub_services', $attributes)) {
+            $this->syncSubServices($practice, $attributes['sub_services'] ?? []);
+        }
+
         $this->flush($practice);
 
         return $practice;
@@ -82,6 +87,11 @@ final class PracticeService
     public function update(Practice $practice, array $attributes): Practice
     {
         $practice = $this->practices->update($practice, $attributes);
+        
+        if (array_key_exists('sub_services', $attributes)) {
+            $this->syncSubServices($practice, $attributes['sub_services'] ?? []);
+        }
+
         $this->flush($practice);
 
         return $practice;
@@ -96,6 +106,37 @@ final class PracticeService
     private function flush(Practice $practice): void
     {
         NotifyFrontendRevalidate::dispatch(['practices', "practice:{$practice->slug}"]);
+    }
+
+    /** @param array<int, array<string, mixed>> $subServices */
+    private function syncSubServices(Practice $practice, array $subServices): void
+    {
+        $existingIds = $practice->subServices()->pluck('id')->toArray();
+        $keptIds = [];
+
+        foreach ($subServices as $index => $ssData) {
+            $id = $ssData['id'] ?? null;
+            $payload = [
+                'name' => $ssData['name'],
+                'slug' => $ssData['slug'] ?? \Illuminate\Support\Str::slug($ssData['name']),
+                'summary' => $ssData['summary'] ?? null,
+                'status' => $ssData['status'] ?? ContentStatus::Draft->value,
+                'sort_order' => $ssData['sort_order'] ?? $index,
+            ];
+
+            if ($id && in_array((int)$id, $existingIds, true)) {
+                $practice->subServices()->where('id', $id)->update($payload);
+                $keptIds[] = (int)$id;
+            } else {
+                $newSub = $practice->subServices()->create($payload);
+                $keptIds[] = $newSub->id;
+            }
+        }
+
+        $toDelete = array_diff($existingIds, $keptIds);
+        if (!empty($toDelete)) {
+            $practice->subServices()->whereIn('id', $toDelete)->delete();
+        }
     }
 
     public function statuses(): array

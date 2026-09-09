@@ -24,6 +24,7 @@ class PracticeSummaryResource extends JsonResource
             'summary' => $this->summary,
             'icon' => $this->icon,
             'color_token' => $this->color_token,
+            'featured_image' => $this->featured_image,
             'href' => "/practices/{$this->slug}",
             'sub_services_count' => $this->whenCounted('sub_services'),
         ];

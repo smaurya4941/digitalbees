@@ -5,6 +5,8 @@ export type Permission =
   | 'content.update'
   | 'content.publish'
   | 'content.delete'
+  | 'content.review'
+  | 'content.approve'
   | 'media.upload'
   | 'media.delete'
   | 'seo.update'
@@ -13,11 +15,20 @@ export type Permission =
   | 'inquiries.manage'
   | 'settings.manage'
   | 'users.manage'
-  | 'roles.manage';
+  | 'roles.manage'
+  | 'audit.view';
 
-export type Role = 'admin' | 'staff';
+export type Role = string;
 
 export type ContentStatus = 'draft' | 'published' | 'archived';
+
+/** Query params accepted by the paginated back-office list endpoints. */
+export interface TaxonomyListFilters {
+  q?: string;
+  status?: string;
+  page?: number;
+  sort?: string;
+}
 
 export interface AuthUser {
   id: number;
@@ -29,6 +40,18 @@ export interface AuthUser {
   permissions: Permission[];
 }
 
+export interface AdminSubService {
+  id: number;
+  name: string;
+  slug: string;
+  summary: string | null;
+  body: string | null;
+  status: ContentStatus;
+  sort_order: number;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
 export interface AdminPractice {
   id: number;
   name: string;
@@ -37,9 +60,11 @@ export interface AdminPractice {
   summary: string | null;
   icon: string | null;
   color_token: string | null;
+  featured_image: string | null;
   sort_order: number;
   status: ContentStatus;
   sub_services_count?: number;
+  sub_services?: AdminSubService[];
   href: string;
   created_at: string | null;
   updated_at: string | null;
@@ -52,6 +77,15 @@ export interface PracticeInput {
   summary?: string | null;
   icon?: string | null;
   color_token?: string | null;
+  featured_image?: string | null;
   sort_order?: number;
   status?: ContentStatus;
+  sub_services?: Array<{
+    id?: number;
+    name: string;
+    slug?: string;
+    summary?: string | null;
+    status?: ContentStatus;
+    sort_order?: number;
+  }>;
 }

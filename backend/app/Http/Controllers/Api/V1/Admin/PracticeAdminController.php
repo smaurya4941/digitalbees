@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Http\Controllers\Api\V1\Admin\Concerns\GuardsPublishing;
+use App\Http\Controllers\Api\V1\Admin\Concerns\RecordsSlugRedirect;
 use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\Practice\Http\Requests\StorePracticeRequest;
 use App\Modules\Practice\Http\Requests\UpdatePracticeRequest;
 use App\Modules\Practice\Http\Resources\PracticeAdminResource;
+use App\Modules\Practice\Models\Practice;
 use App\Modules\Practice\Services\PracticeService;
 use App\Support\Enums\ContentStatus;
+use App\Support\Http\AdminListQuery;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,13 +30,22 @@ use Illuminate\Http\Request;
  */
 class PracticeAdminController extends ApiController
 {
+    use GuardsPublishing;
+    use RecordsSlugRedirect;
+
     public function __construct(private readonly PracticeService $practices) {}
 
-    /** GET /api/v1/admin/practices */
-    public function index(): JsonResponse
+    /** GET /api/v1/admin/practices — paginated, `?q=` / `?status=` / `?sort=` aware. */
+    public function index(Request $request): JsonResponse
     {
-        return ApiResponse::collection(
-            PracticeAdminResource::collection($this->practices->listForAdmin()),
+        $paginator = AdminListQuery::for($request, Practice::class, ['name', 'slug'], ['updated_at', 'name', 'sort_order'])
+            ->withCount('subServices')
+            ->paginate(AdminListQuery::perPage($request))
+            ->withQueryString();
+
+        return ApiResponse::page(
+            $paginator,
+            fn (Practice $practice) => (new PracticeAdminResource($practice))->resolve(),
             ['statuses' => ContentStatus::values()],
         );
     }
@@ -41,7 +54,7 @@ class PracticeAdminController extends ApiController
     public function show(string $slug): JsonResponse
     {
         return ApiResponse::item(
-            new PracticeAdminResource($this->practices->findForAdmin($slug)->loadCount('subServices')),
+            new PracticeAdminResource($this->practices->findForAdmin($slug)->loadCount('subServices')->load('subServices')),
         );
     }
 
@@ -68,6 +81,7 @@ class PracticeAdminController extends ApiController
         }
 
         $practice = $this->practices->update($practice, $data);
+        $this->recordSlugRedirect('/practices', $slug, $practice->slug);
 
         return ApiResponse::item(new PracticeAdminResource($practice));
     }
@@ -79,22 +93,5 @@ class PracticeAdminController extends ApiController
         $this->practices->delete($practice);
 
         return ApiResponse::item(['deleted' => true, 'slug' => $practice->slug]);
-    }
-
-    /**
-     * Only users with `content.publish` may set or clear the `published` state.
-     */
-    private function guardPublish(Request $request, ?string $next, ?string $current = null): void
-    {
-        if ($next === null || $next === $current) {
-            return;
-        }
-
-        $touchesPublished = $next === ContentStatus::Published->value
-            || $current === ContentStatus::Published->value;
-
-        if ($touchesPublished && $request->user()?->cannot('content.publish')) {
-            abort(403, 'Publishing content requires the content.publish permission.');
-        }
     }
 }

@@ -26,10 +26,12 @@ class PracticeAdminResource extends JsonResource
             'summary' => $this->summary,
             'icon' => $this->icon,
             'color_token' => $this->color_token,
+            'featured_image' => $this->featured_image,
             'sort_order' => $this->sort_order,
             'status' => $this->status instanceof \App\Support\Enums\ContentStatus
                 ? $this->status->value
                 : $this->status,
+            'sub_services' => SubServiceAdminResource::collection($this->whenLoaded('subServices')),
             'sub_services_count' => $this->whenCounted('sub_services'),
             'href' => "/practices/{$this->slug}",
             'created_at' => $this->created_at?->toIso8601String(),

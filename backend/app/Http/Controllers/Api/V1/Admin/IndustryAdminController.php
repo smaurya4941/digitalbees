@@ -2,25 +2,37 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Http\Controllers\Api\V1\Admin\Concerns\GuardsPublishing;
+use App\Http\Controllers\Api\V1\Admin\Concerns\RecordsSlugRedirect;
 use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\Industry\Http\Requests\StoreIndustryRequest;
 use App\Modules\Industry\Http\Requests\UpdateIndustryRequest;
 use App\Modules\Industry\Http\Resources\IndustryAdminResource;
+use App\Modules\Industry\Models\Industry;
 use App\Modules\Industry\Services\IndustryService;
 use App\Support\Enums\ContentStatus;
+use App\Support\Http\AdminListQuery;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class IndustryAdminController extends ApiController
 {
+    use GuardsPublishing;
+    use RecordsSlugRedirect;
+
     public function __construct(private readonly IndustryService $industries) {}
 
     /** GET /api/v1/admin/industries */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return ApiResponse::collection(
-            IndustryAdminResource::collection($this->industries->listForAdmin()),
+        $paginator = AdminListQuery::for($request, Industry::class, ['name', 'slug'], ['updated_at', 'name', 'sort_order'])
+            ->paginate(AdminListQuery::perPage($request))
+            ->withQueryString();
+
+        return ApiResponse::page(
+            $paginator,
+            fn (Industry $industry) => (new IndustryAdminResource($industry))->resolve(),
             ['statuses' => ContentStatus::values()],
         );
     }
@@ -56,6 +68,7 @@ class IndustryAdminController extends ApiController
         }
 
         $industry = $this->industries->update($industry, $data);
+        $this->recordSlugRedirect('/industries', $slug, $industry->slug);
 
         return ApiResponse::item(new IndustryAdminResource($industry));
     }
@@ -67,22 +80,5 @@ class IndustryAdminController extends ApiController
         $this->industries->delete($industry);
 
         return ApiResponse::item(['deleted' => true, 'slug' => $industry->slug]);
-    }
-
-    /**
-     * Only users with `content.publish` may set or clear the `published` state.
-     */
-    private function guardPublish(Request $request, ?string $next, ?string $current = null): void
-    {
-        if ($next === null || $next === $current) {
-            return;
-        }
-
-        $touchesPublished = $next === ContentStatus::Published->value
-            || $current === ContentStatus::Published->value;
-
-        if ($touchesPublished && $request->user()?->cannot('content.publish')) {
-            abort(403, 'Publishing content requires the content.publish permission.');
-        }
     }
 }

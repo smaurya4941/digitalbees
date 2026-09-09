@@ -2,24 +2,36 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Http\Controllers\Api\V1\Admin\Concerns\GuardsPublishing;
+use App\Http\Controllers\Api\V1\Admin\Concerns\RecordsSlugRedirect;
 use App\Http\Controllers\Api\V1\ApiController;
 use App\Modules\CaseStudy\Http\Requests\StoreCaseStudyRequest;
 use App\Modules\CaseStudy\Http\Requests\UpdateCaseStudyRequest;
 use App\Modules\CaseStudy\Http\Resources\CaseStudyAdminResource;
+use App\Modules\CaseStudy\Models\CaseStudy;
 use App\Modules\CaseStudy\Services\CaseStudyService;
 use App\Support\Enums\ContentStatus;
+use App\Support\Http\AdminListQuery;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CaseStudyAdminController extends ApiController
 {
+    use GuardsPublishing;
+    use RecordsSlugRedirect;
+
     public function __construct(private readonly CaseStudyService $caseStudies) {}
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return ApiResponse::collection(
-            CaseStudyAdminResource::collection($this->caseStudies->listForAdmin()),
+        $paginator = AdminListQuery::for($request, CaseStudy::class, ['title', 'slug', 'client_name'], ['updated_at', 'title', 'published_at'])
+            ->paginate(AdminListQuery::perPage($request))
+            ->withQueryString();
+
+        return ApiResponse::page(
+            $paginator,
+            fn (CaseStudy $caseStudy) => (new CaseStudyAdminResource($caseStudy))->resolve(),
             ['statuses' => ContentStatus::values()],
         );
     }
@@ -52,6 +64,7 @@ class CaseStudyAdminController extends ApiController
         }
 
         $caseStudy = $this->caseStudies->update($caseStudy, $data);
+        $this->recordSlugRedirect('/case-studies', $slug, $caseStudy->slug);
 
         return ApiResponse::item(new CaseStudyAdminResource($caseStudy));
     }
@@ -62,19 +75,5 @@ class CaseStudyAdminController extends ApiController
         $this->caseStudies->delete($caseStudy);
 
         return ApiResponse::item(['deleted' => true, 'slug' => $caseStudy->slug]);
-    }
-
-    private function guardPublish(Request $request, ?string $next, ?string $current = null): void
-    {
-        if ($next === null || $next === $current) {
-            return;
-        }
-
-        $touchesPublished = $next === ContentStatus::Published->value
-            || $current === ContentStatus::Published->value;
-
-        if ($touchesPublished && $request->user()?->cannot('content.publish')) {
-            abort(403, 'Publishing content requires the content.publish permission.');
-        }
     }
 }

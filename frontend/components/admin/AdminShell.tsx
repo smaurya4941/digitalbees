@@ -5,28 +5,41 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
+  BookOpen,
+  Briefcase,
   Building2,
   ChevronsUpDown,
+  ClipboardCheck,
   Cpu,
   FileText,
   Globe2,
   Hexagon,
+  History,
   Image as ImageIcon,
   LayoutDashboard,
+  ListTree,
   LogOut,
+  MapPin,
   Menu,
   Mail,
+  Search,
   Settings,
+  ShieldCheck,
+  Signpost,
   Sparkles,
+  Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { useAuth } from './providers';
+import type { Permission } from '@/lib/admin/types';
 
 type NavItem = {
   label: string;
   href: string;
   icon: typeof LayoutDashboard;
   soon?: boolean;
+  /** Shown only when the account holds this permission (admin always). */
+  permission?: Permission;
 };
 
 const primaryNav: NavItem[] = [
@@ -36,13 +49,23 @@ const primaryNav: NavItem[] = [
   { label: 'Regions', href: '/admin/regions', icon: Globe2 },
   { label: 'Technologies', href: '/admin/technologies', icon: Cpu },
   { label: 'Case Studies', href: '/admin/case-studies', icon: FileText },
+  { label: 'Resources', href: '/admin/resources', icon: BookOpen },
+  { label: 'Careers', href: '/admin/careers', icon: Briefcase },
+  { label: 'Offices', href: '/admin/locations', icon: MapPin },
   { label: 'Pages', href: '/admin/pages', icon: FileText },
   { label: 'Media', href: '/admin/media', icon: ImageIcon },
 ];
 
 const adminNav: NavItem[] = [
-  { label: 'Inbox / CRM', href: '/admin/leads', icon: Mail },
-  { label: 'Settings', href: '/admin/settings', icon: Settings, soon: true },
+  { label: 'Review queue', href: '/admin/review-queue', icon: ClipboardCheck, permission: 'content.approve' },
+  { label: 'Inbox / CRM', href: '/admin/leads', icon: Mail, permission: 'inquiries.view' },
+  { label: 'Activity', href: '/admin/activity', icon: History, permission: 'audit.view' },
+  { label: 'Accounts', href: '/admin/users', icon: Users, permission: 'users.manage' },
+  { label: 'Roles', href: '/admin/roles', icon: ShieldCheck, permission: 'roles.manage' },
+  { label: 'Navigation', href: '/admin/navigation', icon: ListTree, permission: 'navigation.update' },
+  { label: 'SEO health', href: '/admin/seo', icon: Search, permission: 'seo.update' },
+  { label: 'Redirects', href: '/admin/redirects', icon: Signpost, permission: 'settings.manage' },
+  { label: 'Settings', href: '/admin/settings', icon: Settings, permission: 'settings.manage' },
 ];
 
 function NavLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {
@@ -87,7 +110,8 @@ function NavLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void 
 }
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
-  const { user, isAdmin } = useAuth();
+  const { user, can } = useAuth();
+  const visibleAdminNav = adminNav.filter((item) => !item.permission || can(item.permission));
 
   return (
     <div className="flex h-full flex-col bg-brand-navy-deep">
@@ -109,12 +133,12 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           <NavLink key={item.href} item={item} onNavigate={onNavigate} />
         ))}
 
-        {isAdmin && (
+        {visibleAdminNav.length > 0 && (
           <>
             <p className="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wider text-white/35">
               Administration
             </p>
-            {adminNav.map((item) => (
+            {visibleAdminNav.map((item) => (
               <NavLink key={item.href} item={item} onNavigate={onNavigate} />
             ))}
           </>

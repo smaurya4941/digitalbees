@@ -8,7 +8,7 @@ class StoreMediaRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->can('content.create') ?? false;
+        return $this->user()?->can('media.upload') ?? false;
     }
 
     public function rules(): array
@@ -17,9 +17,10 @@ class StoreMediaRequest extends FormRequest
             'file' => [
                 'required',
                 'file',
-                'max:10240', // 10MB max
-                'mimetypes:image/jpeg,image/png,image/webp,image/svg+xml,application/pdf',
+                'max:'.(int) config('media.max_size_kb'),
+                'mimetypes:'.implode(',', config('media.mimetypes')),
             ],
+            'folder' => ['nullable', 'string', 'max:100'],
         ];
     }
 }
