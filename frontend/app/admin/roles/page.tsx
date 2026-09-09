@@ -1,20 +1,38 @@
 'use client';
 
 import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
-import { Plus, ShieldCheck } from 'lucide-react';
-import { listRoles, roleQueryKeys } from '@/lib/admin/roles';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Plus, ShieldCheck, Trash2 } from 'lucide-react';
+import { listRoles, deleteRole, roleQueryKeys } from '@/lib/admin/roles';
 import { useAuth } from '@/components/admin/providers';
-import { EmptyState, PageHeading, Panel, Spinner } from '@/components/admin/ui';
+import { EmptyState, PageHeading, Panel, Spinner, useToast } from '@/components/admin/ui';
+import { AdminApiError } from '@/lib/admin/http';
 
 export default function AdminRolesPage() {
   const { can } = useAuth();
   const canManage = can('roles.manage');
+  const queryClient = useQueryClient();
+  const toast = useToast();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: roleQueryKeys.all,
     queryFn: ({ signal }) => listRoles(signal),
     enabled: canManage,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => deleteRole(id),
+    onSuccess: () => {
+      toast.success('Role deleted.');
+      void queryClient.invalidateQueries({ queryKey: roleQueryKeys.all });
+    },
+    onError: (error) => {
+      if (error instanceof AdminApiError && error.status === 422) {
+        toast.error(error.message || 'Cannot delete role.');
+      } else {
+        toast.error('Could not delete the role.');
+      }
+    },
   });
 
   if (!canManage) {
@@ -24,6 +42,16 @@ export default function AdminRolesPage() {
   }
 
   const roles = data?.data ?? [];
+
+  const handleDelete = (id: number, name: string, usersCount: number) => {
+    if (usersCount > 0) {
+      toast.error('Reassign the accounts on this role before deleting it.');
+      return;
+    }
+    if (window.confirm(`Are you sure you want to delete the role "${name}"? This cannot be undone.`)) {
+      deleteMutation.mutate(id);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -53,6 +81,7 @@ export default function AdminRolesPage() {
                   <th className="px-5 py-3">Role</th>
                   <th className="px-5 py-3">Accounts</th>
                   <th className="px-5 py-3">Permissions</th>
+                  <th className="px-5 py-3 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-hairline">
@@ -78,6 +107,19 @@ export default function AdminRolesPage() {
                     <td className="px-5 py-3.5 text-ink-muted">{role.users_count}</td>
                     <td className="px-5 py-3.5 text-ink-muted">
                       {role.is_admin ? 'All' : `${role.permissions.length}`}
+                    </td>
+                    <td className="px-5 py-3.5 text-right">
+                      {!role.is_builtin && (
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(role.id, role.name, role.users_count)}
+                          className="p-2 text-ink-subtle hover:text-red-600 transition-colors"
+                          title="Delete role"
+                          disabled={deleteMutation.isPending}
+                        >
+                          <Trash2 className="size-4" />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

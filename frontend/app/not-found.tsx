@@ -1,19 +1,37 @@
 import type { Metadata } from 'next';
-import NavBar from '@/components/layout/NavBar';
+import NavBar, { NavLink } from '@/components/layout/NavBar';
 import Footer from '@/components/layout/Footer';
 import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
 import { routes } from '@/config/routes';
+import { getPublicNavigation, PublicNavItem } from '@/lib/api/navigation';
+import { getSettings } from '@/lib/api/settings';
 
 export const metadata: Metadata = {
   title: 'Page not found',
   robots: { index: false, follow: true },
 };
 
-export default function NotFound() {
+function mapToNavLinks(items: PublicNavItem[]): NavLink[] {
+  return items.map((item) => ({
+    label: item.label,
+    href: item.url || '#',
+    children: item.children ? mapToNavLinks(item.children) : undefined,
+  }));
+}
+
+export default async function NotFound() {
+  const [menus, settings] = await Promise.all([
+    getPublicNavigation().catch(() => ({} as Record<string, PublicNavItem[]>)),
+    getSettings().catch(() => ({} as import('@/lib/api/settings').SiteSettings)),
+  ]);
+
+  const navItems = mapToNavLinks(menus.header || []);
+  const contactPhone = settings['contact.phone'] || '+91 836 879 0581';
+
   return (
     <>
-      <NavBar />
+      <NavBar navItems={navItems} contactPhone={contactPhone} />
       <main id="main" className="flex-1">
         <Section space="lg">
           <div className="flex max-w-xl flex-col gap-4">

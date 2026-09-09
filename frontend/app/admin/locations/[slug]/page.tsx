@@ -9,6 +9,7 @@ import { AdminApiError } from '@/lib/admin/http';
 import { LocationForm } from '@/components/admin/LocationForm';
 import { SeoPanel } from '@/components/admin/SeoPanel';
 import { RevisionHistory } from '@/components/admin/RevisionHistory';
+import { WorkflowBar } from '@/components/admin/WorkflowBar';
 import { EmptyState, PageHeading, Spinner } from '@/components/admin/ui';
 
 export default function EditLocationPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -55,6 +56,7 @@ export default function EditLocationPage({ params }: { params: Promise<{ slug: s
         </Link>
         <PageHeading title={data.name} description={`/locations/${data.slug}`} />
       </div>
+      <WorkflowBar type="locations" slug={data.slug} />
       <LocationForm location={data} />
       <SeoPanel type="locations" slug={data.slug} />
       <RevisionHistory type="locations" slug={data.slug} />

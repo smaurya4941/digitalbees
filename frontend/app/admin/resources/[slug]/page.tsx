@@ -9,6 +9,7 @@ import { AdminApiError } from '@/lib/admin/http';
 import { ResourceForm } from '@/components/admin/ResourceForm';
 import { SeoPanel } from '@/components/admin/SeoPanel';
 import { RevisionHistory } from '@/components/admin/RevisionHistory';
+import { WorkflowBar } from '@/components/admin/WorkflowBar';
 import { EmptyState, PageHeading, Spinner } from '@/components/admin/ui';
 
 export default function EditResourcePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -55,6 +56,7 @@ export default function EditResourcePage({ params }: { params: Promise<{ slug: s
         </Link>
         <PageHeading title={data.title} description={`/${data.resource_type === 'blog' ? 'insights' : 'resources'}/${data.slug}`} />
       </div>
+      <WorkflowBar type="resources" slug={data.slug} />
       <ResourceForm resource={data} />
       <SeoPanel type="resources" slug={data.slug} />
       <RevisionHistory type="resources" slug={data.slug} />

@@ -7,7 +7,6 @@ import { Menu, X, Phone, ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { routes } from '@/config/routes';
 import { siteConfig } from '@/config/site';
-import { headerNav, practicesMegaMenu } from '@/config/navigation';
 import { Container } from '@/components/ui/Container';
 
 // Temporary Bee Icon Placeholder
@@ -23,7 +22,18 @@ const BeeIcon = () => (
 
 import { motion } from 'framer-motion';
 
-export default function NavBar() {
+export type NavLink = {
+  label: string;
+  href: string;
+  children?: NavLink[];
+};
+
+interface NavBarProps {
+  navItems?: NavLink[];
+  contactPhone?: string;
+}
+
+export default function NavBar({ navItems = [], contactPhone = '+91 836 879 0581' }: NavBarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -84,8 +94,8 @@ export default function NavBar() {
 
           {/* Desktop nav */}
           <nav aria-label="Primary" className="hidden items-center gap-6 lg:flex">
-            {headerNav.map((item) => {
-              if (item.label === 'Services') {
+            {navItems.map((item) => {
+              if (item.children && item.children.length > 0) {
                 return (
                   <div key={item.href} className="relative group">
                     <Link
@@ -104,13 +114,13 @@ export default function NavBar() {
                     {/* Dropdown menu */}
                     <div className="absolute top-full left-0 w-64 pt-2 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 z-50">
                       <div className="bg-white rounded-xl shadow-lg border border-black/5 overflow-hidden flex flex-col py-2">
-                        {practicesMegaMenu.links.map((practice) => (
+                        {item.children.map((child) => (
                           <Link 
-                            key={practice.href} 
-                            href={practice.href}
+                            key={child.href} 
+                            href={child.href}
                             className="px-4 py-2 text-sm font-medium text-ink-muted hover:text-[#FACC15] hover:bg-neutral-50 transition-colors"
                           >
-                            {practice.label}
+                            {child.label}
                           </Link>
                         ))}
                       </div>
@@ -143,7 +153,7 @@ export default function NavBar() {
               </div>
               <div className="flex flex-col">
                 <span className="text-xs font-semibold text-ink-muted">Call Us:</span>
-                <span className="text-sm font-bold text-[#FACC15]">{siteConfig.contact.phone}</span>
+                <span className="text-sm font-bold text-[#FACC15]">{contactPhone}</span>
               </div>
             </div>
 
@@ -184,8 +194,8 @@ export default function NavBar() {
               className="max-h-[calc(100dvh-5rem)] overflow-y-auto border-t border-hairline bg-canvas-raised px-margin-mobile py-4"
             >
               <ul className="flex flex-col">
-                {headerNav.map((item) => {
-                  if (item.label === 'Services') {
+                {navItems.map((item) => {
+                  if (item.children && item.children.length > 0) {
                     return (
                       <li key={item.href} className="border-b border-hairline last:border-0 flex flex-col">
                         <Link
@@ -199,17 +209,17 @@ export default function NavBar() {
                           {item.label}
                         </Link>
                         <div className="flex flex-col pl-4 pb-3 gap-3">
-                           {practicesMegaMenu.links.map((practice) => (
+                           {item.children.map((child) => (
                              <Link
-                               key={practice.href}
-                               href={practice.href}
+                               key={child.href}
+                               href={child.href}
                                className={cn(
                                  "text-sm font-medium transition-colors",
-                                 isActive(practice.href) ? "text-[#FACC15]" : "text-ink-muted"
+                                 isActive(child.href) ? "text-[#FACC15]" : "text-ink-muted"
                                )}
                                onClick={() => setMobileOpen(false)}
                              >
-                               {practice.label}
+                               {child.label}
                              </Link>
                            ))}
                         </div>
@@ -240,7 +250,7 @@ export default function NavBar() {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-xs font-semibold text-ink-muted">Call Us:</span>
-                    <span className="text-sm font-bold text-[#FACC15]">{siteConfig.contact.phone}</span>
+                    <span className="text-sm font-bold text-[#FACC15]">{contactPhone}</span>
                   </div>
                 </div>
                 <Link

@@ -4,6 +4,7 @@ namespace App\Modules\Region\Models;
 
 use App\Support\Concerns\Auditable;
 use App\Support\Concerns\HasRevisions;
+use App\Support\Concerns\HasWorkflow;
 use App\Support\Concerns\IsContentEntity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +17,7 @@ class Location extends Model
 {
     use Auditable;
     use HasRevisions;
+    use HasWorkflow;
     use IsContentEntity;
 
     protected $guarded = [];

@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\V1\Admin\SeoController;
 use App\Http\Controllers\Api\V1\Admin\SettingAdminController;
 use App\Http\Controllers\Api\V1\Admin\TechnologyAdminController;
 use App\Http\Controllers\Api\V1\Admin\UserAdminController;
+use App\Http\Controllers\Api\V1\Admin\WorkflowController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CareerController;
 use App\Http\Controllers\Api\V1\CaseStudyController;
@@ -281,6 +282,22 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
             Route::post('{revision}/restore', [RevisionController::class, 'restore'])
                 ->middleware('permission:content.update')
                 ->name('admin.revisions.restore');
+        });
+
+    // Editorial workflow (P2-2) — review / approve / schedule / publish pipeline.
+    Route::get('admin/workflow/queue', [WorkflowController::class, 'queue'])
+        ->middleware('permission:content.approve')
+        ->name('admin.workflow.queue');
+
+    Route::prefix('admin/{type}/{slug}')
+        ->whereIn('type', App\Support\Content\ContentType::keys())
+        ->group(function (): void {
+            Route::get('workflow', [WorkflowController::class, 'show'])
+                ->middleware('permission:content.update|content.review|content.approve|content.publish')
+                ->name('admin.workflow.show');
+            Route::post('transition', [WorkflowController::class, 'transition'])
+                ->middleware('permission:content.update|content.review|content.approve|content.publish')
+                ->name('admin.workflow.transition');
         });
 
     // CRM / Leads — reading is `inquiries.view`; mutating status/export is `inquiries.manage`.

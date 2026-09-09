@@ -9,6 +9,7 @@ import {
   Briefcase,
   Building2,
   ChevronsUpDown,
+  ClipboardCheck,
   Cpu,
   FileText,
   Globe2,
@@ -56,6 +57,7 @@ const primaryNav: NavItem[] = [
 ];
 
 const adminNav: NavItem[] = [
+  { label: 'Review queue', href: '/admin/review-queue', icon: ClipboardCheck, permission: 'content.approve' },
   { label: 'Inbox / CRM', href: '/admin/leads', icon: Mail, permission: 'inquiries.view' },
   { label: 'Activity', href: '/admin/activity', icon: History, permission: 'audit.view' },
   { label: 'Accounts', href: '/admin/users', icon: Users, permission: 'users.manage' },

@@ -9,6 +9,7 @@ import { AdminApiError } from '@/lib/admin/http';
 import { CareerForm } from '@/components/admin/CareerForm';
 import { SeoPanel } from '@/components/admin/SeoPanel';
 import { RevisionHistory } from '@/components/admin/RevisionHistory';
+import { WorkflowBar } from '@/components/admin/WorkflowBar';
 import { EmptyState, PageHeading, Spinner } from '@/components/admin/ui';
 
 export default function EditCareerPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -68,6 +69,7 @@ export default function EditCareerPage({ params }: { params: Promise<{ slug: str
           }
         />
       </div>
+      <WorkflowBar type="careers" slug={data.slug} />
       <CareerForm job={data} />
       <SeoPanel type="careers" slug={data.slug} />
       <RevisionHistory type="careers" slug={data.slug} />

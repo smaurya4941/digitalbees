@@ -88,6 +88,10 @@ function MenuEditor({ menu }: { menu: NavMenu }) {
     onSuccess: (fresh) => {
       toast.success('Navigation saved.');
       queryClient.setQueryData(navigationQueryKey, fresh);
+      const updatedMenu = fresh.find((m) => m.key_name === menu.key_name);
+      if (updatedMenu) {
+        setItems(structuredClone(updatedMenu.items));
+      }
     },
     onError: (error) =>
       toast.error(

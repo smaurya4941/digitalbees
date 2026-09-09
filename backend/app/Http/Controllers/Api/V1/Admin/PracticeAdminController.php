@@ -54,7 +54,7 @@ class PracticeAdminController extends ApiController
     public function show(string $slug): JsonResponse
     {
         return ApiResponse::item(
-            new PracticeAdminResource($this->practices->findForAdmin($slug)->loadCount('subServices')),
+            new PracticeAdminResource($this->practices->findForAdmin($slug)->loadCount('subServices')->load('subServices')),
         );
     }
 

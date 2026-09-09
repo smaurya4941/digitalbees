@@ -6,6 +6,7 @@ use App\Modules\Career\Enums\JobStatus;
 use App\Modules\Region\Models\Location;
 use App\Support\Concerns\Auditable;
 use App\Support\Concerns\HasRevisions;
+use App\Support\Concerns\HasWorkflow;
 use App\Support\Models\SeoMetadata;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -21,6 +22,7 @@ class JobPosting extends Model
 {
     use Auditable;
     use HasRevisions;
+    use HasWorkflow;
 
     protected $table = 'job_postings';
 
