@@ -31,7 +31,7 @@ export default function ContactForm() {
     };
 
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/leads` : 'http://localhost:8000/api/v1/leads', {
+      const res = await fetch('/backend/api/v1/leads', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
