@@ -2,7 +2,7 @@
 
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import dynamic from "next/dynamic";
-import { ArrowRight } from "lucide-react";
+import { useState } from "react";
 
 const Map = dynamic(() => import("@/components/contact/Map"), {
   ssr: false,
@@ -12,6 +12,42 @@ const Map = dynamic(() => import("@/components/contact/Map"), {
 });
 
 export default function ContactForm() {
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus('submitting');
+    const formData = new FormData(e.currentTarget);
+    
+    const role = formData.get('role');
+    const projectInfo = formData.get('message');
+    
+    const data = {
+      full_name: formData.get('full_name'),
+      email: formData.get('email'),
+      company: formData.get('company'),
+      form_type: 'contact',
+      message: `Role: ${role}\n\nProject Info: ${projectInfo}`
+    };
+
+    try {
+      const res = await fetch(process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/leads` : 'http://localhost:8000/api/v1/leads', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json' 
+        },
+        body: JSON.stringify(data)
+      });
+      
+      if (!res.ok) throw new Error('Failed to submit');
+      setStatus('success');
+      e.currentTarget.reset();
+    } catch (err) {
+      setStatus('error');
+    }
+  };
+
   return (
     <section className="py-24 px-margin-mobile md:px-margin-desktop bg-white">
       <div className="max-w-container-max mx-auto flex flex-col lg:flex-row gap-16 lg:gap-24">
@@ -26,12 +62,26 @@ export default function ContactForm() {
               Reach out to us to deploy pre-trained, performance-ready digital experts tailored to your business needs.
             </p>
 
-            <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
+            {status === 'success' && (
+              <div className="mb-6 p-4 bg-green-50 text-green-700 rounded-xl border border-green-200">
+                Thank you for your message. We will get back to you shortly!
+              </div>
+            )}
+
+            {status === 'error' && (
+              <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-xl border border-red-200">
+                Something went wrong. Please try again later.
+              </div>
+            )}
+
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
               
               {/* Row 1 */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <input 
+                    name="full_name"
+                    required
                     type="text" 
                     placeholder="Full Name" 
                     className="w-full bg-[#F3F4F6] text-ink px-6 py-4 rounded-xl outline-none focus:ring-2 focus:ring-[#FACC15] transition-shadow text-[14px]"
@@ -39,6 +89,8 @@ export default function ContactForm() {
                 </div>
                 <div>
                   <input 
+                    name="email"
+                    required
                     type="email" 
                     placeholder="Work Email Address" 
                     className="w-full bg-[#F3F4F6] text-ink px-6 py-4 rounded-xl outline-none focus:ring-2 focus:ring-[#FACC15] transition-shadow text-[14px]"
@@ -50,6 +102,7 @@ export default function ContactForm() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <input 
+                    name="company"
                     type="text" 
                     placeholder="Company Name / Website URL" 
                     className="w-full bg-[#F3F4F6] text-ink px-6 py-4 rounded-xl outline-none focus:ring-2 focus:ring-[#FACC15] transition-shadow text-[14px]"
@@ -57,6 +110,7 @@ export default function ContactForm() {
                 </div>
                 <div>
                   <select 
+                    name="role"
                     className="w-full bg-[#F3F4F6] text-ink-muted px-6 py-4 rounded-xl outline-none focus:ring-2 focus:ring-[#FACC15] transition-shadow text-[14px] appearance-none"
                     defaultValue=""
                   >
@@ -72,6 +126,8 @@ export default function ContactForm() {
               {/* Row 3 */}
               <div>
                 <textarea 
+                  name="message"
+                  required
                   placeholder="Tell us about your project or hiring timeline..." 
                   rows={5}
                   className="w-full bg-[#F3F4F6] text-ink px-6 py-4 rounded-xl outline-none focus:ring-2 focus:ring-[#FACC15] transition-shadow text-[14px] resize-y"
@@ -82,9 +138,10 @@ export default function ContactForm() {
               <div className="mt-4">
                 <button 
                   type="submit"
-                  className="bg-black text-white px-8 py-4 rounded-xl font-bold text-[15px] hover:bg-black/80 transition-colors shadow-lg shadow-black/10"
+                  disabled={status === 'submitting'}
+                  className="bg-black text-white px-8 py-4 rounded-xl font-bold text-[15px] hover:bg-black/80 transition-colors shadow-lg shadow-black/10 disabled:opacity-50"
                 >
-                  Request Talent Proposal
+                  {status === 'submitting' ? 'Submitting...' : 'Request Talent Proposal'}
                 </button>
               </div>
 

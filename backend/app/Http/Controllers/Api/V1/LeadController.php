@@ -29,9 +29,25 @@ class LeadController extends ApiController
             'form_type' => ['required', 'in:contact,demo_request,newsletter,chatbot'],
             'source_path' => ['nullable', 'string', 'max:500'],
             'utm' => ['nullable', 'array'],
-            'company_website' => ['prohibited'], // honeypot
         ]);
 
-        return ApiResponse::accepted(['status' => 'stub', 'form_type' => $data['form_type']]);
+        // Honeypot check
+        if (!empty($request->input('company_website'))) {
+            return ApiResponse::accepted(['status' => 'honeypot']);
+        }
+
+        $lead = \App\Modules\Lead\Models\Lead::create([
+            'full_name' => $data['full_name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
+            'company' => $data['company'] ?? null,
+            'message' => $data['message'] ?? null,
+            'form_type' => $data['form_type'],
+            'source_path' => $data['source_path'] ?? null,
+            'utm' => $data['utm'] ?? null,
+            'ip_address' => $request->ip(),
+        ]);
+
+        return ApiResponse::accepted(['status' => 'success', 'lead_id' => $lead->id]);
     }
 }
