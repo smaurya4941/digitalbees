@@ -26,6 +26,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  typedRoutes: false,
 };
 
 export default nextConfig;

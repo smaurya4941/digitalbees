@@ -1,6 +1,7 @@
 "use client";
 
 import ScrollReveal from "@/components/ui/ScrollReveal";
+import { clientEnv } from "@/config/environment";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
@@ -31,7 +32,8 @@ export default function ContactForm() {
     };
 
     try {
-      const res = await fetch('/backend/api/v1/leads', {
+      const apiBase = clientEnv.NEXT_PUBLIC_API_BASE_URL.replace(/\/$/, '');
+      const res = await fetch(`${apiBase}/leads`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -40,7 +42,11 @@ export default function ContactForm() {
         body: JSON.stringify(data)
       });
       
-      if (!res.ok) throw new Error('Failed to submit');
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error('API returned non-ok status:', res.status, errText);
+        throw new Error('Failed to submit');
+      }
       setStatus('success');
       e.currentTarget.reset();
     } catch (err) {
