@@ -105,9 +105,10 @@ Route::post('invitations/accept', [InvitationController::class, 'accept'])
     ->middleware('throttle:auth')
     ->name('invitations.accept');
 
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
 Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::get('user', [AuthController::class, 'me'])->name('user');
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 // --- Back-office (authenticated + permission-gated) --------------------------

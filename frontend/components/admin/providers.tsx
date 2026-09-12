@@ -92,6 +92,8 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = useCallback(async () => {
     try {
       await logoutRequest();
+    } catch {
+      // Ignore errors during logout; local session cleanup proceeds in finally
     } finally {
       queryClient.setQueryData(AUTH_KEY, null);
       queryClient.clear();

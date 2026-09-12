@@ -1,6 +1,6 @@
 'use client';
 
-import { adminApi } from './http';
+import { adminApi, AdminApiError } from './http';
 import type { AuthUser } from './types';
 
 export interface LoginCredentials {
@@ -15,7 +15,14 @@ export async function login(credentials: LoginCredentials): Promise<AuthUser> {
 }
 
 export async function logout(): Promise<void> {
-  await adminApi.post('logout');
+  try {
+    await adminApi.post('logout');
+  } catch (error) {
+    if (error instanceof AdminApiError && error.isUnauthenticated) {
+      return;
+    }
+    // Don't crash client on signout failure
+  }
 }
 
 export async function fetchCurrentUser(signal?: AbortSignal): Promise<AuthUser> {
