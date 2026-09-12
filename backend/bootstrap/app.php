@@ -26,6 +26,8 @@ return Application::configure(basePath: dirname(__DIR__))
         apiPrefix: 'api',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
+
         // Sanctum SPA: same-domain requests from the Next.js frontend are
         // authenticated with the encrypted, HTTP-only session cookie. This
         // prepends EnsureFrontendRequestsAreStateful to the `api` group.
