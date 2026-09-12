@@ -13,7 +13,7 @@ export type AdminLead = {
   company: string | null;
   message: string | null;
   form_type: string;
-  utm: any;
+  utm: Record<string, unknown> | null;
   score: number;
   status: LeadStatus;
   crm_reference_id: string | null;

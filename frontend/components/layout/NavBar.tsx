@@ -6,8 +6,6 @@ import { usePathname } from 'next/navigation';
 import { Menu, X, Phone, ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { routes } from '@/config/routes';
-import { siteConfig } from '@/config/site';
-import { Container } from '@/components/ui/Container';
 
 // Temporary Bee Icon Placeholder
 const BeeIcon = () => (
@@ -36,10 +34,12 @@ interface NavBarProps {
 export default function NavBar({ navItems = [], contactPhone = '+91 836 879 0581' }: NavBarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [prevPathname, setPrevPathname] = useState(pathname);
 
-  useEffect(() => {
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setMobileOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
