@@ -13,7 +13,24 @@ import type { NextRequest } from 'next/server';
  * present — a stale-but-present cookie would cause a redirect loop with the
  * client-side auth bounce.
  */
-const SESSION_COOKIE = process.env.NEXT_PUBLIC_ADMIN_SESSION_COOKIE || 'teambees-session';
+const KNOWN_SESSION_COOKIES = [
+  process.env.NEXT_PUBLIC_ADMIN_SESSION_COOKIE,
+  'teambees-session',
+  'laravel-session',
+  'digitalbees-session',
+].filter(Boolean) as string[];
+
+function hasAdminSession(request: NextRequest): boolean {
+  if (KNOWN_SESSION_COOKIES.some((name) => request.cookies.has(name))) {
+    return true;
+  }
+  for (const cookie of request.cookies.getAll()) {
+    if (cookie.name.endsWith('-session') || cookie.name.startsWith('remember_web_')) {
+      return true;
+    }
+  }
+  return false;
+}
 
 /** Reachable without a session — login and the invitation-acceptance flow. */
 const PUBLIC_ADMIN_PATHS = ['/admin/login', '/admin/accept-invite'];
@@ -25,7 +42,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (request.cookies.has(SESSION_COOKIE)) {
+  if (hasAdminSession(request)) {
     return NextResponse.next();
   }
 
