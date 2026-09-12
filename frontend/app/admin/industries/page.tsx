@@ -13,7 +13,7 @@ export default function AdminIndustriesPage() {
   return (
     <TaxonomyListPage<AdminIndustry>
       title="Industries"
-      description="The target sectors shown across the public website."
+      description="The target sectors shown across the public websites."
       basePath="/admin/industries"
       entityLabel="industry"
       queryKeys={industryQueryKeys}
