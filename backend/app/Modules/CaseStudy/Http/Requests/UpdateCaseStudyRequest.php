@@ -26,6 +26,9 @@ class UpdateCaseStudyRequest extends FormRequest
             'solution' => ['nullable', 'string', 'max:2000'],
             'impact' => ['nullable', 'string', 'max:2000'],
             'hero_image' => ['nullable', 'string', 'max:255'],
+            'metrics' => ['sometimes', 'array'],
+            'how_it_works' => ['sometimes', 'array'],
+            'capabilities_used' => ['sometimes', 'array'],
             'status' => ['nullable', Rule::enum(ContentStatus::class)],
             'sort_order' => ['nullable', 'integer'],
         ];

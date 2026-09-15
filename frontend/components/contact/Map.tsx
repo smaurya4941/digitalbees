@@ -16,14 +16,37 @@ const icon = L.icon({
   shadowSize: [41, 41],
 });
 
-export default function Map() {
-  // Using Gurugram coordinates based on Digital Bees' standard office address
-  const position: [number, number] = [28.4111, 77.0425]; // Sector 48, Gurugram
+export interface MapOffice {
+  /** Office / location name as shown in the marker popup. */
+  name: string;
+  /** Short locality line, e.g. "London, United Kingdom". */
+  locality?: string;
+  /** [latitude, longitude] */
+  position: [number, number];
+}
+
+interface MapProps {
+  /**
+   * Offices to plot. Sourced from the `Location` CMS entity once
+   * `/locations` ships; until then the map renders the global delivery view
+   * with no markers rather than a placeholder office.
+   */
+  offices?: MapOffice[];
+}
+
+/** Global view framing TeamBees' six regions when no offices are supplied. */
+const GLOBAL_VIEW = { center: [30, 5] as [number, number], zoom: 2 };
+const OFFICE_VIEW_ZOOM = 11;
+
+export default function Map({ offices = [] }: MapProps) {
+  const [first] = offices;
+  const center = first ? first.position : GLOBAL_VIEW.center;
+  const zoom = first ? (offices.length > 1 ? 3 : OFFICE_VIEW_ZOOM) : GLOBAL_VIEW.zoom;
 
   return (
     <MapContainer
-      center={position}
-      zoom={14}
+      center={center}
+      zoom={zoom}
       scrollWheelZoom={false}
       className="w-full h-full min-h-[400px] z-0"
       style={{ borderRadius: "2rem", zIndex: 0 }}
@@ -32,15 +55,21 @@ export default function Map() {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Marker position={position} icon={icon}>
-        <Popup>
-          <div className="font-sans">
-            <b className="text-black text-sm">The Digital Bees</b>
-            <br />
-            <span className="text-gray-600 text-xs">Sector 48, Gurugram, Haryana</span>
-          </div>
-        </Popup>
-      </Marker>
+      {offices.map((office) => (
+        <Marker key={office.name} position={office.position} icon={icon}>
+          <Popup>
+            <div className="font-sans">
+              <b className="text-black text-sm">{office.name}</b>
+              {office.locality && (
+                <>
+                  <br />
+                  <span className="text-gray-600 text-xs">{office.locality}</span>
+                </>
+              )}
+            </div>
+          </Popup>
+        </Marker>
+      ))}
     </MapContainer>
   );
 }

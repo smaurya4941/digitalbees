@@ -32,6 +32,13 @@ class UpdatePracticeRequest extends FormRequest
             'sort_order' => ['sometimes', 'integer', 'min:0'],
             // Changing publication state needs `content.publish`, checked in the controller.
             'status' => ['sometimes', Rule::in(ContentStatus::values())],
+            'key_stats' => ['sometimes', 'array'],
+            'key_capabilities' => ['sometimes', 'array'],
+            'workflow_steps' => ['sometimes', 'array'],
+            'framework_stack' => ['sometimes', 'array'],
+            'agent_capabilities' => ['sometimes', 'array'],
+            'technical_capabilities' => ['sometimes', 'array'],
+            'servicenow_fit' => ['sometimes', 'array'],
             'sub_services' => ['sometimes', 'array'],
             'sub_services.*.id' => ['nullable', 'integer'],
             'sub_services.*.name' => ['required', 'string', 'max:150'],

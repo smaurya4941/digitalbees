@@ -35,7 +35,7 @@ class TechnologyDetailResource extends JsonResource
                 'eyebrow' => 'Technology',
                 'title' => $technology->name,
                 'description' => $technology->summary,
-                'cta' => ['label' => 'Start a conversation', 'url' => '/contact'],
+                'cta' => ['label' => 'Start a conversation', 'url' => '/contact-us'],
                 'secondary_cta' => ['label' => 'Explore all technologies', 'url' => '/technologies'],
             ],
 

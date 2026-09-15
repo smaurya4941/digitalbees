@@ -158,7 +158,7 @@ every check via `Gate::before`.
 | `content.delete` · `media.delete` · `inquiries.manage` | ✅ | — |
 | `settings.manage` · `users.manage` · `roles.manage` | ✅ | — |
 
-Seeded accounts: `ADMIN_EMAIL` (`admin`); `staff@digitalbees.in` (`staff`, local/testing only).
+Seeded accounts: `ADMIN_EMAIL` (`admin`); `staff@teambees.com` (`staff`, local/testing only).
 
 ### Protected write endpoints
 

@@ -1,5 +1,6 @@
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
+import { routes } from '@/config/routes';
 import type { Cta } from '@/types/content';
 
 type CTABandProps = {
@@ -11,7 +12,7 @@ type CTABandProps = {
 export function CTABand({
   title = 'Let’s talk about what you’re building',
   description = 'Tell us the outcome you need. We’ll bring the talent and the technology to get there.',
-  cta = { label: 'Start a conversation', url: '/contact' },
+  cta = { label: 'Start a conversation', url: routes.contact() },
 }: CTABandProps) {
   return (
     <section className="bg-brand-navy-deep text-ink-inverse">

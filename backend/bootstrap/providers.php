@@ -10,4 +10,5 @@ return [
     App\Modules\Resource\Providers\ResourceServiceProvider::class,
     App\Modules\Career\Providers\CareerServiceProvider::class,
     App\Modules\Lead\Providers\LeadServiceProvider::class,
+    App\Integrations\Crm\CrmServiceProvider::class,
 ];

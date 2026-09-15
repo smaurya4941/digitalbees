@@ -13,11 +13,12 @@ import type { NextRequest } from 'next/server';
  * present — a stale-but-present cookie would cause a redirect loop with the
  * client-side auth bounce.
  */
+// Laravel derives its session cookie from `APP_NAME` (`teambees-session`);
+// `laravel-session` covers a deploy that has not set APP_NAME yet.
 const KNOWN_SESSION_COOKIES = [
   process.env.NEXT_PUBLIC_ADMIN_SESSION_COOKIE,
   'teambees-session',
   'laravel-session',
-  'digitalbees-session',
 ].filter(Boolean) as string[];
 
 function hasAdminSession(request: NextRequest): boolean {

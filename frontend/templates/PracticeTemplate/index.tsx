@@ -6,14 +6,30 @@ import { ProofBar } from '@/components/sections/ProofBar';
 import { ServiceGrid } from '@/components/sections/ServiceGrid';
 import { ProcessSteps } from '@/components/sections/ProcessSteps';
 import { RelatedContent } from '@/components/sections/RelatedContent';
+import { StackTable } from '@/components/sections/StackTable';
+import { TechnicalCapabilities } from '@/components/sections/TechnicalCapabilities';
+import { ServiceNowFit } from '@/components/sections/ServiceNowFit';
+import { CaseStudyGrid } from '@/components/sections/CaseStudyGrid';
 import { RelatedPractices } from '@/components/sections/RelatedPractices';
 import { CTABand } from '@/components/sections/CTABand';
 import { routes } from '@/config/routes';
 import type { PracticeDetail } from '@/types/practice';
+import type { EntitySummary } from '@/types/content';
 
 type PracticeTemplateProps = {
   practice: PracticeDetail;
 };
+
+/** Maps the plain {title,description} key-capability shape onto EntitySummary so it can reuse RelatedContent's card grid. */
+function toEntitySummary(capabilities: PracticeDetail['key_capabilities']): EntitySummary[] {
+  return (capabilities ?? []).map((capability, index) => ({
+    id: index,
+    slug: capability.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    name: capability.title,
+    summary: capability.description,
+    href: '',
+  }));
+}
 
 /**
  * The `practice` template. Renders any practice from structured data alone —
@@ -47,7 +63,29 @@ export function PracticeTemplate({ practice }: PracticeTemplateProps) {
         description={practice.hero.description ?? undefined}
       />
 
+      <RelatedContent
+        items={toEntitySummary(practice.key_capabilities)}
+        eyebrow="Key capabilities"
+        title={`What ${practice.name} builds`}
+        columns={4}
+      />
+
       <ProcessSteps steps={practice.how_we_work} />
+
+      <StackTable
+        rows={practice.framework_stack ?? []}
+        agentCapabilities={practice.agent_capabilities ?? []}
+      />
+
+      <TechnicalCapabilities capabilities={practice.technical_capabilities ?? []} />
+
+      <ServiceNowFit fit={practice.servicenow_fit} />
+
+      <CaseStudyGrid
+        caseStudies={practice.case_studies}
+        eyebrow="Proof"
+        title={`${practice.name} in production`}
+      />
 
       <RelatedContent
         items={practice.industries}

@@ -14,6 +14,15 @@ class NavigationSeeder extends Seeder
 {
     public function run(): void
     {
+        // IA §6.1. Every URL here must resolve to a rendered frontend route —
+        // TaxonomySeedTest enforces that. `/search` joins once its backend
+        // endpoint is implemented (SearchController is still a stub).
+        //
+        // NOTE: IA §1 writes these as `/about` and `/contact`, but the rendered
+        // routes are `/about-us` and `/contact-us`. Seeding what exists;
+        // reconciling the two needs an ADR since §5 freezes URL rules.
+        // `/about-us` itself now 301-redirects to `/company/our-story` (Company
+        // sub-pages, blueprint §26.1) — the nav points at the real destination.
         $this->menu('header', 'Primary navigation', [
             ['label' => 'Practices', 'custom_url' => '/practices'],
             ['label' => 'Industries', 'custom_url' => '/industries'],
@@ -22,7 +31,7 @@ class NavigationSeeder extends Seeder
             ['label' => 'Case Studies', 'custom_url' => '/case-studies'],
             ['label' => 'Insights', 'custom_url' => '/insights'],
             ['label' => 'Careers', 'custom_url' => '/careers'],
-            ['label' => 'About', 'custom_url' => '/about'],
+            ['label' => 'Company', 'custom_url' => '/company/our-story'],
         ]);
 
         $this->menu('mega-practices', 'Practices mega menu', [
@@ -45,21 +54,30 @@ class NavigationSeeder extends Seeder
                 ['label' => 'Locations', 'custom_url' => '/locations'],
             ]],
             ['label' => 'Company', 'custom_url' => null, 'children' => [
-                ['label' => 'About', 'custom_url' => '/about'],
+                ['label' => 'Our Story', 'custom_url' => '/company/our-story'],
+                ['label' => 'Leadership', 'custom_url' => '/company/leadership'],
+                ['label' => 'Partnerships', 'custom_url' => '/company/partnerships'],
+                ['label' => 'Newsroom', 'custom_url' => '/company/newsroom'],
+                ['label' => 'ESG & Community', 'custom_url' => '/company/esg'],
                 ['label' => 'Careers', 'custom_url' => '/careers'],
                 ['label' => 'Insights', 'custom_url' => '/insights'],
+                ['label' => 'Resources', 'custom_url' => '/resources'],
+                ['label' => 'How We Work', 'custom_url' => '/how-we-work'],
                 ['label' => 'Privacy', 'custom_url' => '/privacy'],
                 ['label' => 'Terms', 'custom_url' => '/terms'],
             ]],
+            // Blueprint §32.1: the footer lists all seven practices.
             ['label' => 'Practices', 'custom_url' => null, 'children' => [
                 ['label' => 'Talent Bees', 'custom_url' => '/practices/talent-bees'],
                 ['label' => 'Digital Bees', 'custom_url' => '/practices/digital-bees'],
                 ['label' => 'AI Bees', 'custom_url' => '/practices/ai-bees'],
+                ['label' => 'Marketing Bees', 'custom_url' => '/practices/marketing-bees'],
+                ['label' => 'Quality Bees', 'custom_url' => '/practices/quality-bees'],
                 ['label' => 'ServiceNow Bees', 'custom_url' => '/practices/servicenow-bees'],
                 ['label' => 'Energy Bees', 'custom_url' => '/practices/energy-bees'],
             ]],
             ['label' => 'Connect', 'custom_url' => null, 'children' => [
-                ['label' => 'Contact', 'custom_url' => '/contact'],
+                ['label' => 'Contact', 'custom_url' => '/contact-us'],
                 ['label' => 'LinkedIn', 'custom_url' => 'https://www.linkedin.com/company/teambees'],
                 ['label' => 'X / Twitter', 'custom_url' => 'https://x.com/teambees'],
             ]],

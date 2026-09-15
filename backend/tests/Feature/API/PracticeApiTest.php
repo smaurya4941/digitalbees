@@ -100,13 +100,13 @@ class PracticeApiTest extends TestCase
 
     public function test_sub_service_endpoint_resolves_within_its_practice(): void
     {
-        $this->getJson('/api/v1/practices/ai-bees/sub-services/ml-engineering')
+        $this->getJson('/api/v1/practices/ai-bees/sub-services/ai-agents')
             ->assertOk()
-            ->assertJsonPath('data.slug', 'ml-engineering')
-            ->assertJsonPath('data.href', '/practices/ai-bees/ml-engineering');
+            ->assertJsonPath('data.slug', 'ai-agents')
+            ->assertJsonPath('data.href', '/practices/ai-bees/ai-agents');
 
         // Wrong practice for that sub-service slug.
-        $this->getJson('/api/v1/practices/digital-bees/sub-services/ml-engineering')
+        $this->getJson('/api/v1/practices/digital-bees/sub-services/ai-agents')
             ->assertNotFound();
     }
 }

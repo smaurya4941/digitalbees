@@ -30,6 +30,42 @@ export function toMetadata(seo: SeoBlock): Metadata {
   };
 }
 
+/**
+ * Metadata for entities the API serves without an SEO block (resources,
+ * insights, careers, locations). Keeps title/canonical/OG handling identical
+ * to {@link toMetadata} so those pages are not second-class.
+ */
+export function entityMetadata(input: {
+  title: string;
+  description?: string;
+  path: string;
+  siteUrl: string;
+  type?: 'website' | 'article';
+  publishedTime?: string;
+}): Metadata {
+  const canonical = new URL(input.path, input.siteUrl).toString();
+
+  return {
+    title: input.title,
+    description: input.description,
+    alternates: { canonical },
+    openGraph: {
+      title: input.title,
+      description: input.description,
+      url: canonical,
+      type: input.type ?? 'website',
+      ...(input.type === 'article' && input.publishedTime
+        ? { publishedTime: input.publishedTime }
+        : {}),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: input.title,
+      description: input.description,
+    },
+  };
+}
+
 function parseRobots(value: string | null): Metadata['robots'] {
   if (!value) return undefined;
   const tokens = value.split(',').map((t) => t.trim().toLowerCase());

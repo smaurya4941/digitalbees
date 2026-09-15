@@ -1,7 +1,10 @@
 import Link from 'next/link';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { routes } from '@/config/routes';
+import { siteConfig } from '@/config/site';
+import { footerNav } from '@/config/navigation';
 import { Container } from '@/components/ui/Container';
+import { NewsletterSignup } from '@/components/layout/NewsletterSignup';
 import { getSettings } from '@/lib/api/settings';
 import { getPublicNavigation, PublicNavItem } from '@/lib/api/navigation';
 
@@ -11,7 +14,32 @@ export default async function Footer() {
     getSettings().catch(() => ({} as import('@/lib/api/settings').SiteSettings)),
     getPublicNavigation().catch(() => ({} as Record<string, PublicNavItem[]>))
   ]);
-  const footerGroups = menus.footer || [];
+  // CMS menu is authoritative; fall back to the static tree so the footer
+  // never renders bare when the backend is unreachable or unseeded.
+  const cmsFooter = menus.footer || [];
+  const footerGroups: PublicNavItem[] =
+    cmsFooter.length > 0
+      ? cmsFooter
+      : footerNav.map((group, groupIndex) => ({
+          id: -(groupIndex + 1),
+          label: group.label,
+          url: null,
+          icon: null,
+          children: group.links.map((link, linkIndex) => ({
+            id: -((groupIndex + 1) * 100 + linkIndex),
+            label: link.label,
+            url: link.href,
+            icon: null,
+            children: [],
+          })),
+        }));
+
+  // CMS settings are authoritative; `siteConfig` is the build-time fallback.
+  const siteName = settings['site.name'] || siteConfig.name;
+  const legalName = settings['site.legal_name'] || siteConfig.legalName;
+  const tagline = settings['site.tagline'] || siteConfig.tagline;
+  const email = settings['contact.email'] || siteConfig.contact.email;
+  const phone = settings['contact.phone'] || siteConfig.contact.phone;
 
   return (
     <footer className="bg-brand-navy-deep text-ink-inverse">
@@ -19,11 +47,12 @@ export default async function Footer() {
         <div className="grid gap-12 py-section-md md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-1">
             <span className="text-title-md font-bold tracking-tight text-brand-gold-muted">
-              {settings['site.name'] || 'The Digital Bees'}
+              {siteName}
             </span>
             <p className="mt-3 max-w-xs text-body-sm text-neutral-300">
-              {settings['site.tagline'] || 'Talent + Technology from the same partner.'}
+              {tagline}
             </p>
+            <NewsletterSignup />
           </div>
 
           {footerGroups.map((group: PublicNavItem) => (
@@ -49,27 +78,24 @@ export default async function Footer() {
           <ul className="flex flex-col gap-3 sm:flex-row sm:gap-6">
             <li className="flex items-center gap-2">
               <MapPin size={16} strokeWidth={1.5} className="text-brand-gold-muted" aria-hidden />
-              Global delivery · offices across 6 regions
+              {siteConfig.contact.presence}
             </li>
             <li className="flex items-center gap-2">
               <Mail size={16} strokeWidth={1.5} className="text-brand-gold-muted" aria-hidden />
-              <a href={`mailto:${settings['contact.email'] || 'contact@digitalbees.in'}`} className="hover:text-ink-inverse">
-                {settings['contact.email'] || 'contact@digitalbees.in'}
+              <a href={`mailto:${email}`} className="hover:text-ink-inverse">
+                {email}
               </a>
             </li>
             <li className="flex items-center gap-2">
               <Phone size={16} strokeWidth={1.5} className="text-brand-gold-muted" aria-hidden />
-              <a
-                href={`tel:${(settings['contact.phone'] || '+91 836 879 0581').replace(/[^+\d]/g, '')}`}
-                className="hover:text-ink-inverse"
-              >
-                {settings['contact.phone'] || '+91 836 879 0581'}
+              <a href={`tel:${phone.replace(/[^+\d]/g, '')}`} className="hover:text-ink-inverse">
+                {phone}
               </a>
             </li>
           </ul>
           <p className="flex flex-wrap gap-x-4 gap-y-1">
             <span>
-              &copy; {year} {settings['site.legal_name'] || 'The Digital Bees Corp'}. All rights reserved.
+              &copy; {year} {legalName}. All rights reserved.
             </span>
             <Link href={routes.privacy()} className="hover:text-ink-inverse">
               Privacy

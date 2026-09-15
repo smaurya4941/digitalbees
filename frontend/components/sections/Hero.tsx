@@ -34,7 +34,9 @@ export function Hero({ content, tone, className }: HeroProps) {
           <span
             className={cn(
               'text-eyebrow uppercase',
-              onDark ? 'text-brand-gold-muted' : 'text-brand-gold-muted',
+              // Gold 200 reads on navy (13.09:1); on the light canvas §13.5
+              // bars gold at this size, so the eyebrow falls back to Gray 700.
+              onDark ? 'text-brand-gold-soft' : 'text-ink-muted',
             )}
           >
             {content.eyebrow}

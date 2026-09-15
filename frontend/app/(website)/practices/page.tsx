@@ -11,8 +11,9 @@ import ServicesDeployment from '@/components/services/ServicesDeployment';
 import ServicesFAQ from '@/components/services/ServicesFAQ';
 
 export const metadata: Metadata = {
-  title: 'Services | The Digital Bees',
-  description: `Integrated digital workforce solutions and performance marketing services.`,
+  title: `Practices | ${siteConfig.name}`,
+  description:
+    'Seven specialist practices — Talent, Digital, AI, Marketing, Quality, ServiceNow, and Energy Bees — delivered across six global regions.',
   alternates: { canonical: `${siteConfig.url}/practices` },
 };
 

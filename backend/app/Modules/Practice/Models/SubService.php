@@ -23,6 +23,7 @@ class SubService extends Model
     protected $casts = [
         'sort_order' => 'integer',
         'practice_id' => 'integer',
+        'whats_included' => 'array',
     ];
 
     public function practice(): BelongsTo

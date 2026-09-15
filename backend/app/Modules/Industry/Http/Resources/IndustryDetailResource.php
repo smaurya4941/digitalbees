@@ -34,7 +34,7 @@ class IndustryDetailResource extends JsonResource
                 'eyebrow' => 'Industry',
                 'title' => $industry->name,
                 'description' => $industry->summary,
-                'cta' => ['label' => 'Start a conversation', 'url' => '/contact'],
+                'cta' => ['label' => 'Start a conversation', 'url' => '/contact-us'],
                 'secondary_cta' => ['label' => 'Explore all industries', 'url' => '/industries'],
             ],
 

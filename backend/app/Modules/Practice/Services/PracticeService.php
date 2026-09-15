@@ -6,6 +6,7 @@ use App\Jobs\NotifyFrontendRevalidate;
 use App\Modules\CaseStudy\Services\CaseStudyService;
 use App\Modules\Industry\Models\Industry;
 use App\Modules\Practice\Data\PracticeDetail;
+use App\Modules\Practice\Data\SubServiceDetail;
 use App\Modules\Practice\Models\Practice;
 use App\Modules\Practice\Models\SubService;
 use App\Modules\Practice\Repositories\Contracts\PracticeRepository;
@@ -53,6 +54,28 @@ final class PracticeService
     public function subService(string $practiceSlug, string $subServiceSlug): ?SubService
     {
         return $this->practices->findPublishedSubService($practiceSlug, $subServiceSlug);
+    }
+
+    /**
+     * The full contract for the `sub-service` template (blueprint §22.3):
+     * the sub-service plus up to one related case study, borrowed from its
+     * parent practice's case-study graph since sub-services aren't
+     * individually tagged in `entity_relations`.
+     */
+    public function subServiceDetail(string $practiceSlug, string $subServiceSlug): ?SubServiceDetail
+    {
+        $subService = $this->subService($practiceSlug, $subServiceSlug);
+
+        if ($subService === null) {
+            return null;
+        }
+
+        $practice = $subService->practice;
+        $caseStudies = $practice
+            ? $this->caseStudies->forSubject($practice->getMorphClass(), $practice->id, 1)
+            : collect();
+
+        return new SubServiceDetail(subService: $subService, caseStudies: $caseStudies);
     }
 
     // --- Back-office use-cases ----------------------------------------------
@@ -105,7 +128,13 @@ final class PracticeService
 
     private function flush(Practice $practice): void
     {
-        NotifyFrontendRevalidate::dispatch(['practices', "practice:{$practice->slug}"]);
+        $tags = ['practices', "practice:{$practice->slug}"];
+
+        foreach ($practice->subServices()->pluck('slug') as $subServiceSlug) {
+            $tags[] = "sub-service:{$practice->slug}:{$subServiceSlug}";
+        }
+
+        NotifyFrontendRevalidate::dispatch($tags);
     }
 
     /** @param array<int, array<string, mixed>> $subServices */
@@ -120,6 +149,7 @@ final class PracticeService
                 'name' => $ssData['name'],
                 'slug' => $ssData['slug'] ?? \Illuminate\Support\Str::slug($ssData['name']),
                 'summary' => $ssData['summary'] ?? null,
+                'whats_included' => $ssData['whats_included'] ?? null,
                 'status' => $ssData['status'] ?? ContentStatus::Draft->value,
                 'sort_order' => $ssData['sort_order'] ?? $index,
             ];

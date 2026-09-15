@@ -40,13 +40,13 @@ class SettingAdminTest extends TestCase
     public function test_admin_can_update_settings_and_the_public_endpoint_reflects_it(): void
     {
         $this->actingAs($this->user('admin'))->putJson('/api/v1/admin/settings', [
-            'values' => ['site.name' => 'DigitalBees', 'feature.chatbot_enabled' => false],
+            'values' => ['site.name' => 'Renamed Site', 'feature.chatbot_enabled' => false],
         ])->assertOk();
 
-        $this->assertDatabaseHas('settings', ['key_name' => 'site.name', 'value' => 'DigitalBees']);
+        $this->assertDatabaseHas('settings', ['key_name' => 'site.name', 'value' => 'Renamed Site']);
 
         $public = $this->getJson('/api/v1/settings')->assertOk()->json('data');
-        $this->assertSame('DigitalBees', $public['site.name']);
+        $this->assertSame('Renamed Site', $public['site.name']);
         $this->assertFalse($public['feature.chatbot_enabled']);
     }
 

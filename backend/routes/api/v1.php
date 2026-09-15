@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\V1\Admin\WorkflowController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CareerController;
 use App\Http\Controllers\Api\V1\CaseStudyController;
+use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\ChatbotController;
 use App\Http\Controllers\Api\V1\IndustryController;
 use App\Http\Controllers\Api\V1\InsightController;
@@ -43,6 +44,7 @@ use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\SettingController;
 use App\Http\Controllers\Api\V1\SitemapController;
 use App\Http\Controllers\Api\V1\TechnologyController;
+use App\Http\Controllers\Api\V1\TestimonialController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -59,6 +61,7 @@ Route::get('redirects', [RedirectController::class, 'index'])->name('redirects')
 Route::get('settings', [SettingController::class, 'index'])->name('settings');
 Route::get('sitemap', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('pages/resolve', [PageController::class, 'resolve'])->name('pages.resolve');
+Route::get('pages', [PageController::class, 'index'])->name('pages.index');
 
 // --- Taxonomy / content (read) ------------------------------------------------
 Route::get('practices', [PracticeController::class, 'index'])->name('practices.index');
@@ -73,6 +76,12 @@ Route::get('regions/{region}', [RegionController::class, 'show'])->name('regions
 
 Route::get('technologies', [TechnologyController::class, 'index'])->name('technologies.index');
 Route::get('technologies/{technology}', [TechnologyController::class, 'show'])->name('technologies.show');
+
+Route::get('testimonials', [TestimonialController::class, 'index'])->name('testimonials.index');
+
+Route::get('company/leadership', [CompanyController::class, 'leadership'])->name('company.leadership');
+Route::get('company/partnerships', [CompanyController::class, 'partnerships'])->name('company.partnerships');
+Route::get('company/our-story', [CompanyController::class, 'ourStory'])->name('company.our-story');
 
 Route::get('case-studies', [CaseStudyController::class, 'index'])->name('case-studies.index');
 Route::get('case-studies/{caseStudy}', [CaseStudyController::class, 'show'])->name('case-studies.show');

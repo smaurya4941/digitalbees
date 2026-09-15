@@ -3,17 +3,22 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Support\Http\ApiResponse;
+use App\Support\Search\SearchService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
- * Backed by the Search integration (app/Integrations/Search): a Meilisearch or
- * Algolia adapter behind a contract.
- * Logs the query to search_queries, returns grouped hits (practices, industries,
- * case studies, resources, ...) for the /search page and the header search.
+ * Global search (blueprint §30): queries every Scout-searchable model
+ * (practices, industries, regions, technologies, case studies, resources —
+ * which covers insights too, careers) via {@see SearchService} and returns
+ * results grouped by `type` for the `/search` page and the header search
+ * overlay. Meilisearch in production, the zero-infra `database` engine
+ * everywhere else (config/scout.php).
  */
 class SearchController extends ApiController
 {
+    public function __construct(private readonly SearchService $search) {}
+
     public function index(Request $request): JsonResponse
     {
         $request->validate([
@@ -21,6 +26,11 @@ class SearchController extends ApiController
             'type' => ['nullable', 'string'],
         ]);
 
-        return ApiResponse::notImplemented("SearchService::query('{$request->string('q')}'); GET /api/v1/search?q=");
+        $result = $this->search->search(
+            $request->string('q')->toString(),
+            $request->filled('type') ? $request->string('type')->toString() : null,
+        );
+
+        return ApiResponse::collection($result['results'], ['count' => $result['count']]);
     }
 }

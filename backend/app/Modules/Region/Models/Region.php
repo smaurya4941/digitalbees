@@ -6,6 +6,7 @@ use App\Support\Concerns\Auditable;
 use App\Support\Concerns\HasRevisions;
 use App\Support\Concerns\HasWorkflow;
 use App\Support\Concerns\IsContentEntity;
+use App\Support\Search\SearchableContentEntity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -18,6 +19,7 @@ class Region extends Model
     use HasRevisions;
     use HasWorkflow;
     use IsContentEntity;
+    use SearchableContentEntity;
 
     protected $guarded = [];
 
@@ -28,5 +30,15 @@ class Region extends Model
     public function locations(): HasMany
     {
         return $this->hasMany(Location::class);
+    }
+
+    protected function searchResultType(): string
+    {
+        return 'region';
+    }
+
+    protected function searchResultUrl(): string
+    {
+        return "/regions/{$this->slug}";
     }
 }

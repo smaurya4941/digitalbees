@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Laravel\Scout\Searchable;
 
 /**
  * An open role (schema.sql Module 2, `job_postings`). Public while `status =
@@ -23,6 +24,7 @@ class JobPosting extends Model
     use Auditable;
     use HasRevisions;
     use HasWorkflow;
+    use Searchable;
 
     protected $table = 'job_postings';
 
@@ -58,5 +60,36 @@ class JobPosting extends Model
     public function seo(): MorphOne
     {
         return $this->morphOne(SeoMetadata::class, 'seoable');
+    }
+
+    public function searchableAs(): string
+    {
+        return $this->getTable();
+    }
+
+    /** Only open roles are searchable — a closed posting is not a live page. */
+    public function shouldBeSearchable(): bool
+    {
+        return $this->status === JobStatus::Open;
+    }
+
+    /** @return array<string, mixed> Real columns only — the `database` search engine queries them directly. */
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    public function toSearchResult(): array
+    {
+        return [
+            'type' => 'career',
+            'title' => $this->title,
+            'excerpt' => $this->location?->name,
+            'url' => "/careers/{$this->slug}",
+        ];
     }
 }

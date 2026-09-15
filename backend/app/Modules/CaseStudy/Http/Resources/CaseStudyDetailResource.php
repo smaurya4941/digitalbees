@@ -35,7 +35,7 @@ class CaseStudyDetailResource extends JsonResource
                 'eyebrow' => $study->client_name ? "Case study · {$study->client_name}" : 'Case study',
                 'title' => $study->title,
                 'description' => $study->summary,
-                'cta' => ['label' => 'Start a conversation', 'url' => '/contact'],
+                'cta' => ['label' => 'Start a conversation', 'url' => '/contact-us'],
             ],
 
             'client' => [
@@ -47,6 +47,8 @@ class CaseStudyDetailResource extends JsonResource
             'solution' => $study->solution,
             'results' => $study->results,
             'metrics' => $study->metrics ?? [],
+            'how_it_works' => $study->how_it_works ?? [],
+            'capabilities_used' => $study->capabilities_used ?? [],
             'published_at' => $study->published_at?->toIso8601String(),
 
             'practices' => PracticeSummaryResource::collection($detail->practices),

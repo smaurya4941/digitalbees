@@ -34,7 +34,7 @@ class RegionDetailResource extends JsonResource
                 'eyebrow' => 'Region',
                 'title' => $region->name,
                 'description' => $region->summary,
-                'cta' => ['label' => 'Start a conversation', 'url' => '/contact'],
+                'cta' => ['label' => 'Start a conversation', 'url' => '/contact-us'],
                 'secondary_cta' => ['label' => 'Explore all regions', 'url' => '/regions'],
             ],
 

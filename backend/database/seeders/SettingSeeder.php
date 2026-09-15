@@ -16,8 +16,8 @@ class SettingSeeder extends Seeder
         $settings = [
             ['site.name', 'TeamBees', 'string'],
             ['site.legal_name', 'TeamBees Corp', 'string'],
-            ['site.tagline', 'Talent + Technology from the same partner.', 'string'],
-            ['contact.email', 'contact@teambees.corp', 'string'],
+            ['site.tagline', 'Talent and technology, from the same partner.', 'string'],
+            ['contact.email', 'contact@teambees.com', 'string'],
             ['contact.phone', '+1 (800) 886 9600', 'string'],
             ['social.linkedin', 'https://www.linkedin.com/company/teambees', 'string'],
             ['social.x', 'https://x.com/teambees', 'string'],

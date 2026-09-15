@@ -41,12 +41,12 @@ class PracticeController extends ApiController
     /** GET /api/v1/practices/{practice}/sub-services/{subService} */
     public function subService(string $practice, string $subService): JsonResponse
     {
-        $model = $this->practices->subService($practice, $subService);
+        $detail = $this->practices->subServiceDetail($practice, $subService);
 
-        if ($model === null) {
+        if ($detail === null) {
             throw new NotFoundHttpException("Sub-service [{$practice}/{$subService}] not found.");
         }
 
-        return ApiResponse::item(new SubServiceResource($model));
+        return ApiResponse::item(new SubServiceResource($detail));
     }
 }

@@ -1,6 +1,7 @@
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import Image from "next/image";
 import Link from "next/link";
+import { routes } from "@/config/routes";
 
 export default function AboutBanner() {
   return (
@@ -21,7 +22,7 @@ export default function AboutBanner() {
             Let&apos;s Build Your <span className="font-bold">High-Performing Digital Team</span> &ndash; Contact Us For A Consultation!
           </h2>
           
-          <Link href="/contact" className="relative mt-8 md:mt-0 flex-shrink-0 group z-10">
+          <Link href={routes.contact()} className="relative mt-8 md:mt-0 flex-shrink-0 group z-10">
             <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-[#FACC15] shadow-lg flex items-center justify-center relative overflow-hidden hover:scale-105 transition-transform">
               {/* Rotating text placeholder - in a real app you'd use SVG textPath for curved text */}
               <div className="absolute inset-0 animate-[spin_10s_linear_infinite] flex items-center justify-center">

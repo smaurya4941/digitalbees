@@ -1,16 +1,18 @@
 'use client';
 
 import { Suspense, useState } from 'react';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
-import { ArrowRight, Hexagon, Lock, Mail } from 'lucide-react';
+import { ArrowRight, Lock, Mail } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { login } from '@/lib/admin/auth';
 import { AdminApiError } from '@/lib/admin/http';
 import { AdminButton, Field, TextInput } from '@/components/admin/ui';
+import { siteConfig } from '@/config/site';
 
 const schema = z.object({
   email: z.string().min(1, 'Email is required').email('Enter a valid email'),
@@ -85,11 +87,10 @@ function LoginForm() {
           }}
         />
         <div className="relative flex h-full flex-col justify-between p-12">
-          <div className="flex items-center gap-3">
-            <div className="grid size-9 place-items-center rounded-xl bg-brand-gold text-brand-navy-deep">
-              <Hexagon className="size-5" strokeWidth={2.5} />
-            </div>
-            <span className="text-lg font-semibold text-white">Digital Bees</span>
+          <div className="flex items-center">
+            <span className="flex items-center rounded-lg bg-white px-3 py-1.5">
+              <Image src="/brand/teambees-logo.png" alt={siteConfig.name} width={300} height={103} priority className="h-8 w-auto" />
+            </span>
           </div>
 
           <motion.div
@@ -99,7 +100,7 @@ function LoginForm() {
             className="max-w-md"
           >
             <h1 className="text-3xl font-semibold leading-tight text-white">
-              The Content Studio for the entire Digital Bees website.
+              The Content Studio for the entire TeamBees website.
             </h1>
             <p className="mt-4 text-sm leading-relaxed text-white/60">
               Manage practices, industries, case studies, media and SEO — everything
@@ -108,7 +109,7 @@ function LoginForm() {
           </motion.div>
 
           <p className="text-xs text-white/40">
-            © {new Date().getFullYear()} The Digital Bees Corp. Authorized staff only.
+            © {new Date().getFullYear()} {siteConfig.legalName}. Authorized staff only.
           </p>
         </div>
       </div>
@@ -122,14 +123,12 @@ function LoginForm() {
           className="w-full max-w-sm"
         >
           <div className="mb-8 lg:hidden">
-            <div className="grid size-10 place-items-center rounded-xl bg-brand-navy text-white">
-              <Hexagon className="size-5" strokeWidth={2.5} />
-            </div>
+            <Image src="/brand/teambees-logo.png" alt={siteConfig.name} width={300} height={103} className="h-8 w-auto" />
           </div>
 
           <h2 className="text-2xl font-semibold tracking-tight text-ink">Sign in</h2>
           <p className="mt-1.5 text-sm text-ink-muted">
-            Use your Digital Bees staff account to continue.
+            Use your TeamBees staff account to continue.
           </p>
 
           {formError && (
@@ -146,7 +145,7 @@ function LoginForm() {
                   id="email"
                   type="email"
                   autoComplete="username"
-                  placeholder="you@digitalbees.in"
+                  placeholder="you@teambees.com"
                   className="pl-10"
                   invalid={Boolean(errors.email)}
                   {...register('email')}

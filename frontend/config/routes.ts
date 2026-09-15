@@ -4,8 +4,15 @@
  */
 export const routes = {
   home: () => '/',
-  about: () => '/about-us',
   contact: () => '/contact-us',
+
+  // Company sub-pages (blueprint §26.1) — `/about-us` 301-redirects to
+  // `companyOurStory()` (see next.config.ts's `redirects()`).
+  companyOurStory: () => '/company/our-story',
+  companyLeadership: () => '/company/leadership',
+  companyPartnerships: () => '/company/partnerships',
+  companyNewsroom: () => '/company/newsroom',
+  companyEsg: () => '/company/esg',
   search: (q?: string) => (q ? `/search?q=${encodeURIComponent(q)}` : '/search'),
 
   practices: () => '/practices',

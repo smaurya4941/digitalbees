@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -13,7 +14,6 @@ import {
   Cpu,
   FileText,
   Globe2,
-  Hexagon,
   History,
   Image as ImageIcon,
   LayoutDashboard,
@@ -30,6 +30,7 @@ import {
   Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
+import { siteConfig } from '@/config/site';
 import { useAuth } from './providers';
 import type { Permission } from '@/lib/admin/types';
 
@@ -116,13 +117,10 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="flex h-full flex-col bg-brand-navy-deep">
       <div className="flex h-16 items-center gap-2.5 px-5">
-        <div className="grid size-8 place-items-center rounded-lg bg-brand-gold text-brand-navy-deep">
-          <Hexagon className="size-4.5" strokeWidth={2.5} />
-        </div>
-        <div className="leading-tight">
-          <p className="text-sm font-semibold text-white">Digital Bees</p>
-          <p className="text-[11px] text-white/45">Content Studio</p>
-        </div>
+        <span className="flex items-center rounded-md bg-white px-2 py-1">
+          <Image src="/brand/teambees-logo.png" alt={siteConfig.name} width={300} height={103} className="h-6 w-auto" />
+        </span>
+        <p className="text-[11px] text-white/45">Content Studio</p>
       </div>
 
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">

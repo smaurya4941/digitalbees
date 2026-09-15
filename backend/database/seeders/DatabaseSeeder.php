@@ -24,7 +24,10 @@ class DatabaseSeeder extends Seeder
             LocationSeeder::class,
             CaseStudySeeder::class,
             EntityRelationSeeder::class,
+            TestimonialSeeder::class,
             PageTemplateSeeder::class,
+            CombinatorialPageSeeder::class,
+            CompanySeeder::class,
             NavigationSeeder::class,
             SettingSeeder::class,
         ]);

@@ -7,14 +7,19 @@ use App\Modules\Career\Enums\JobStatus;
 use App\Modules\Career\Models\JobApplication;
 use App\Modules\Career\Models\JobPosting;
 use App\Modules\Career\Repositories\Contracts\CareerRepository;
+use App\Modules\Media\Services\MediaService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class CareerService
 {
-    public function __construct(private readonly CareerRepository $careers) {}
+    public function __construct(
+        private readonly CareerRepository $careers,
+        private readonly MediaService $media,
+    ) {}
 
     /** @return Collection<int, JobPosting> */
     public function listOpen(): Collection
@@ -79,12 +84,16 @@ final class CareerService
             throw new HttpException(422, 'Applications for this role have closed.');
         }
 
+        $resume = $data['resume'] ?? null;
+        $resumeMediaId = $resume instanceof UploadedFile ? $this->media->upload($resume)->id : null;
+
         return JobApplication::create([
             'job_id' => $job->id,
             'full_name' => $data['full_name'],
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
             'cover_note' => $data['cover_note'] ?? null,
+            'resume_media_id' => $resumeMediaId,
             'status' => 'submitted',
         ]);
     }

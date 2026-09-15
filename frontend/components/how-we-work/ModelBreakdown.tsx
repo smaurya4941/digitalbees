@@ -20,7 +20,7 @@ export default function ModelBreakdown() {
     },
     {
       num: "03",
-      pillText: "Driven by The Digital Bees",
+      pillText: "Driven by TeamBees",
       pillBg: "bg-[#F9F6F0]",
       pillTextColor: "text-ink",
       title: "Extended In-House Teams",

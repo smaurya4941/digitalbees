@@ -37,6 +37,8 @@ class PageTemplateSeeder extends Seeder
             ['location-index', 'LocationIndexTemplate', 'Locations hub'],
             ['location', 'LocationTemplate', 'Single location'],
             ['about', 'AboutTemplate', 'About page'],
+            ['company-newsroom', 'CompanyNewsroomTemplate', 'Company: Newsroom'],
+            ['company-esg', 'CompanyEsgTemplate', 'Company: ESG & Community'],
             ['contact', 'ContactTemplate', 'Contact page'],
             ['search', 'SearchTemplate', 'Search results (noindex)'],
             ['legal', 'LegalTemplate', 'Privacy / Terms'],

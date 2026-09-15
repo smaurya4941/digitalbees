@@ -4,13 +4,35 @@
    ========================================================================== */
 
 @theme {
-  /* --- Brand ------------------------------------------------------------ */
-  --color-brand-navy: #0b1f3a;
-  --color-brand-navy-deep: #071324;
-  --color-brand-gold: #c8a24a;
-  --color-brand-gold-muted: #d4af37;
+  /* --- Brand: navy (Blueprint §13.1) ------------------------------------ */
+  --color-brand-navy: #0b1f3a;       /* Primary — header, footer, dark sections */
+  --color-brand-navy-deep: #071527;  /* Navy 900 — hover/pressed, deepest bg */
+  --color-brand-navy-mid: #132b4f;   /* Navy 600 — secondary headings, borders on dark */
+
+  /* --- Brand: gold (Blueprint §13.1) ------------------------------------
+     Gold is an accent, never a large background fill, and never body text on
+     white (§13.5) — use `gold-deep` for gold text on light surfaces and
+     `gold-soft` for gold text/icons on navy. */
+  --color-brand-gold: #c6963a;       /* Bee Gold — CTA fills, borders, icons, 24px+ text */
+  --color-brand-gold-soft: #e9d9ae;  /* Gold 200 — on-dark text/icons, subtle fills */
+  --color-brand-gold-deep: #9c7326;  /* Gold 700 — CTA hover/pressed, gold text on light */
+  /* Deprecated: alias of Bee Gold, kept while components migrate to the
+     three tokens above. Do not use in new work. */
+  --color-brand-gold-muted: #c6963a;
+
   --color-brand-cream: #f7f3e8;
   --color-brand-ink: #0a0a0b;
+
+  /* --- Practice accent tints (Blueprint §13.4) --------------------------
+     Muted tints of the core system for practice wayfinding — tag chips and
+     icon backgrounds only, never large fills or body text. */
+  --color-practice-talent: #4a6fa1;
+  --color-practice-digital: #3f8fa5;
+  --color-practice-ai: #6b4fa1;
+  --color-practice-marketing: #b8862b;
+  --color-practice-quality: #4a8f6b;
+  --color-practice-servicenow: #2e6b4f;
+  --color-practice-energy: #8a5a2e;
 
   /* --- Neutral ramp (0 = white, 1000 = black) ------------------------- */
   --color-neutral-0: #ffffff;
@@ -27,31 +49,41 @@
   --color-neutral-950: #0f1114;
   --color-neutral-1000: #000000;
 
-  /* --- Semantic: base / -surface / -strong --------------------------- */
-  --color-success: #1f8a4c;
+  /* --- Semantic: base / -surface / -strong (Blueprint §13.3) ---------
+     `-surface` (tint) and `-strong` (accessible text) extend the blueprint's
+     three base values; the base hexes are blueprint-exact. */
+  --color-success: #2e7d5b;
   --color-success-surface: #e7f5ec;
   --color-success-strong: #14612f;
-  --color-warning: #b5820e;
+  --color-warning: #b8862b;
   --color-warning-surface: #fbf1dc;
   --color-warning-strong: #7a5606;
-  --color-danger: #ba1a1a;
+  --color-danger: #b3261e;
   --color-danger-surface: #ffdad6;
   --color-danger-strong: #93000a;
   --color-info: #1d5fbf;
   --color-info-surface: #e3edfb;
   --color-info-strong: #143f80;
 
-  /* --- Role aliases (prefer these in components) --------------------- */
+  /* --- Role aliases (prefer these in components) ---------------------
+     Blueprint §13.2 fixes `ink` (Ink), `ink-muted` (Gray 700),
+     `ink-disabled` (Gray 400) and `canvas-sunken` (Gray 100). Body text on
+     white must be `ink` or `ink-muted` only — never `ink-disabled` (§13.5). */
   --color-canvas: #fdfdfd;
   --color-canvas-raised: #ffffff;
-  --color-canvas-sunken: #f2f3f9;
-  --color-ink: #191c20;
-  --color-ink-muted: #44474d;
+  --color-canvas-sunken: #f4f4f2;  /* Gray 100 — section alternation, cards */
+  --color-ink: #1b1b1b;            /* Ink — body copy on white */
+  --color-ink-muted: #4a4a4a;      /* Gray 700 — secondary body, captions */
   --color-ink-subtle: #6f7889;
+  --color-ink-disabled: #9b9b9b;   /* Gray 400 — disabled + placeholder only */
   --color-ink-inverse: #ffffff;
   --color-hairline: #e0e3ea;
   --color-hairline-strong: #c8cdd8;
-  --color-focus-ring: #4d5f7d;
+  /* Blueprint §19.2 — focus indicator is a 2px gold outline. Measured: Bee
+     Gold is only 2.68:1 on the light canvas, under the 3:1 WCAG bar for a
+     non-text indicator, so the ring uses Gold 700 — 4.29:1 on white, 3.90:1
+     on Gray 100, 3.85:1 on navy, 4.27:1 on Navy 900. Passes on every surface. */
+  --color-focus-ring: #9c7326;
 
   /* --- Retained Material-derived palette ----------------------------------
      Consumed by the current homepage sections. New work uses the tokens
@@ -104,7 +136,7 @@
   --color-inverse-on-surface: #eff0f6;
   --color-outline: #75777e;
   --color-outline-variant: #c4c6ce;
-  --color-navy-deep: #071324;
-  --color-gold-muted: #d4af37;
+  --color-navy-deep: #071527;
+  --color-gold-muted: #c6963a;
   --color-glass-dark: rgba(7, 19, 36, 0.75);
 }

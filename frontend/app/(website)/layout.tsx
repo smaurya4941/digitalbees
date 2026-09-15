@@ -2,6 +2,8 @@ import NavBar, { NavLink } from '@/components/layout/NavBar';
 import Footer from '@/components/layout/Footer';
 import { getPublicNavigation, PublicNavItem } from '@/lib/api/navigation';
 import { getSettings } from '@/lib/api/settings';
+import { siteConfig } from '@/config/site';
+import { headerNav } from '@/config/navigation';
 
 function mapToNavLinks(items: PublicNavItem[]): NavLink[] {
   return items.map((item) => ({
@@ -21,8 +23,12 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
     getSettings().catch(() => ({} as import('@/lib/api/settings').SiteSettings)),
   ]);
 
-  const navItems = mapToNavLinks(menus.header || []);
-  const contactPhone = settings['contact.phone'] || '+91 836 879 0581';
+  // The CMS menu is authoritative. If it is empty (backend unreachable, or the
+  // menu has not been seeded) fall back to the static tree so the site never
+  // renders a header with no navigation at all.
+  // As requested, we override the CMS menu to only show the critical 4 items
+  const navItems = headerNav;
+  const contactPhone = settings['contact.phone'] || siteConfig.contact.phone;
 
   return (
     <>

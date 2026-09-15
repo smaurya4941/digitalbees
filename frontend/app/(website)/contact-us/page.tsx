@@ -1,13 +1,16 @@
 import type { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
+import { Container } from '@/components/ui/Container';
+import { Section } from '@/components/ui/Section';
 import PageHeader from '@/components/layout/PageHeader';
 
 import ContactInfo from '@/components/contact/ContactInfo';
-import ContactForm from '@/components/contact/ContactForm';
+import { PersonaContactForm } from '@/components/contact/PersonaContactForm';
 
 export const metadata: Metadata = {
-  title: 'Contact Us | The Digital Bees',
-  description: "Reach out to us to deploy pre-trained, performance-ready digital experts tailored to your business needs.",
+  title: `Contact Us | ${siteConfig.name}`,
+  description:
+    'Tell us what you are trying to solve — staffing, delivery, or both — and we will route you to the right specialist.',
   alternates: { canonical: `${siteConfig.url}/contact-us` },
 };
 
@@ -16,7 +19,11 @@ export default function ContactUsPage() {
     <>
       <PageHeader title="Contact Us" breadcrumb="Contact Us" />
       <ContactInfo />
-      <ContactForm />
+      <Section space="lg">
+        <Container width="narrow">
+          <PersonaContactForm />
+        </Container>
+      </Section>
     </>
   );
 }

@@ -3,10 +3,13 @@
 namespace Tests\Feature\API;
 
 use App\Models\User;
+use App\Modules\Career\Models\JobApplication;
 use App\Modules\Career\Models\JobPosting;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class CareerAdminTest extends TestCase
@@ -121,5 +124,31 @@ class CareerAdminTest extends TestCase
             ->getJson('/api/v1/admin/careers/apply-here/applications')
             ->assertOk()
             ->assertJsonPath('data.0.email', 'dana@example.com');
+    }
+
+    public function test_a_candidate_can_attach_a_resume(): void
+    {
+        Storage::fake(config('media.disk'));
+        $this->job(['slug' => 'apply-with-resume', 'status' => 'open']);
+
+        $this->post('/api/v1/careers/apply-with-resume/apply', [
+            'full_name' => 'Riley Park',
+            'email' => 'riley@example.com',
+            'resume' => UploadedFile::fake()->create('resume.pdf', 200, 'application/pdf'),
+        ])->assertAccepted();
+
+        $application = JobApplication::where('email', 'riley@example.com')->first();
+        $this->assertNotNull($application->resume_media_id);
+    }
+
+    public function test_an_unsupported_resume_file_type_is_rejected(): void
+    {
+        $this->job(['slug' => 'apply-bad-resume', 'status' => 'open']);
+
+        $this->post('/api/v1/careers/apply-bad-resume/apply', [
+            'full_name' => 'Riley Park',
+            'email' => 'riley@example.com',
+            'resume' => UploadedFile::fake()->create('resume.exe', 200, 'application/octet-stream'),
+        ])->assertUnprocessable();
     }
 }

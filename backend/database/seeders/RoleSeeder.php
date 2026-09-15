@@ -111,7 +111,7 @@ class RoleSeeder extends Seeder
         // Seed / promote the first admin account. Password comes from env in
         // real deploys; falls back to a dev default locally.
         $adminUser = User::updateOrCreate(
-            ['email' => env('ADMIN_EMAIL', 'admin@digitalbees.in')],
+            ['email' => env('ADMIN_EMAIL', 'admin@teambees.com')],
             [
                 'name' => env('ADMIN_NAME', 'Site Admin'),
                 'password' => Hash::make(env('ADMIN_PASSWORD', 'password')),
@@ -122,7 +122,7 @@ class RoleSeeder extends Seeder
 
         if (app()->environment('local', 'testing')) {
             $staffUser = User::updateOrCreate(
-                ['email' => 'staff@digitalbees.in'],
+                ['email' => 'staff@teambees.com'],
                 [
                     'name' => 'Staff Member',
                     'password' => Hash::make('password'),

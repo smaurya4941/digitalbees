@@ -20,14 +20,26 @@ arbitrary `px` in components.
 ## 1. Color
 
 ### Brand
-| Token | Value | Use |
-|-------|-------|-----|
-| `brand-navy` | `#0b1f3a` | Primary brand surface, primary button |
-| `brand-navy-deep` | `#071324` | Footer, dark sections, hover of navy |
-| `brand-gold` | `#c8a24a` | Gold hover state |
-| `brand-gold-muted` | `#d4af37` | Accent, secondary button, eyebrow rules |
-| `brand-cream` | `#f7f3e8` | Warm neutral section background |
-| `brand-ink` | `#0a0a0b` | Near-black |
+Values are blueprint-exact (Website Design Blueprint §13.1).
+
+| Token | Value | Blueprint name | Use |
+|-------|-------|----------------|-----|
+| `brand-navy` | `#0b1f3a` | TeamBees Navy | Primary brand surface, primary button |
+| `brand-navy-deep` | `#071527` | Navy 900 | Footer, dark sections, hover of navy |
+| `brand-navy-mid` | `#132b4f` | Navy 600 | Secondary headings, borders on dark |
+| `brand-gold` | `#c6963a` | Bee Gold | CTA fills, borders, icons, 24px+ text |
+| `brand-gold-soft` | `#e9d9ae` | Gold 200 | Gold text/icons **on navy**, subtle fills |
+| `brand-gold-deep` | `#9c7326` | Gold 700 | Focus ring, gold text on light at 24px+ |
+| `brand-gold-muted` | `#c6963a` | — | **Deprecated** alias of Bee Gold; do not use in new work |
+| `brand-cream` | `#f7f3e8` | — | Warm neutral section background |
+| `brand-ink` | `#0a0a0b` | — | Near-black |
+
+### Practice accent tints (§13.4)
+`practice-talent` `#4a6fa1` · `practice-digital` `#3f8fa5` · `practice-ai`
+`#6b4fa1` · `practice-marketing` `#b8862b` · `practice-quality` `#4a8f6b` ·
+`practice-servicenow` `#2e6b4f` · `practice-energy` `#8a5a2e`.
+
+Tag chips and icon backgrounds only — never large fills, never body text.
 
 ### Neutral ramp
 `neutral-0` (white) → `neutral-1000` (black), with `50,100,200,300,400,500,600,
@@ -44,10 +56,11 @@ Four roles — `success` / `warning` / `danger` / `info` — each with three tok
 | `-strong` | text on the surface | `text-danger-strong` |
 
 ### Roles (semantic aliases — prefer these in components)
-`canvas` / `canvas-raised` / `canvas-sunken` — backgrounds.
-`ink` / `ink-muted` / `ink-subtle` / `ink-inverse` — text.
+`canvas` / `canvas-raised` / `canvas-sunken` (`#f4f4f2`, Gray 100) — backgrounds.
+`ink` (`#1b1b1b`) / `ink-muted` (`#4a4a4a`, Gray 700) / `ink-subtle` /
+`ink-disabled` (`#9b9b9b`, Gray 400) / `ink-inverse` — text.
 `hairline` / `hairline-strong` — borders.
-`focus-ring` — the single focus colour.
+`focus-ring` (`#9c7326`, Gold 700) — the single focus colour.
 
 ### Material-derived palette
 The `primary`, `surface-*`, `on-*`, `outline*`, `secondary*`, `tertiary*`,
@@ -57,45 +70,68 @@ role tokens above.** The Material set will be retired when the homepage sections
 are rebuilt on the primitives.
 
 ### Accessibility
-- Body text (`ink` on `canvas`) ≈ 13:1. Muted (`ink-muted`) ≈ 8:1. Both pass
-  WCAG AA and AAA for body copy.
-- `ink-subtle` is for non-essential text only (captions, metadata) — still ≥ 4.5:1.
-- Every interactive element gets the 2px `focus-ring` outline with 2px offset
-  (defined once in `@layer base`).
+Measured ratios (see Blueprint §13.5, §19.2):
+
+- Body text `ink` on white **17.22:1**; `ink-muted` on white **8.86:1**, on
+  `canvas-sunken` **8.05:1**. All pass AA and AAA.
+- `ink-subtle` is for non-essential text only (captions, metadata).
+  `ink-disabled` is for disabled/placeholder **only** — never body text.
+- **Gold is never used for text on a light surface.** Bee Gold on white is
+  2.68:1 and Gold 700 is 4.29:1 — both fail AA at eyebrow/body sizes. Gold text
+  on light is permitted only at 24px+ bold (Gold 700 clears the 3:1 large-text
+  bar). On navy, use `brand-gold-soft` (**13.09:1**).
+- Eyebrows therefore render `ink-muted` on light and `brand-gold-soft` on dark.
+- `focus-ring` is Gold 700, the only gold clearing 3:1 on every surface —
+  white 4.29:1, Gray 100 3.90:1, navy 3.85:1, Navy 900 4.27:1. Applied as a 2px
+  outline with 2px offset, defined once in `@layer base`.
+- Gold button at rest is navy-on-gold (**6.83:1**); it inverts to navy/white on
+  hover (**16.52:1**) because the blueprint's Gold 700 hover measures 3.87:1
+  behind navy text — under AA for 16px semibold.
 - Never signal state with colour alone (pair with icon / text).
 
 ---
 
 ## 2. Typography
 
-Families: `--font-sans` (Inter) for everything, `--font-mono` (JetBrains Mono)
+Families: `--font-sans` (Inter) for everything, `--font-mono` (IBM Plex Mono)
 for eyebrows/labels and code. Loaded via `next/font` — no layout shift.
+`--font-heading` exists and currently resolves to `--font-sans`: Blueprint
+§14.1 calls for a distinct geometric sans (Söhne, or General Sans as the free
+substitute), but both are non-Google faces pending a licence/self-hosting
+decision. Repointing that one token swaps every heading.
 
-| Token | Size / line | Weight | Use |
-|-------|-------------|--------|-----|
-| `display-lg` | 64 / 72 | 800 | Homepage hero only |
-| `display-md` | 52 / 60 | 800 | Template heroes |
-| `headline-xl` | 48 / 56 | 700 | Section headline, big |
-| `h1` | 40 / 48 | 700 | Page `<h1>` |
-| `h2` / `headline-lg` | 32 / 40 | 700 | Section `<h2>` |
-| `h3` | 24 / 32 | 600 | Sub-section |
-| `h4` / `title-md` | 20 / 28 | 600 | Card title |
-| `body-lg` | 18 / 28 | 400 | Lead paragraph |
-| `body-md` | 16 / 24 | 400 | Default body |
-| `body-sm` | 14 / 20 | 400 | Dense UI, captions in cards |
-| `caption` | 12 / 16 | 400 | Metadata, helper text |
-| `eyebrow` | 12 / 16 · +0.12em | 600 | Uppercase kicker above headings (mono) |
-| `label-sm` | 12 / 16 · +0.05em | 600 | Form labels, tags (mono) |
-| `button` | 15 / 20 | 600 | Button text |
-| `nav` | 15 / 20 | 500 | Header nav links |
+Sizes marked **†** are blueprint-exact (§14.2); the rest are system additions
+the blueprint does not specify.
+
+| Token | Desktop | Mobile | Weight | Use |
+|-------|---------|--------|--------|-----|
+| `display-lg` † | 56 / 64 | 36 / 44 | 700 | Homepage hero only |
+| `display-md` | 52 / 60 | — | 800 | Template heroes |
+| `headline-xl` | 48 / 56 | — | 700 | Section headline, big |
+| `h1` † | 40 / 48 | 30 / 38 | 700 | Page `<h1>` |
+| `h2` † | 28 / 36 | 24 / 32 | 700 | Section `<h2>` |
+| `headline-lg` | 32 / 40 | — | 700 | Legacy section headline |
+| `h3` † | 22 / 30 | 20 / 28 | 600 | Sub-section |
+| `h4` / `title-md` | 20 / 28 | — | 600 | Card title |
+| `body-lg` † | 18 / 28 | 17 / 26 | 400 | Lead paragraph |
+| `body-md` † | 16 / 26 | 16 / 24 | 400 | Default body |
+| `body-sm` † | 14 / 20 | 13 / 18 | 400 | Dense UI, captions in cards |
+| `caption` | 12 / 16 | — | 400 | Metadata, helper text |
+| `eyebrow` | 12 / 16 · +0.12em | — | 600 | Uppercase kicker above headings |
+| `label-sm` | 12 / 16 · +0.05em | — | 600 | Form labels, tags |
+| `button` † | 16 / 20 | 15 / 20 | 600 | Button text |
+| `nav` | 15 / 20 | — | 500 | Header nav links |
 
 Usage: `text-h2`, `text-body-md`, etc. The utility applies size **and**
 line-height/letter-spacing/weight from the token — don't add `leading-*` /
 `font-*` alongside it.
 
-**Responsive:** one controlled scale. Step the hero down on mobile
-(`text-headline-lg-mobile md:text-display-lg`); most tokens hold across
-breakpoints. `text-wrap: balance` on headings, `pretty` on paragraphs (base).
+**Responsive:** the mobile column above is applied automatically. Tailwind emits
+every `text-*` utility as `var(--text-<token>)`, so a `@media (max-width: 767px)`
+block at the foot of `tokens/typography.css` redefines those custom properties
+and rescales the whole system at the mobile breakpoint (Blueprint §18.1) — no
+`md:` prefixes needed in components for the blueprint-defined tokens.
+`text-wrap: balance` on headings, `pretty` on paragraphs (base).
 
 ---
 

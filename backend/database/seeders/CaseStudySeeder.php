@@ -7,8 +7,9 @@ use App\Support\Enums\ContentStatus;
 use Illuminate\Database\Seeder;
 
 /**
- * Starter proof content — one flagship case study per practice. Idempotent.
- * Approved placeholder copy; editors refine from the CMS.
+ * Starter proof content — one flagship case study per practice, plus three
+ * additional AI Bees flagships (Divo, HRMS, Testbot). Idempotent. Approved
+ * placeholder copy; editors refine from the CMS.
  */
 class CaseStudySeeder extends Seeder
 {
@@ -25,6 +26,8 @@ class CaseStudySeeder extends Seeder
                     'solution' => $data['solution'],
                     'results' => $data['results'],
                     'metrics' => $data['metrics'],
+                    'how_it_works' => $data['how_it_works'] ?? null,
+                    'capabilities_used' => $data['capabilities_used'] ?? null,
                     'status' => ContentStatus::Published->value,
                     'published_at' => now()->subDays(($order + 1) * 14),
                 ],
@@ -113,6 +116,72 @@ class CaseStudySeeder extends Seeder
                     ['label' => 'Close process', 'value' => '-3 days'],
                     ['label' => 'Manual effort', 'value' => '-50%'],
                 ],
+            ],
+            [
+                'slug' => 'divo-multi-agent-finance-crm',
+                'title' => 'Multi-agent AI unifying Finance and CRM workflows',
+                'client_name' => 'Enterprise Sales & Finance Teams',
+                'summary' => 'A governed multi-agent LangGraph system resolves cross-domain queries across CRM and Finance without hallucinating or leaking data across roles.',
+                'challenge' => 'Sales and finance teams worked in parallel in Zoho CRM and Zoho Books. Queries crossed domains, and generic chatbots hallucinated and leaked data across roles.',
+                'solution' => 'AI Bees built a multi-agent system with episodic and semantic memory scoped per user, hallucinated tool calls intercepted by schema validation, and evals, mutation scoring and planted-bug checks run pre-release.',
+                'results' => 'Sales and finance teams now resolve cross-domain queries through one governed agent system, with faster execution and far fewer handling errors.',
+                'metrics' => [
+                    ['label' => 'Faster task execution', 'value' => '40%'],
+                    ['label' => 'Saved per user / day', 'value' => '45-60 min'],
+                    ['label' => 'Faster bulk operations', 'value' => '80%'],
+                    ['label' => 'Fewer handling errors', 'value' => '40%'],
+                ],
+                'how_it_works' => [
+                    ['step' => 1, 'title' => 'Router agent', 'description' => 'Classifies intent.'],
+                    ['step' => 2, 'title' => 'Domain agent', 'description' => 'Routes to CRM, RAG, or Finance specialist agents.'],
+                    ['step' => 3, 'title' => 'RBAC filter', 'description' => 'Hard reject on any role mismatch.'],
+                    ['step' => 4, 'title' => 'Typed JSON output', 'description' => 'A fallback broadens low-confidence queries.'],
+                ],
+                'capabilities_used' => ['Agentic Architecture', 'Memory & Retrieval', 'Reliability & Governance', 'Evaluation & Quality'],
+            ],
+            [
+                'slug' => 'hrms-ai-workforce-platform',
+                'title' => 'AI workforce platform spanning 10 domains and 5 markets',
+                'client_name' => 'Multi-market Enterprise',
+                'summary' => 'Ten specialist AI agents run recruiting through workforce analytics across five markets, each scoped to its own jurisdiction\'s employment law.',
+                'challenge' => 'Recruiting, HR, compliance and ops sat in separate tools across five markets, each with its own employment law. Generic AI assistants failed every compliance review.',
+                'solution' => 'Ten specialist AI agents, each scoped to its function and jurisdiction, with a human review gate on every employment-consequential output and an audit log on every model call across tenant-isolated client data.',
+                'results' => 'A single governed platform now runs recruiting through workforce analytics across five markets, with faster hiring and lower cost-per-hire.',
+                'metrics' => [
+                    ['label' => 'Faster hiring cycles', 'value' => '60%'],
+                    ['label' => 'Reduction in time-to-fill', 'value' => '50%'],
+                    ['label' => 'Lower cost-per-hire', 'value' => '30%'],
+                    ['label' => 'Saved per recruiter / day', 'value' => '2 hrs'],
+                ],
+                'how_it_works' => [
+                    ['step' => 1, 'title' => 'Recruiting & Sourcing', 'description' => 'Specialist agents handle recruiting, sourcing and screening within each market\'s employment law.'],
+                    ['step' => 2, 'title' => 'Compliance & Onboarding', 'description' => 'Compliance and onboarding agents apply jurisdiction-specific rules automatically.'],
+                    ['step' => 3, 'title' => 'HR Operations & Payroll', 'description' => 'HR operations, payroll review and performance agents keep records consistent across markets.'],
+                    ['step' => 4, 'title' => 'Learning & Workforce Analytics', 'description' => 'Learning & development and workforce analytics agents surface insight back to HR leadership.'],
+                ],
+                'capabilities_used' => ['Agentic Architecture', 'Reliability & Governance'],
+            ],
+            [
+                'slug' => 'testbot-self-healing-ui-tests',
+                'title' => 'AI-generated, self-healing UI tests for desktop apps',
+                'client_name' => 'Desktop Software Team',
+                'summary' => 'A local-first MCP server generates and self-heals autonomous regression tests for native QML/Qt and Windows apps, with zero cloud egress.',
+                'challenge' => 'Desktop teams shipping QML/Qt and Windows apps had no autonomous testing: cloud platforms refused native binaries, and regressions kept escaping to release.',
+                'solution' => 'A local-first MCP server running inside Claude Code generates tests from full source, not a lossy summary, commits them to git with stable IDs, and self-heals on UI churn — no data leaves the machine.',
+                'results' => 'Desktop QA teams ship autonomous, self-healing regression coverage without any cloud egress or credit meters.',
+                'metrics' => [
+                    ['label' => 'Faster UI test authoring', 'value' => '60-85%'],
+                    ['label' => 'Saved per QA engineer / day', 'value' => '3-5 hrs'],
+                    ['label' => 'Faster time-to-green', 'value' => '40-60%'],
+                    ['label' => 'Cloud egress or credit meters', 'value' => '0'],
+                ],
+                'how_it_works' => [
+                    ['step' => 1, 'title' => 'Discovery', 'description' => 'The agent explores the application to map its screens and flows.'],
+                    ['step' => 2, 'title' => 'Plan', 'description' => 'A test plan is drafted against the discovered UI.'],
+                    ['step' => 3, 'title' => 'Generate & Run', 'description' => 'Tests are generated from full source and executed against the app.'],
+                    ['step' => 4, 'title' => 'Heal & Score', 'description' => 'Failing tests self-heal on UI churn and are scored for reliability.'],
+                ],
+                'capabilities_used' => ['Memory & Retrieval', 'Evaluation & Quality', 'Platform & Customization'],
             ],
         ];
     }

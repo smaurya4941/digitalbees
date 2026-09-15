@@ -9,7 +9,7 @@ import AboutBanner from '@/components/about/AboutBanner';
 import ServicesFAQ from '@/components/services/ServicesFAQ';
 
 export const metadata: Metadata = {
-  title: 'How We Work | The Digital Bees',
+  title: `How We Work | ${siteConfig.name}`,
   description: 'Simple, Transparent, and Scalable Talent Deployment.',
   alternates: { canonical: `${siteConfig.url}/how-we-work` },
 };

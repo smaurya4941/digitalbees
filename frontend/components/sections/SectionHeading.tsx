@@ -30,8 +30,10 @@ export function SectionHeading({
       )}
     >
       <div className={cn('flex flex-col gap-3', align === 'start' && 'max-w-2xl')}>
+        {/* Blueprint §13.5 bars gold for small text on light surfaces —
+            even Gold 700 is only 4.29:1 at this 12px size. */}
         {eyebrow && (
-          <span className="text-eyebrow uppercase text-brand-gold-muted">{eyebrow}</span>
+          <span className="text-eyebrow uppercase text-ink-muted">{eyebrow}</span>
         )}
         <Heading className={cn(Heading === 'h2' ? 'text-h2' : 'text-h3', 'text-ink')}>
           {title}

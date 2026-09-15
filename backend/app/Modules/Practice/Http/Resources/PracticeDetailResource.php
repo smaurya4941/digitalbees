@@ -34,6 +34,17 @@ class PracticeDetailResource extends JsonResource
         'energy-bees' => 'Energy Technology',
     ];
 
+    /**
+     * Generic 4-step process used when a practice has no `workflow_steps`
+     * of its own.
+     */
+    private const DEFAULT_HOW_WE_WORK = [
+        ['step' => 1, 'title' => 'Discover', 'description' => 'Assess the goal, constraints and success measures with your team.'],
+        ['step' => 2, 'title' => 'Design', 'description' => 'Shape the approach, team and roadmap; de-risk the hard parts first.'],
+        ['step' => 3, 'title' => 'Deliver', 'description' => 'Ship in short cycles with quality and observability built in.'],
+        ['step' => 4, 'title' => 'Run', 'description' => 'Operate, measure and continually improve against outcomes.'],
+    ];
+
     /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
@@ -52,24 +63,25 @@ class PracticeDetailResource extends JsonResource
                 'eyebrow' => self::EYEBROWS[$practice->slug] ?? 'Practice',
                 'title' => $practice->tagline ?: $practice->name,
                 'description' => $practice->summary,
-                'cta' => ['label' => 'Start a conversation', 'url' => '/contact'],
+                'cta' => ['label' => 'Start a conversation', 'url' => '/contact-us'],
                 'secondary_cta' => ['label' => 'Explore all practices', 'url' => '/practices'],
             ],
 
-            'proof_points' => [
+            'proof_points' => $practice->key_stats ?: [
                 ['value' => $practice->subServices->count(), 'label' => 'Service lines'],
                 ['value' => $detail->industries->count(), 'label' => 'Industries served'],
                 ['value' => $detail->regions->count(), 'label' => 'Delivery regions'],
             ],
 
-            'how_we_work' => [
-                ['step' => 1, 'title' => 'Discover', 'description' => 'Assess the goal, constraints and success measures with your team.'],
-                ['step' => 2, 'title' => 'Design', 'description' => 'Shape the approach, team and roadmap; de-risk the hard parts first.'],
-                ['step' => 3, 'title' => 'Deliver', 'description' => 'Ship in short cycles with quality and observability built in.'],
-                ['step' => 4, 'title' => 'Run', 'description' => 'Operate, measure and continually improve against outcomes.'],
-            ],
+            'how_we_work' => $practice->workflow_steps ?: self::DEFAULT_HOW_WE_WORK,
 
-            'services' => SubServiceResource::collection($practice->subServices),
+            'key_capabilities' => $practice->key_capabilities ?? [],
+            'framework_stack' => $practice->framework_stack ?? [],
+            'agent_capabilities' => $practice->agent_capabilities ?? [],
+            'technical_capabilities' => $practice->technical_capabilities ?? [],
+            'servicenow_fit' => $practice->servicenow_fit,
+
+            'services' => SubServiceSummaryResource::collection($practice->subServices),
             'industries' => IndustrySummaryResource::collection($detail->industries),
             'technologies' => TechnologySummaryResource::collection($detail->technologies),
             'regions' => RegionSummaryResource::collection($detail->regions),

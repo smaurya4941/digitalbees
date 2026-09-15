@@ -35,4 +35,20 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | CRM
+    |--------------------------------------------------------------------------
+    | `driver` selects the App\Integrations\Crm\Contracts\CrmClient binding
+    | (see CrmServiceProvider): `log` is the no-op default that only logs a
+    | sync attempt, `hubspot` is the real HubSpot Contacts API client. Never
+    | defaults to a live driver — a misconfigured deploy degrades to logging,
+    | not silent data loss to a third party.
+    */
+    'crm' => [
+        'driver' => env('CRM_DRIVER', 'log'),
+        'api_base_url' => env('CRM_API_BASE_URL', 'https://api.hubapi.com'),
+        'api_key' => env('CRM_API_KEY'),
+    ],
+
 ];

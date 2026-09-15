@@ -41,12 +41,12 @@ class EntityRelationSeeder extends Seeder
             ],
             'quality-bees' => [
                 'industries' => ['banking-financial-services', 'insurance', 'public-sector', 'telecom'],
-                'technologies' => ['kubernetes', 'terraform'],
+                'technologies' => ['kubernetes', 'terraform', 'playwright'],
                 'regions' => ['uk', 'europe', 'australia'],
             ],
             'servicenow-bees' => [
                 'industries' => ['public-sector', 'banking-financial-services', 'technology-software', 'telecom'],
-                'technologies' => ['servicenow', 'salesforce'],
+                'technologies' => ['servicenow', 'servicenow-itsm', 'servicenow-csm', 'servicenow-itom', 'salesforce'],
                 'regions' => ['usa', 'uk', 'australia'],
             ],
             'marketing-bees' => [
@@ -56,7 +56,7 @@ class EntityRelationSeeder extends Seeder
             ],
             'energy-bees' => [
                 'industries' => ['energy-utilities', 'manufacturing', 'logistics-supply-chain'],
-                'technologies' => ['aws', 'snowflake', 'databricks', 'terraform'],
+                'technologies' => ['endur', 'allegro', 'rightangle', 'triplepoint', 'aws', 'snowflake', 'databricks', 'terraform'],
                 'regions' => ['uk', 'europe', 'uae', 'australia'],
             ],
         ];
@@ -120,6 +120,24 @@ class EntityRelationSeeder extends Seeder
                 'industries' => ['energy-utilities'],
                 'technologies' => ['aws', 'snowflake'],
                 'regions' => ['uk', 'uae'],
+            ],
+            'divo-multi-agent-finance-crm' => [
+                'practices' => ['ai-bees'],
+                'industries' => ['banking-financial-services'],
+                'technologies' => ['openai'],
+                'regions' => ['usa'],
+            ],
+            'hrms-ai-workforce-platform' => [
+                'practices' => ['ai-bees'],
+                'industries' => ['technology-software'],
+                'technologies' => ['openai'],
+                'regions' => ['usa', 'uk', 'uae'],
+            ],
+            'testbot-self-healing-ui-tests' => [
+                'practices' => ['ai-bees'],
+                'industries' => ['technology-software'],
+                'technologies' => ['openai', 'playwright'],
+                'regions' => ['usa'],
             ],
         ];
 

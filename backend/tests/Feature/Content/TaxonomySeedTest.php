@@ -3,6 +3,7 @@
 namespace Tests\Feature\Content;
 
 use App\Modules\Industry\Models\Industry;
+use App\Modules\Page\Models\NavigationItem;
 use App\Modules\Page\Models\NavigationMenu;
 use App\Modules\Page\Models\PageTemplate;
 use App\Modules\Practice\Models\Practice;
@@ -78,9 +79,49 @@ class TaxonomySeedTest extends TestCase
 
         $header = NavigationMenu::where('key_name', 'header')->first();
         $this->assertNotNull($header);
-        $this->assertSame(8, $header->items()->whereNull('parent_id')->count());
+        $this->assertNotEmpty($header->items()->whereNull('parent_id')->get());
 
         $footer = NavigationMenu::where('key_name', 'footer')->first();
         $this->assertSame(4, $footer->rootItems()->count());
+
+        $this->assertNavigationPointsAtRenderedRoutes();
+    }
+
+    /**
+     * Navigation must never advertise a route the frontend does not render —
+     * a nav link to a 404 is worse than a missing nav link. IA §6.1 lists more
+     * items than this; each joins the seeder when its template ships.
+     */
+    private function assertNavigationPointsAtRenderedRoutes(): void
+    {
+        $rendered = [
+            '/',
+            '/practices', '/industries', '/technologies', '/regions',
+            '/case-studies', '/insights', '/resources', '/careers', '/locations',
+            '/how-we-work', '/contact-us', '/privacy', '/terms',
+            // Company sub-pages (blueprint §26.1) — `/about-us` 301-redirects
+            // to `/company/our-story` and is no longer linked from nav.
+            '/company/our-story', '/company/leadership', '/company/partnerships',
+            '/company/newsroom', '/company/esg',
+        ];
+
+        $internalUrls = NavigationItem::query()
+            ->whereNotNull('custom_url')
+            ->pluck('custom_url')
+            ->filter(fn (string $url): bool => str_starts_with($url, '/'))
+            ->unique();
+
+        foreach ($internalUrls as $url) {
+            // Detail routes are covered by their collection's seeded slugs.
+            if (preg_match('#^/(practices|industries|regions)/[a-z0-9-]+$#', $url) === 1) {
+                continue;
+            }
+
+            $this->assertContains(
+                $url,
+                $rendered,
+                "Navigation links to [{$url}], which no frontend route renders.",
+            );
+        }
     }
 }

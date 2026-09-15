@@ -18,6 +18,8 @@ class ApplyToJobRequest extends FormRequest
             'email' => ['required', 'email', 'max:150'],
             'phone' => ['nullable', 'string', 'max:50'],
             'cover_note' => ['nullable', 'string', 'max:5000'],
+            // 5MB, matches the mobile-completion-friendly guidance in blueprint §28.2.
+            'resume' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120'],
             // Honeypot — real submitters never fill this.
             'company_website' => ['prohibited'],
         ];

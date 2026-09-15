@@ -14,8 +14,15 @@ const button = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-brand-navy text-ink-inverse hover:bg-brand-navy-deep',
-        secondary: 'bg-brand-gold-muted text-brand-navy-deep hover:bg-brand-gold',
+        // Blueprint §16.2 — 2px lift on hover.
+        primary: 'bg-brand-navy text-ink-inverse hover:bg-brand-navy-deep hover:-translate-y-0.5',
+        // Gold fill, navy text (§11.1) at rest — 6.83:1. The blueprint's
+        // Gold → Gold 700 hover is not used here: Gold 700 measures 3.87:1
+        // behind navy text and 4.29:1 behind white, both under AA for 16px
+        // semibold. Inverting to navy/white on hover keeps the state change
+        // obvious at 16.52:1.
+        secondary:
+          'bg-brand-gold text-brand-navy-deep hover:bg-brand-navy hover:text-ink-inverse hover:-translate-y-0.5',
         tertiary:
           'border border-hairline-strong bg-transparent text-ink hover:bg-canvas-sunken',
         ghost: 'bg-transparent text-ink hover:bg-canvas-sunken',
