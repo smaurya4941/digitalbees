@@ -27,6 +27,13 @@ class PracticeAdminResource extends JsonResource
             'icon' => $this->icon,
             'color_token' => $this->color_token,
             'featured_image' => $this->featured_image,
+            'key_stats' => $this->key_stats,
+            'capabilities' => CapabilityAdminResource::collection($this->whenLoaded('capabilities')),
+            'workflows' => WorkflowAdminResource::collection($this->whenLoaded('workflows')),
+            'framework_stack' => $this->framework_stack,
+            'agent_capabilities' => $this->agent_capabilities,
+            'technical_capabilities' => $this->technical_capabilities,
+            'servicenow_fit' => $this->servicenow_fit,
             'sort_order' => $this->sort_order,
             'status' => $this->status instanceof \App\Support\Enums\ContentStatus
                 ? $this->status->value

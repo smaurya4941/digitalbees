@@ -4,32 +4,24 @@ import { SeoJsonLd } from '@/components/seo/JsonLd';
 import { Hero } from '@/components/sections/Hero';
 import { ProofBar } from '@/components/sections/ProofBar';
 import { ServiceGrid } from '@/components/sections/ServiceGrid';
-import { ProcessSteps } from '@/components/sections/ProcessSteps';
 import { RelatedContent } from '@/components/sections/RelatedContent';
 import { StackTable } from '@/components/sections/StackTable';
 import { TechnicalCapabilities } from '@/components/sections/TechnicalCapabilities';
 import { ServiceNowFit } from '@/components/sections/ServiceNowFit';
 import { CaseStudyGrid } from '@/components/sections/CaseStudyGrid';
 import { RelatedPractices } from '@/components/sections/RelatedPractices';
+import { FaqAccordion } from '@/components/sections/FaqAccordion';
 import { CTABand } from '@/components/sections/CTABand';
+import { CapabilityGrid } from '@/components/teambees/CapabilityGrid';
+import { WorkflowSteps } from '@/components/teambees/WorkflowSteps';
+import { TechnologyGrid } from '@/components/teambees/TechnologyGrid';
+import { IndustryChips } from '@/components/teambees/IndustryChips';
 import { routes } from '@/config/routes';
 import type { PracticeDetail } from '@/types/practice';
-import type { EntitySummary } from '@/types/content';
 
 type PracticeTemplateProps = {
   practice: PracticeDetail;
 };
-
-/** Maps the plain {title,description} key-capability shape onto EntitySummary so it can reuse RelatedContent's card grid. */
-function toEntitySummary(capabilities: PracticeDetail['key_capabilities']): EntitySummary[] {
-  return (capabilities ?? []).map((capability, index) => ({
-    id: index,
-    slug: capability.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-    name: capability.title,
-    summary: capability.description,
-    href: '',
-  }));
-}
 
 /**
  * The `practice` template. Renders any practice from structured data alone —
@@ -63,14 +55,13 @@ export function PracticeTemplate({ practice }: PracticeTemplateProps) {
         description={practice.hero.description ?? undefined}
       />
 
-      <RelatedContent
-        items={toEntitySummary(practice.key_capabilities)}
+      <CapabilityGrid
+        capabilities={practice.key_capabilities ?? []}
         eyebrow="Key capabilities"
         title={`What ${practice.name} builds`}
-        columns={4}
       />
 
-      <ProcessSteps steps={practice.how_we_work} />
+      <WorkflowSteps steps={practice.how_we_work} />
 
       <StackTable
         rows={practice.framework_stack ?? []}
@@ -87,22 +78,9 @@ export function PracticeTemplate({ practice }: PracticeTemplateProps) {
         title={`${practice.name} in production`}
       />
 
-      <RelatedContent
-        items={practice.industries}
-        eyebrow="Industries"
-        title={`Where ${practice.name} delivers`}
-        itemEyebrow="Industry"
-        columns={3}
-      />
+      <IndustryChips industries={practice.industries} title={`Where ${practice.name} delivers`} />
 
-      <RelatedContent
-        items={practice.technologies}
-        eyebrow="Technologies"
-        title="Platforms and tools we build on"
-        itemEyebrow="Technology"
-        tone="sunken"
-        columns={4}
-      />
+      <TechnologyGrid technologies={practice.technologies} title="Platforms and tools we build on" />
 
       <RelatedContent
         items={practice.regions}
@@ -113,6 +91,8 @@ export function PracticeTemplate({ practice }: PracticeTemplateProps) {
       />
 
       <RelatedPractices practices={practice.related_practices} />
+
+      <FaqAccordion faqs={practice.faqs} title={`${practice.name} — frequently asked questions`} />
 
       <CTABand
         title={`Ready to move on ${practice.name}?`}

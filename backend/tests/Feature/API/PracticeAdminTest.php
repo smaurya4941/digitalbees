@@ -134,6 +134,69 @@ class PracticeAdminTest extends TestCase
         $this->assertCount(2, $page2->json('data'));
     }
 
+    public function test_capability_json_fields_and_sub_service_details_round_trip(): void
+    {
+        $staff = $this->user('staff');
+
+        $created = $this->actingAs($staff)->postJson('/api/v1/practices', [
+            'name' => 'Data Bees',
+            'key_stats' => [['value' => '10+', 'label' => 'Data engineers']],
+            'capabilities' => [['title' => 'Pipelines', 'description' => 'Batch and streaming.']],
+            'workflows' => [['step' => 1, 'title' => 'Assess', 'description' => 'Audit the estate.']],
+            'framework_stack' => [['category' => 'Warehouse', 'tools' => ['Snowflake', 'BigQuery']]],
+            'agent_capabilities' => ['Pipeline orchestration'],
+            'technical_capabilities' => [['title' => 'Streaming', 'points' => ['Kafka'], 'proven_in' => ['Case A']]],
+            'servicenow_fit' => ['delivery' => [], 'cards' => []],
+            'sub_services' => [
+                [
+                    'name' => 'Data Pipelines',
+                    'body' => 'Full pipeline lifecycle.',
+                    'whats_included' => [['title' => 'Design', 'description' => 'Architecture review.']],
+                ],
+            ],
+        ]);
+
+        $created->assertCreated()
+            ->assertJsonPath('data.key_stats.0.value', '10+')
+            ->assertJsonPath('data.capabilities.0.title', 'Pipelines')
+            ->assertJsonPath('data.workflows.0.title', 'Assess')
+            ->assertJsonPath('data.framework_stack.0.tools.1', 'BigQuery')
+            ->assertJsonPath('data.agent_capabilities.0', 'Pipeline orchestration')
+            ->assertJsonPath('data.technical_capabilities.0.proven_in.0', 'Case A');
+
+        $show = $this->actingAs($staff)
+            ->getJson('/api/v1/admin/practices/data-bees')
+            ->assertOk();
+
+        $show->assertJsonPath('data.sub_services.0.body', 'Full pipeline lifecycle.')
+            ->assertJsonPath('data.sub_services.0.whats_included.0.title', 'Design')
+            ->assertJsonPath('data.capabilities.0.title', 'Pipelines')
+            ->assertJsonPath('data.workflows.0.title', 'Assess');
+    }
+
+    public function test_capabilities_and_workflows_sync_update_and_delete(): void
+    {
+        $staff = $this->user('staff');
+
+        $show = $this->actingAs($staff)
+            ->getJson('/api/v1/admin/practices/ai-bees')
+            ->assertOk();
+
+        $capabilityId = $show->json('data.capabilities.0.id');
+
+        $this->actingAs($staff)->putJson('/api/v1/practices/ai-bees', [
+            'capabilities' => [
+                ['id' => $capabilityId, 'title' => 'Renamed Capability', 'description' => 'Updated.'],
+                ['title' => 'Brand New Capability', 'description' => 'Added.'],
+            ],
+        ])->assertOk()
+            ->assertJsonPath('data.capabilities.0.title', 'Renamed Capability')
+            ->assertJsonCount(2, 'data.capabilities');
+
+        $this->assertDatabaseHas('capabilities', ['id' => $capabilityId, 'title' => 'Renamed Capability']);
+        $this->assertDatabaseHas('capabilities', ['title' => 'Brand New Capability']);
+    }
+
     public function test_cross_taxonomy_status_endpoint_is_permission_gated(): void
     {
         Role::findByName('staff')->revokePermissionTo('content.publish');

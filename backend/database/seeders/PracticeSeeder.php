@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Modules\Practice\Models\Capability;
 use App\Modules\Practice\Models\Practice;
 use App\Modules\Practice\Models\SubService;
+use App\Modules\Practice\Models\Workflow;
 use App\Support\Enums\ContentStatus;
 use Illuminate\Database\Seeder;
 
@@ -20,6 +22,13 @@ class PracticeSeeder extends Seeder
         foreach ($this->practices() as $order => $data) {
             $subServices = $data['sub_services'];
             unset($data['sub_services']);
+
+            // `key_capabilities`/`workflow_steps` are normalized into their
+            // own `capabilities`/`workflows` tables (not `practices`
+            // columns) — extract before create, same as `sub_services`.
+            $capabilities = $data['key_capabilities'] ?? [];
+            $workflowSteps = $data['workflow_steps'] ?? [];
+            unset($data['key_capabilities'], $data['workflow_steps']);
 
             $practice = Practice::updateOrCreate(
                 ['slug' => $data['slug']],
@@ -38,6 +47,20 @@ class PracticeSeeder extends Seeder
                     ],
                 );
             }
+
+            foreach ($capabilities as $capOrder => $cap) {
+                Capability::updateOrCreate(
+                    ['practice_id' => $practice->id, 'title' => $cap['title']],
+                    ['description' => $cap['description'] ?? null, 'sort_order' => $capOrder],
+                );
+            }
+
+            foreach ($workflowSteps as $stepOrder => $step) {
+                Workflow::updateOrCreate(
+                    ['practice_id' => $practice->id, 'step' => $step['step']],
+                    ['title' => $step['title'], 'description' => $step['description'] ?? null, 'sort_order' => $stepOrder],
+                );
+            }
         }
     }
 
@@ -52,6 +75,18 @@ class PracticeSeeder extends Seeder
                 'summary' => 'IT and non-IT staffing, executive search, contract staffing, staff augmentation, and RPO across six global regions.',
                 'icon' => 'users',
                 'color_token' => 'brand-gold',
+                'key_stats' => [
+                    ['value' => '2 business days', 'label' => 'Typical shortlist turnaround'],
+                    ['value' => '50+', 'label' => 'TA and domain experts'],
+                    ['value' => '6', 'label' => 'Global regions'],
+                    ['value' => '5', 'label' => 'Quality gates before you see a profile'],
+                ],
+                'key_capabilities' => [
+                    ['title' => 'Surge Capacity', 'description' => 'Scale teams without adding permanent headcount.'],
+                    ['title' => 'Domain Validation', 'description' => 'TA and domain experts verify fit before submission.'],
+                    ['title' => 'Flexible Partner Model', 'description' => 'Work within client tools, processes and governance.'],
+                    ['title' => 'One Onboarding Path', 'description' => 'Define → Match → Embed → Scale — start with one role, scale when ready.'],
+                ],
                 'sub_services' => [
                     [
                         'name' => 'IT Staffing',
@@ -123,6 +158,18 @@ class PracticeSeeder extends Seeder
                 'summary' => 'Software development, digital transformation, cloud, DevOps, product engineering, UI/UX, and data engineering, delivered by teams that integrate into how you already work.',
                 'icon' => 'layers',
                 'color_token' => 'brand-navy',
+                'key_stats' => [
+                    ['value' => 'React · Node · Python · Java · .NET', 'label' => 'Core toolchain'],
+                    ['value' => 'AWS · Azure · GCP', 'label' => 'Cloud platforms'],
+                    ['value' => 'Kubernetes · Terraform', 'label' => 'Platform & DevOps'],
+                    ['value' => '4', 'label' => 'Delivery models: Product, Platform, AI Enablement, Modernisation'],
+                ],
+                'key_capabilities' => [
+                    ['title' => 'Full-Stack Engineers', 'description' => 'Web and service layers across modern stacks.'],
+                    ['title' => 'Cloud & DevOps', 'description' => 'Cloud platforms, Kubernetes, Terraform and CI/CD.'],
+                    ['title' => 'AI / ML Engineers', 'description' => 'LLMs, RAG, model training, MLOps and evaluation.'],
+                    ['title' => 'QA & Test Automation', 'description' => 'UI, API, performance and automated testing.'],
+                ],
                 'sub_services' => [
                     [
                         'name' => 'Software Development',
@@ -395,6 +442,18 @@ class PracticeSeeder extends Seeder
                 'summary' => 'Staff-augmented marketing teams and full-service delivery across SEO, PPC, content, design, video, automation, HubSpot, and LinkedIn.',
                 'icon' => 'megaphone',
                 'color_token' => 'brand-navy',
+                'key_stats' => [
+                    ['value' => '9', 'label' => 'Marketing disciplines staffed'],
+                    ['value' => 'HubSpot', 'label' => 'Certified admin & implementation'],
+                    ['value' => 'T&M', 'label' => 'Flexible engagement model'],
+                    ['value' => 'B2B', 'label' => 'Enterprise-focused execution'],
+                ],
+                'key_capabilities' => [
+                    ['title' => 'Embedded Marketing Pods', 'description' => 'Specialists who plug into your existing team and tools from day one.'],
+                    ['title' => 'Full-Funnel Execution', 'description' => 'SEO, PPC, content, design, video and automation under one accountable team.'],
+                    ['title' => 'HubSpot & Lifecycle Automation', 'description' => 'Implementation, migration, lead scoring and nurture-sequence design.'],
+                    ['title' => 'B2B LinkedIn Strategy', 'description' => 'Organic and paid LinkedIn programmes built for enterprise decision-makers.'],
+                ],
                 'sub_services' => [
                     [
                         'name' => 'Digital Marketing Staff Augmentation',
@@ -505,6 +564,18 @@ class PracticeSeeder extends Seeder
                 'summary' => 'Manual, automation, performance, security, and AI testing that catches what matters before your customers do.',
                 'icon' => 'shield-check',
                 'color_token' => 'brand-navy',
+                'key_stats' => [
+                    ['value' => 'Selenium · Cypress · Playwright', 'label' => 'Automation frameworks'],
+                    ['value' => 'JMeter · LoadRunner · K6', 'label' => 'Performance tooling'],
+                    ['value' => 'OWASP ZAP · Burp Suite', 'label' => 'Security testing tooling'],
+                    ['value' => 'WCAG 2.1', 'label' => 'Accessibility conformance'],
+                ],
+                'key_capabilities' => [
+                    ['title' => 'End-to-End Validation', 'description' => 'Verification of user flows and requirements integrity across the entire application lifecycle.'],
+                    ['title' => 'Performance & Load Testing', 'description' => 'High-concurrency simulation to validate system stability under peak loads.'],
+                    ['title' => 'Security (DAST / SAST)', 'description' => 'Vulnerability scanning and penetration testing to protect critical assets.'],
+                    ['title' => 'Accessibility (WCAG 2.1)', 'description' => 'Ensuring compliance with global accessibility standards for inclusive design.'],
+                ],
                 'sub_services' => [
                     [
                         'name' => 'Manual Testing',
@@ -565,6 +636,73 @@ class PracticeSeeder extends Seeder
                 'summary' => 'Consulting, development, implementation, support, and staffing across the ServiceNow platform.',
                 'icon' => 'workflow',
                 'color_token' => 'brand-gold',
+                'key_stats' => [
+                    ['value' => 'Certified talent', 'label' => 'ServiceNow-certified resources'],
+                    ['value' => '5–7 days', 'label' => 'Resource turnaround'],
+                    ['value' => '24/7', 'label' => 'Global delivery coverage'],
+                    ['value' => 'OOTB-first', 'label' => 'Delivery approach'],
+                ],
+                'key_capabilities' => [
+                    ['title' => 'Platform Modernization', 'description' => 'Stabilizing over-customized environments, reducing technical debt and preparing ServiceNow for scalable growth.'],
+                    ['title' => 'Enterprise Workflow Domains', 'description' => 'ITSM, ITOM, ITAM, CSM and HRSD delivered OOTB-first, extended only where customization earns its place.'],
+                    ['title' => 'Upgrade & Release Engineering', 'description' => 'Repeatable upgrade frameworks that remove risk and make every release predictable.'],
+                    ['title' => 'Integration & Governance', 'description' => 'Enterprise integrations and CSDM-aligned data model governance across the whole estate.'],
+                    ['title' => 'AI-Ready ServiceNow Foundations', 'description' => 'Structured workflows, governed data and automation-ready architecture create a stronger foundation for AI adoption.'],
+                    ['title' => 'Enterprise Platform Operations', 'description' => 'Proactive instance management, reliability engineering and continuous optimization — AMS, 24/7.'],
+                ],
+                'workflow_steps' => [
+                    ['step' => 1, 'title' => 'Assess', 'description' => 'Current-state assessment, value cases and stakeholder alignment. Deliverable: assessment report & value case.'],
+                    ['step' => 2, 'title' => 'Architect', 'description' => 'Process design, CSDM data model and backlog definition. Deliverable: CSDM model & prioritized backlog.'],
+                    ['step' => 3, 'title' => 'Engineer', 'description' => 'Configuration, integrations and iterative agile sprints. Deliverable: configured workflows & integrations.'],
+                    ['step' => 4, 'title' => 'Assure', 'description' => 'SIT/UAT, data migration checks and security compliance. Deliverable: test evidence & security sign-off.'],
+                    ['step' => 5, 'title' => 'Launch', 'description' => 'Training, organizational change management and cutover. Deliverable: trained users & cutover plan.'],
+                    ['step' => 6, 'title' => 'Optimize', 'description' => 'KPI tracking, adoption uplift and continuous improvement. Deliverable: KPI dashboard & improvement roadmap.'],
+                ],
+                'framework_stack' => [
+                    ['category' => 'Modules We Staff', 'tools' => ['ITSM', 'ITOM', 'CSM', 'HRSD', 'ITAM', 'IRM', 'SecOps', 'ESG']],
+                    ['category' => 'Development', 'tools' => ['JavaScript', 'Glide APIs', 'Flow Designer', 'Import Sets & Transform Maps']],
+                    ['category' => 'Experience & Quality', 'tools' => ['Service Portal', 'UI Builder', 'ATF', 'Performance Analytics', 'ACLs']],
+                    ['category' => 'Certifications on the Bench', 'tools' => ['CSA', 'CAD', 'CIS – Data Foundations', 'CIS – HAM', 'ITIL 4']],
+                ],
+                'technical_capabilities' => [
+                    [
+                        'title' => 'Staff Augmentation',
+                        'points' => [
+                            'ServiceNow architects, consultants, developers and support engineers on a T&M basis',
+                            '5–7 day resource turnaround',
+                            'Certified talent from day one — CSA, CAD, CIS, ITIL 4',
+                            'Define → Match → Embed → Scale onboarding path',
+                        ],
+                        'proven_in' => ['Global HR Platform', 'Global Mining ITSM'],
+                    ],
+                    [
+                        'title' => 'Implementation',
+                        'points' => [
+                            'Turnkey or modular delivery built on strong ServiceNow DNA',
+                            'Out-of-the-box first, custom applications only when needed',
+                            'CSDM-aligned data model from day one',
+                        ],
+                        'proven_in' => ['Manufacturing CMDB', 'National Rail CSDM'],
+                    ],
+                    [
+                        'title' => 'Consulting',
+                        'points' => [
+                            'Pilot projects, discovery and fit-gap workshops',
+                            'Impact assessments to plan transition and maximize the platform',
+                            'Strategy before build',
+                        ],
+                        'proven_in' => ['Global Mining ITSM'],
+                    ],
+                    [
+                        'title' => 'Support & AMS',
+                        'points' => [
+                            'Post-implementation managed support — upgrades, cloning and continuous instance health',
+                            'Long-term instance care, 24/7',
+                            'Agile, DevOps-driven delivery',
+                        ],
+                        'proven_in' => ['National Rail CSDM'],
+                    ],
+                ],
                 'sub_services' => [
                     [
                         'name' => 'Consulting',
@@ -625,6 +763,50 @@ class PracticeSeeder extends Seeder
                 'summary' => 'Deep, named expertise in Endur, Allegro, RightAngle, and TriplePoint, plus energy trading consulting from people who know the platforms and the market.',
                 'icon' => 'zap',
                 'color_token' => 'brand-gold',
+                'key_stats' => [
+                    ['value' => 'Endur / Findur', 'label' => 'Primary ETRM/CTRM platform'],
+                    ['value' => 'FO · MO · BO', 'label' => 'Front, middle & back office coverage'],
+                    ['value' => '8', 'label' => 'Functions staffed'],
+                    ['value' => 'T&M', 'label' => 'Staff augmentation model'],
+                ],
+                'key_capabilities' => [
+                    ['title' => 'Techno-Functional Consultants', 'description' => 'Front, middle and back office specialists who can talk to a trader and read the code.'],
+                    ['title' => 'Technical Consultants & Developers', 'description' => 'Java, C#/.NET, PL/SQL, T-SQL, Python and platform-native scripting.'],
+                    ['title' => 'Integration & Data Migration Engineers', 'description' => 'Interface build, ETL, reconciliation and cutover.'],
+                    ['title' => 'Solution Architects & Delivery Leads', 'description' => 'Programme shape, estimates and governance.'],
+                ],
+                'workflow_steps' => [
+                    ['step' => 1, 'title' => 'Define', 'description' => 'Role, stack and success measures for the engagement.'],
+                    ['step' => 2, 'title' => 'Match', 'description' => 'A validated shortlist of platform-certified specialists.'],
+                    ['step' => 3, 'title' => 'Embed', 'description' => 'Access, onboarding and reporting inside your existing delivery rhythm.'],
+                    ['step' => 4, 'title' => 'Scale', 'description' => 'Ramp, transition or rebalance the team as the programme evolves.'],
+                ],
+                'framework_stack' => [
+                    ['category' => 'Endur / Findur', 'tools' => ['Trading, operations & finance', 'OpenComponents', 'AVS/JVS scripting', 'Connex', 'TPM workflows']],
+                    ['category' => 'Aspect, Allegro & RightAngle', 'tools' => ['Configuration, interface and support across power, gas and refined products']],
+                    ['category' => 'Adjacent Systems', 'tools' => ['Trayport', 'Exchange & broker connectivity', 'Treasury and ERP']],
+                    ['category' => 'Functions We Staff', 'tools' => ['Front Office', 'Middle Office & Risk', 'Back Office', 'Scheduling & Logistics', 'Market & Reference Data', 'Integration & Migration', 'Regulatory & Accounting', 'Test & Release Assurance']],
+                ],
+                'technical_capabilities' => [
+                    [
+                        'title' => 'Front, Middle & Back Office Coverage',
+                        'points' => [
+                            'Trade support analysts covering L2/L3 across trading hours, month-end and close',
+                            'Business analysts owning requirements, fit-gap and UAT',
+                            'Test engineers & automation specialists for regression, upgrade and migration assurance',
+                        ],
+                        'proven_in' => ['ETRM Modernisation'],
+                    ],
+                    [
+                        'title' => 'Platform-Specific Delivery',
+                        'points' => [
+                            'Endur / Findur implementation, operations and finance workflows',
+                            'Aspect, Allegro & RightAngle configuration and support across power, gas and refined products',
+                            'Adjacent systems: Trayport, exchange/broker connectivity, treasury and ERP',
+                        ],
+                        'proven_in' => ['ETRM Modernisation'],
+                    ],
+                ],
                 'sub_services' => [
                     [
                         'name' => 'Endur',

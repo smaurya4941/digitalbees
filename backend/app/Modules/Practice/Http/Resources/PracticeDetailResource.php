@@ -3,6 +3,7 @@
 namespace App\Modules\Practice\Http\Resources;
 
 use App\Modules\CaseStudy\Http\Resources\CaseStudySummaryResource;
+use App\Modules\Faq\Http\Resources\FaqResource;
 use App\Modules\Industry\Http\Resources\IndustrySummaryResource;
 use App\Modules\Practice\Data\PracticeDetail;
 use App\Modules\Region\Http\Resources\RegionSummaryResource;
@@ -73,9 +74,18 @@ class PracticeDetailResource extends JsonResource
                 ['value' => $detail->regions->count(), 'label' => 'Delivery regions'],
             ],
 
-            'how_we_work' => $practice->workflow_steps ?: self::DEFAULT_HOW_WE_WORK,
+            'how_we_work' => $practice->workflows->isNotEmpty()
+                ? $practice->workflows->map(fn ($w) => [
+                    'step' => $w->step,
+                    'title' => $w->title,
+                    'description' => $w->description,
+                ])->values()->all()
+                : self::DEFAULT_HOW_WE_WORK,
 
-            'key_capabilities' => $practice->key_capabilities ?? [],
+            'key_capabilities' => $practice->capabilities->map(fn ($c) => [
+                'title' => $c->title,
+                'description' => $c->description,
+            ])->values()->all(),
             'framework_stack' => $practice->framework_stack ?? [],
             'agent_capabilities' => $practice->agent_capabilities ?? [],
             'technical_capabilities' => $practice->technical_capabilities ?? [],
@@ -87,6 +97,7 @@ class PracticeDetailResource extends JsonResource
             'regions' => RegionSummaryResource::collection($detail->regions),
             'case_studies' => CaseStudySummaryResource::collection($detail->caseStudies),
             'related_practices' => PracticeSummaryResource::collection($detail->relatedPractices),
+            'faqs' => FaqResource::collection($practice->faqs),
 
             'seo' => SeoPayload::for($practice, [
                 'title' => $practice->name,

@@ -1,85 +1,93 @@
-import ScrollReveal from "@/components/ui/ScrollReveal";
+import { Section } from '@/components/ui/Section';
+import { Card } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { SectionHeading } from '@/components/sections/SectionHeading';
+import ScrollReveal from '@/components/ui/ScrollReveal';
+
+/**
+ * "How We Engage" — TeamBees Staff Augmentation profile §15: four team
+ * shapes, three ways to hire, one onboarding path. Replaces a legacy
+ * component that referenced an unrelated placeholder brand name.
+ */
+const teamShapes = [
+  {
+    num: '01',
+    title: 'Dedicated Specialist',
+    description: 'One validated professional embedded in your team and operating rhythm.',
+  },
+  {
+    num: '02',
+    title: 'Specialist Squad',
+    description: 'A multi-role team for a defined programme, directed by you.',
+  },
+  {
+    num: '03',
+    title: 'Capability Pod',
+    description: 'A managed team with a named delivery lead, governance and continuity.',
+  },
+  {
+    num: '04',
+    title: 'GCC Build',
+    description: 'Build and run your India capability centre, then transfer it to you.',
+  },
+];
+
+const onboardingSteps = [
+  { title: 'Define', description: 'Role, stack and success measures.' },
+  { title: 'Match', description: 'A validated shortlist.' },
+  { title: 'Embed', description: 'Access, onboarding and reporting.' },
+  { title: 'Scale', description: 'Ramp, transition or rebalance.' },
+];
 
 export default function ModelBreakdown() {
-  const models = [
-    {
-      num: "01",
-      pillText: "Powered by Teambees Corp",
-      pillBg: "bg-[#F9F6F0]",
-      pillTextColor: "text-ink",
-      title: "Digital Workforce Solutions",
-      description: "Backed by over 15 years of deep industry experience in global tech staffing, providing a rock-solid foundation for talent sourcing and intelligence."
-    },
-    {
-      num: "02",
-      pillText: "Powered by Techiegigs",
-      pillBg: "bg-[#FACC15]",
-      pillTextColor: "text-ink",
-      title: "AI-Powered Learning Ecosystem",
-      description: "Continuous, cutting-edge training in AI-driven strategies and advanced digital tools, ensuring every marketing professional is performance-ready before deployment."
-    },
-    {
-      num: "03",
-      pillText: "Driven by TeamBees",
-      pillBg: "bg-[#F9F6F0]",
-      pillTextColor: "text-ink",
-      title: "Extended In-House Teams",
-      description: "Delivering execution-driven digital excellence and scalability, seamlessly acting as a high-performing extension of your core business operations."
-    }
-  ];
-
   return (
-    <section className="bg-white py-24 px-margin-mobile md:px-margin-desktop">
-      <div className="max-w-container-max mx-auto">
-        
-        {/* Header */}
-        <ScrollReveal>
-          <div className="text-center mb-20">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#FACC15]">
-                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-              </svg>
-              <span className="text-[#FACC15] font-bold text-xs uppercase tracking-[0.2em]">
-                OUR MODEL BREAKDOWN
+    <Section space="lg">
+      <ScrollReveal>
+        <SectionHeading
+          align="center"
+          eyebrow="How we engage"
+          title="Four team shapes. Three ways to hire. One onboarding path."
+          description="Start with one role, scale when ready."
+        />
+      </ScrollReveal>
+
+      <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {teamShapes.map((shape, index) => (
+          <ScrollReveal key={shape.title} delay={0.1 * (index + 1)}>
+            <Card padded interactive className="h-full">
+              <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-brand-navy text-body-md font-bold text-ink-inverse">
+                {shape.num}
               </span>
-            </div>
-            <h2 className="text-[36px] md:text-[44px] leading-[1.2] text-ink tracking-tight max-w-4xl mx-auto">
-              The Powerful <span className="font-bold">Synergy of Staffing</span><br/>
-              <span className="font-bold">Intelligence</span> and AI-Driven Execution
-            </h2>
-          </div>
-        </ScrollReveal>
-
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {models.map((model, index) => (
-            <ScrollReveal key={index} delay={0.1 * (index + 1)}>
-              <div className="bg-white rounded-3xl p-8 md:p-10 shadow-[0_10px_40px_rgb(0,0,0,0.06)] border border-black/5 h-full flex flex-col hover:-translate-y-2 transition-transform duration-300">
-                
-                {/* Top Row: Number & Pill */}
-                <div className="flex items-center justify-between mb-8">
-                  <div className="w-14 h-14 bg-black rounded-xl text-white font-bold text-[22px] flex items-center justify-center shadow-md">
-                    {model.num}
-                  </div>
-                  <div className={`${model.pillBg} ${model.pillTextColor} px-4 py-2 rounded-full text-[12px] font-bold tracking-wide`}>
-                    {model.pillText}
-                  </div>
-                </div>
-
-                {/* Content */}
-                <h3 className="text-ink font-bold text-[22px] mb-4 leading-tight">
-                  {model.title}
-                </h3>
-                <p className="text-ink-muted text-[15px] leading-relaxed flex-grow">
-                  {model.description}
-                </p>
-                
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
-
+              <h3 className="mt-6 text-h4 text-ink">{shape.title}</h3>
+              <p className="mt-2 text-body-sm text-ink-muted">{shape.description}</p>
+            </Card>
+          </ScrollReveal>
+        ))}
       </div>
-    </section>
+
+      <ScrollReveal delay={0.5}>
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3 rounded-lg bg-canvas-sunken px-6 py-5 text-center">
+          <span className="text-eyebrow uppercase text-ink-subtle">Hire on any shape</span>
+          <Badge tone="brand">Contract</Badge>
+          <Badge tone="brand">Contract-to-Hire</Badge>
+          <Badge tone="brand">Permanent</Badge>
+        </div>
+      </ScrollReveal>
+
+      <ScrollReveal delay={0.6}>
+        <div className="mt-16">
+          <SectionHeading align="center" eyebrow="One onboarding path" title="From role to running team" as="h3" />
+          <ol className="mx-auto mt-10 grid max-w-4xl grid-cols-2 gap-6 md:grid-cols-4">
+            {onboardingSteps.map((step, index) => (
+              <li key={step.title} className="flex flex-col items-center gap-2 text-center">
+                <span className="text-eyebrow uppercase text-ink-subtle">{String(index + 1).padStart(2, '0')}</span>
+                <span className="text-h4 text-ink">{step.title}</span>
+                <span className="text-body-sm text-ink-muted">{step.description}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </ScrollReveal>
+    </Section>
   );
 }

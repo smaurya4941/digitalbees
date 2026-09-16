@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Admin\CareerAdminController;
 use App\Http\Controllers\Api\V1\Admin\CaseStudyAdminController;
 use App\Http\Controllers\Api\V1\Admin\ContentStatusController;
 use App\Http\Controllers\Api\V1\Admin\DashboardController;
+use App\Http\Controllers\Api\V1\Admin\FaqAdminController;
 use App\Http\Controllers\Api\V1\Admin\IndustryAdminController;
 use App\Http\Controllers\Api\V1\Admin\LeadAdminController;
 use App\Http\Controllers\Api\V1\Admin\LocationAdminController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Api\V1\Admin\RoleAdminController;
 use App\Http\Controllers\Api\V1\Admin\SeoController;
 use App\Http\Controllers\Api\V1\Admin\SettingAdminController;
 use App\Http\Controllers\Api\V1\Admin\TechnologyAdminController;
+use App\Http\Controllers\Api\V1\Admin\TestimonialAdminController;
 use App\Http\Controllers\Api\V1\Admin\UserAdminController;
 use App\Http\Controllers\Api\V1\Admin\WorkflowController;
 use App\Http\Controllers\Api\V1\AuthController;
@@ -211,6 +213,48 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::delete('case-studies/{slug}', [CaseStudyAdminController::class, 'destroy'])
         ->middleware('permission:content.delete')
         ->name('case-studies.destroy');
+
+    // Testimonial CRUD — routed by {id}, not {slug}: a testimonial is a
+    // quote, not a page, so it has no slug column.
+    Route::get('admin/testimonials', [TestimonialAdminController::class, 'index'])
+        ->middleware('permission:content.update|content.publish')
+        ->name('admin.testimonials.index');
+    Route::get('admin/testimonials/{id}', [TestimonialAdminController::class, 'show'])
+        ->whereNumber('id')
+        ->middleware('permission:content.update|content.publish')
+        ->name('admin.testimonials.show');
+    Route::post('testimonials', [TestimonialAdminController::class, 'store'])
+        ->middleware('permission:content.create')
+        ->name('testimonials.store');
+    Route::match(['put', 'patch'], 'testimonials/{id}', [TestimonialAdminController::class, 'update'])
+        ->whereNumber('id')
+        ->middleware('permission:content.update')
+        ->name('testimonials.update');
+    Route::delete('testimonials/{id}', [TestimonialAdminController::class, 'destroy'])
+        ->whereNumber('id')
+        ->middleware('permission:content.delete')
+        ->name('testimonials.destroy');
+
+    // FAQ CRUD — routed by {id}, not {slug}: an FAQ is a question/answer
+    // pair attached to a practice or sub-service, not a page.
+    Route::get('admin/faqs', [FaqAdminController::class, 'index'])
+        ->middleware('permission:content.update|content.publish')
+        ->name('admin.faqs.index');
+    Route::get('admin/faqs/{id}', [FaqAdminController::class, 'show'])
+        ->whereNumber('id')
+        ->middleware('permission:content.update|content.publish')
+        ->name('admin.faqs.show');
+    Route::post('faqs', [FaqAdminController::class, 'store'])
+        ->middleware('permission:content.create')
+        ->name('faqs.store');
+    Route::match(['put', 'patch'], 'faqs/{id}', [FaqAdminController::class, 'update'])
+        ->whereNumber('id')
+        ->middleware('permission:content.update')
+        ->name('faqs.update');
+    Route::delete('faqs/{id}', [FaqAdminController::class, 'destroy'])
+        ->whereNumber('id')
+        ->middleware('permission:content.delete')
+        ->name('faqs.destroy');
 
     // Resource / Insight CRUD (one table; resource_type=blog is "Insights")
     Route::get('admin/resources', [ResourceAdminController::class, 'index'])

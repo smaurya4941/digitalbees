@@ -2,10 +2,12 @@
 
 namespace App\Modules\Practice\Models;
 
+use App\Modules\Faq\Models\Faq;
 use App\Support\Concerns\Auditable;
 use App\Support\Concerns\IsContentEntity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -29,5 +31,10 @@ class SubService extends Model
     public function practice(): BelongsTo
     {
         return $this->belongsTo(Practice::class);
+    }
+
+    public function faqs(): MorphMany
+    {
+        return $this->morphMany(Faq::class, 'faqable');
     }
 }

@@ -5,6 +5,7 @@ import { Hero } from '@/components/sections/Hero';
 import { ProofBar } from '@/components/sections/ProofBar';
 import { WhatsIncludedList } from '@/components/sections/WhatsIncludedList';
 import { CaseStudyGrid } from '@/components/sections/CaseStudyGrid';
+import { FaqAccordion } from '@/components/sections/FaqAccordion';
 import { CTABand } from '@/components/sections/CTABand';
 import { routes } from '@/config/routes';
 import type { SubServiceDetail } from '@/types/practice';
@@ -50,6 +51,8 @@ export function SubServiceTemplate({ subService }: SubServiceTemplateProps) {
       <ProofBar points={subService.proof_points} heading={`${subService.name} — proof`} />
 
       <WhatsIncludedList items={subService.whats_included} />
+
+      <FaqAccordion faqs={subService.faqs} title={`${subService.name} — frequently asked questions`} />
 
       <CaseStudyGrid
         caseStudies={subService.case_study ? [subService.case_study] : []}

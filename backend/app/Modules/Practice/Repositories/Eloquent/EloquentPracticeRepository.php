@@ -24,6 +24,9 @@ final class EloquentPracticeRepository implements PracticeRepository
             ->published()
             ->with([
                 'subServices' => fn ($q) => $q->published()->ordered(),
+                'capabilities',
+                'workflows',
+                'faqs' => fn ($q) => $q->published()->ordered(),
                 'seo',
             ])
             ->where('slug', $slug)
@@ -46,7 +49,7 @@ final class EloquentPracticeRepository implements PracticeRepository
 
         return SubService::query()
             ->published()
-            ->with('seo')
+            ->with(['seo', 'faqs' => fn ($q) => $q->published()->ordered()])
             ->where('practice_id', $practice->id)
             ->where('slug', $subServiceSlug)
             ->first()

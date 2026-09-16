@@ -62,15 +62,28 @@ CREATE TABLE role_has_permissions (
 -- =====================================================================
 
 CREATE TABLE practices (
-    id              BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    name            VARCHAR(100) NOT NULL,
-    slug            VARCHAR(100) UNIQUE NOT NULL,
-    tagline         VARCHAR(255) NULL,
-    summary         TEXT NULL,
-    icon            VARCHAR(100) NULL,
-    color_token     VARCHAR(50) NULL,
-    status          ENUM('draft','published','archived') DEFAULT 'draft',
-    sort_order      INT DEFAULT 0,
+    id                      BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    name                    VARCHAR(100) NOT NULL,
+    slug                    VARCHAR(100) UNIQUE NOT NULL,
+    tagline                 VARCHAR(255) NULL,
+    summary                 TEXT NULL,
+    icon                    VARCHAR(100) NULL,
+    color_token             VARCHAR(50) NULL,
+    featured_image          VARCHAR(255) NULL,
+    -- Blueprint §22 (practice hub) / §7 (AI/ServiceNow capability decks) —
+    -- generic, practice-agnostic capability content. All nullable; only
+    -- practices with real content populate them, PracticeTemplate renders
+    -- whichever are present with sensible fallbacks (see
+    -- PracticeDetailResource).
+    key_stats               JSON NULL,   -- proof-bar stat tiles: [{value,label}]
+    -- key_capabilities / workflow_steps normalized into capabilities /
+    -- workflows tables below (2026_09_17_000001, 2026_09_17_000002).
+    framework_stack         JSON NULL,   -- toolchain table: [{category,tools:[]}]
+    agent_capabilities      JSON NULL,   -- flat capability bullet list: string[]
+    technical_capabilities  JSON NULL,   -- deep-dive cards: [{title,points:[],proven_in:[]}]
+    servicenow_fit          JSON NULL,   -- cross-practice "AI on ServiceNow"-style block: {delivery:[],cards:[]}
+    status                  ENUM('draft','published','archived') DEFAULT 'draft',
+    sort_order              INT DEFAULT 0,
     created_at TIMESTAMP NULL, updated_at TIMESTAMP NULL, deleted_at TIMESTAMP NULL
 );
 
@@ -81,10 +94,30 @@ CREATE TABLE sub_services (
     slug            VARCHAR(150) NOT NULL,
     summary         TEXT NULL,
     body            LONGTEXT NULL,
+    whats_included  JSON NULL,   -- §22.4 worked example: [{title,description}]
     status          ENUM('draft','published','archived') DEFAULT 'draft',
     sort_order      INT DEFAULT 0,
     created_at TIMESTAMP NULL, updated_at TIMESTAMP NULL, deleted_at TIMESTAMP NULL,
     UNIQUE (practice_id, slug)
+);
+
+CREATE TABLE capabilities (
+    id              BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    practice_id     BIGINT UNSIGNED NOT NULL REFERENCES practices(id) ON DELETE CASCADE,
+    title           VARCHAR(150) NOT NULL,
+    description     TEXT NULL,
+    sort_order      INT DEFAULT 0,
+    created_at TIMESTAMP NULL, updated_at TIMESTAMP NULL
+);
+
+CREATE TABLE workflows (
+    id              BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    practice_id     BIGINT UNSIGNED NOT NULL REFERENCES practices(id) ON DELETE CASCADE,
+    step            SMALLINT UNSIGNED NOT NULL DEFAULT 1,
+    title           VARCHAR(150) NOT NULL,
+    description     TEXT NULL,
+    sort_order      INT DEFAULT 0,
+    created_at TIMESTAMP NULL, updated_at TIMESTAMP NULL
 );
 
 CREATE TABLE industries (
@@ -130,8 +163,10 @@ CREATE TABLE case_studies (
     summary                 TEXT NULL,
     challenge               TEXT NULL,
     solution                TEXT NULL,
+    how_it_works            JSON NULL,   -- §25.1 step 4: [{step,title,description}]
     results                 TEXT NULL,
     metrics                 JSON NULL,
+    capabilities_used       JSON NULL,   -- §25.1 metadata: string[] tag list
     status                  ENUM('draft','published','archived') DEFAULT 'draft',
     published_at            TIMESTAMP NULL,
     created_at TIMESTAMP NULL, updated_at TIMESTAMP NULL, deleted_at TIMESTAMP NULL
@@ -275,6 +310,12 @@ CREATE TABLE settings (
 CREATE TABLE leads (
     id                  BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     source_page_id      BIGINT UNSIGNED NULL REFERENCES pages(id),
+    -- Real columns, not derived from source_page_id: a lead can carry a
+    -- persona selection independent of which page it was submitted from,
+    -- and a page can itself be about two entities. Blueprint §8.3 "route by
+    -- Practice tag first, then Region."
+    practice_id         BIGINT UNSIGNED NULL REFERENCES practices(id),
+    region_id           BIGINT UNSIGNED NULL REFERENCES regions(id),
     full_name           VARCHAR(150) NULL,
     email               VARCHAR(150) NULL,
     phone               VARCHAR(50) NULL,
@@ -398,12 +439,13 @@ CREATE TABLE testimonials (
 
 CREATE TABLE faqs (
     id              BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    faqable_type    VARCHAR(100) NULL,
+    faqable_type    VARCHAR(100) NULL,   -- morph-map key: 'practice' | 'sub_service'
     faqable_id      BIGINT UNSIGNED NULL,
     question        VARCHAR(500) NOT NULL,
     answer          TEXT NOT NULL,
     sort_order      INT DEFAULT 0,
-    status          ENUM('draft','published') DEFAULT 'draft'
+    status          ENUM('draft','published') DEFAULT 'draft',
+    created_at TIMESTAMP NULL, updated_at TIMESTAMP NULL
 );
 
 CREATE TABLE team_members (

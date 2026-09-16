@@ -9,6 +9,8 @@ return [
     App\Modules\CaseStudy\Providers\CaseStudyServiceProvider::class,
     App\Modules\Resource\Providers\ResourceServiceProvider::class,
     App\Modules\Career\Providers\CareerServiceProvider::class,
+    App\Modules\Testimonial\Providers\TestimonialServiceProvider::class,
+    App\Modules\Faq\Providers\FaqServiceProvider::class,
     App\Modules\Lead\Providers\LeadServiceProvider::class,
     App\Integrations\Crm\CrmServiceProvider::class,
 ];

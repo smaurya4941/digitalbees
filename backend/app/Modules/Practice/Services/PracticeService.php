@@ -95,10 +95,28 @@ final class PracticeService
     /** @param  array<string, mixed>  $attributes */
     public function create(array $attributes): Practice
     {
+        // `sub_services`/`capabilities`/`workflows` aren't `practices`
+        // columns — they're synced separately below via the practice's own
+        // relations, not mass-assigned onto the model itself (which has
+        // `$guarded = []` and would otherwise try, and fail, to persist
+        // them as columns). `key_capabilities`/`workflow_steps` are the
+        // legacy JSON-column names; strip them defensively so a stale
+        // client payload can never resurrect them.
+        $subServices = $attributes['sub_services'] ?? null;
+        $capabilities = $attributes['capabilities'] ?? null;
+        $workflows = $attributes['workflows'] ?? null;
+        unset($attributes['sub_services'], $attributes['capabilities'], $attributes['workflows'], $attributes['key_capabilities'], $attributes['workflow_steps']);
+
         $practice = $this->practices->create($attributes);
-        
-        if (array_key_exists('sub_services', $attributes)) {
-            $this->syncSubServices($practice, $attributes['sub_services'] ?? []);
+
+        if ($subServices !== null) {
+            $this->syncSubServices($practice, $subServices);
+        }
+        if ($capabilities !== null) {
+            $this->syncCapabilities($practice, $capabilities);
+        }
+        if ($workflows !== null) {
+            $this->syncWorkflows($practice, $workflows);
         }
 
         $this->flush($practice);
@@ -109,10 +127,21 @@ final class PracticeService
     /** @param  array<string, mixed>  $attributes */
     public function update(Practice $practice, array $attributes): Practice
     {
+        $subServices = $attributes['sub_services'] ?? null;
+        $capabilities = $attributes['capabilities'] ?? null;
+        $workflows = $attributes['workflows'] ?? null;
+        unset($attributes['sub_services'], $attributes['capabilities'], $attributes['workflows'], $attributes['key_capabilities'], $attributes['workflow_steps']);
+
         $practice = $this->practices->update($practice, $attributes);
-        
-        if (array_key_exists('sub_services', $attributes)) {
-            $this->syncSubServices($practice, $attributes['sub_services'] ?? []);
+
+        if ($subServices !== null) {
+            $this->syncSubServices($practice, $subServices);
+        }
+        if ($capabilities !== null) {
+            $this->syncCapabilities($practice, $capabilities);
+        }
+        if ($workflows !== null) {
+            $this->syncWorkflows($practice, $workflows);
         }
 
         $this->flush($practice);
@@ -149,6 +178,7 @@ final class PracticeService
                 'name' => $ssData['name'],
                 'slug' => $ssData['slug'] ?? \Illuminate\Support\Str::slug($ssData['name']),
                 'summary' => $ssData['summary'] ?? null,
+                'body' => $ssData['body'] ?? null,
                 'whats_included' => $ssData['whats_included'] ?? null,
                 'status' => $ssData['status'] ?? ContentStatus::Draft->value,
                 'sort_order' => $ssData['sort_order'] ?? $index,
@@ -166,6 +196,63 @@ final class PracticeService
         $toDelete = array_diff($existingIds, $keptIds);
         if (!empty($toDelete)) {
             $practice->subServices()->whereIn('id', $toDelete)->delete();
+        }
+    }
+
+    /** @param array<int, array<string, mixed>> $capabilities */
+    private function syncCapabilities(Practice $practice, array $capabilities): void
+    {
+        $existingIds = $practice->capabilities()->pluck('id')->toArray();
+        $keptIds = [];
+
+        foreach ($capabilities as $index => $data) {
+            $id = $data['id'] ?? null;
+            $payload = [
+                'title' => $data['title'],
+                'description' => $data['description'] ?? null,
+                'sort_order' => $data['sort_order'] ?? $index,
+            ];
+
+            if ($id && in_array((int) $id, $existingIds, true)) {
+                $practice->capabilities()->where('id', $id)->update($payload);
+                $keptIds[] = (int) $id;
+            } else {
+                $keptIds[] = $practice->capabilities()->create($payload)->id;
+            }
+        }
+
+        $toDelete = array_diff($existingIds, $keptIds);
+        if (!empty($toDelete)) {
+            $practice->capabilities()->whereIn('id', $toDelete)->delete();
+        }
+    }
+
+    /** @param array<int, array<string, mixed>> $workflows */
+    private function syncWorkflows(Practice $practice, array $workflows): void
+    {
+        $existingIds = $practice->workflows()->pluck('id')->toArray();
+        $keptIds = [];
+
+        foreach ($workflows as $index => $data) {
+            $id = $data['id'] ?? null;
+            $payload = [
+                'step' => $data['step'] ?? $index + 1,
+                'title' => $data['title'],
+                'description' => $data['description'] ?? null,
+                'sort_order' => $data['sort_order'] ?? $index,
+            ];
+
+            if ($id && in_array((int) $id, $existingIds, true)) {
+                $practice->workflows()->where('id', $id)->update($payload);
+                $keptIds[] = (int) $id;
+            } else {
+                $keptIds[] = $practice->workflows()->create($payload)->id;
+            }
+        }
+
+        $toDelete = array_diff($existingIds, $keptIds);
+        if (!empty($toDelete)) {
+            $practice->workflows()->whereIn('id', $toDelete)->delete();
         }
     }
 

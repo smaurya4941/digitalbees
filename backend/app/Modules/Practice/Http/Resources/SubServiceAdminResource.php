@@ -20,6 +20,7 @@ class SubServiceAdminResource extends JsonResource
             'slug' => $this->slug,
             'summary' => $this->summary,
             'body' => $this->body,
+            'whats_included' => $this->whats_included,
             'status' => $this->status instanceof \App\Support\Enums\ContentStatus
                 ? $this->status->value
                 : $this->status,

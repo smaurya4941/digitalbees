@@ -1,10 +1,12 @@
 import { Container } from '@/components/ui/Container';
 import { Section } from '@/components/ui/Section';
+import { Badge } from '@/components/ui/Badge';
 import { Breadcrumbs } from '@/components/navigation/Breadcrumbs';
 import { SeoJsonLd } from '@/components/seo/JsonLd';
 import { Hero } from '@/components/sections/Hero';
 import { ProofBar } from '@/components/sections/ProofBar';
 import { SectionHeading } from '@/components/sections/SectionHeading';
+import { ProcessSteps } from '@/components/sections/ProcessSteps';
 import { RelatedContent } from '@/components/sections/RelatedContent';
 import { RelatedPractices } from '@/components/sections/RelatedPractices';
 import { CTABand } from '@/components/sections/CTABand';
@@ -61,6 +63,28 @@ export function CaseStudyTemplate({ caseStudy }: CaseStudyTemplateProps) {
           </div>
         </Section>
       ))}
+
+      {/* §25.1 step 4 (approach detail): the worked step-by-step breakdown,
+          seeded today for the AI Bees, ServiceNow Bees, and Energy Bees
+          flagship studies — renders nothing for studies without it. */}
+      <ProcessSteps
+        steps={caseStudy.how_it_works}
+        eyebrow="How it works"
+        title="Step by step"
+      />
+
+      {caseStudy.capabilities_used.length > 0 && (
+        <Section space="md" tone="sunken">
+          <SectionHeading eyebrow="Capabilities used" title="What made this possible" />
+          <div className="mt-6 flex flex-wrap gap-2">
+            {caseStudy.capabilities_used.map((capability) => (
+              <Badge key={capability} tone="brand" size="md">
+                {capability}
+              </Badge>
+            ))}
+          </div>
+        </Section>
+      )}
 
       <RelatedPractices
         practices={caseStudy.practices}

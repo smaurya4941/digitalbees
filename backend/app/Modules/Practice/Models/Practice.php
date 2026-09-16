@@ -9,7 +9,9 @@ use App\Support\Concerns\IsContentEntity;
 use App\Support\Search\SearchableContentEntity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Modules\Faq\Models\Faq;
 
 /**
  * One of the seven TeamBees practices (schema.sql Module 2).
@@ -29,8 +31,6 @@ class Practice extends Model
     protected $casts = [
         'sort_order' => 'integer',
         'key_stats' => 'array',
-        'key_capabilities' => 'array',
-        'workflow_steps' => 'array',
         'framework_stack' => 'array',
         'agent_capabilities' => 'array',
         'technical_capabilities' => 'array',
@@ -40,6 +40,21 @@ class Practice extends Model
     public function subServices(): HasMany
     {
         return $this->hasMany(SubService::class);
+    }
+
+    public function capabilities(): HasMany
+    {
+        return $this->hasMany(Capability::class)->ordered();
+    }
+
+    public function workflows(): HasMany
+    {
+        return $this->hasMany(Workflow::class)->ordered();
+    }
+
+    public function faqs(): MorphMany
+    {
+        return $this->morphMany(Faq::class, 'faqable');
     }
 
     protected function searchResultType(): string

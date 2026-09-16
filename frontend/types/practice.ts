@@ -59,6 +59,12 @@ export interface WhatsIncludedItem {
   description: string;
 }
 
+export interface Faq {
+  id: number;
+  question: string;
+  answer: string;
+}
+
 /** GET /api/v1/practices/{practice}/sub-services/{subService} — the `sub-service` template contract. */
 export interface SubServiceDetail {
   id: number;
@@ -72,6 +78,7 @@ export interface SubServiceDetail {
   hero: Hero;
   proof_points: ProofPoint[];
   whats_included: WhatsIncludedItem[];
+  faqs: Faq[];
   case_study: CaseStudySummary | null;
   cta: Cta;
   seo: SeoBlock;
@@ -99,5 +106,6 @@ export interface PracticeDetail {
   regions: RegionSummary[];
   case_studies: CaseStudySummary[];
   related_practices: PracticeSummary[];
+  faqs: Faq[];
   seo: SeoBlock;
 }

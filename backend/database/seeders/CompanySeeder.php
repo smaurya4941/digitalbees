@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Modules\Company\Models\CompanyMilestone;
+use App\Modules\Company\Models\Partner;
 use App\Modules\Page\Models\Page;
 use App\Modules\Page\Models\PageTemplate;
 use Illuminate\Database\Seeder;
@@ -13,21 +14,28 @@ use Illuminate\Database\Seeder;
  * fabricated named testimonials — not carried forward here; see
  * TestimonialSeeder's anonymized-attribution convention instead).
  *
- * Deliberately does NOT seed `team_members` (Leadership) or `partners`
- * (Partnerships): unlike a testimonial, there is no honest anonymized
- * version of "who are your executives" or "are you a certified ServiceNow
- * partner" — inventing named executives or real third-party certification
- * claims would be a materially different kind of fabrication than an
- * anonymized quote. Both endpoints and their frontend pages are fully wired
- * against real tables; they render an empty state until real data is
- * entered via the admin CMS, matching this project's existing convention
- * for Insights/Resources/Careers before they had content. Idempotent.
+ * Milestones now reflect the real journey published in TeamBees' own sales
+ * decks (Staff Augmentation / ServiceNow / AI Capabilities profiles, §3
+ * "TeamBees Journey & Global Presence") — company-provided source material,
+ * not fabricated.
+ *
+ * Partners are seeded from the same decks' "Client Portfolio" slides as
+ * `status => draft`: the names are real (as published by TeamBees itself),
+ * but no logo image assets exist in this repo and named-client display
+ * requires marketing/legal sign-off per the blueprint's own rule (§10.3,
+ * §25.3) — so these stay unpublished until an editor uploads an approved
+ * logo and flips status via the admin CMS. `team_members` (Leadership) is
+ * still deliberately left unseeded: there is no source material naming real
+ * executives, and inventing them would be fabrication in a way the client
+ * list and milestones (both sourced directly from TeamBees' own published
+ * decks) are not. Idempotent.
  */
 class CompanySeeder extends Seeder
 {
     public function run(): void
     {
         $this->seedMilestones();
+        $this->seedPartners();
         $this->seedNewsroom();
         $this->seedEsg();
     }
@@ -36,24 +44,24 @@ class CompanySeeder extends Seeder
     {
         $milestones = [
             [
-                'year' => 2015,
-                'title' => 'Founded as a specialist staffing firm',
-                'description' => 'TeamBees started as a technology staffing company, placing specialists into fast-moving engineering teams. [validate: founding year and narrative pending confirmation from leadership]',
+                'year' => 2021,
+                'title' => 'Contingent workforce management',
+                'description' => 'Started operations in staff augmentation and testing across medical devices, mobile and web apps, and telecom.',
             ],
             [
-                'year' => 2019,
-                'title' => 'Delivery capability added alongside staffing',
-                'description' => 'The practice model expanded beyond placements into full delivery — the combination that became Digital, Quality, and ServiceNow Bees. [validate: expansion timeline pending confirmation]',
-            ],
-            [
-                'year' => 2022,
-                'title' => 'AI Bees and Energy Bees launched',
-                'description' => 'Two specialist practices launched to match where clients needed the deepest technical depth: applied AI and energy trading platforms. [validate: launch year pending confirmation]',
+                'year' => 2023,
+                'title' => 'Custom software development, ServiceNow',
+                'description' => 'Expanded into iOS and Android development with manual and automation testing, and advanced into the ServiceNow ecosystem.',
             ],
             [
                 'year' => 2025,
-                'title' => 'Seven practices, six regions',
-                'description' => 'TeamBees today: seven specialist practices operating across the USA, UK, Europe, Canada, Australia, and UAE. [validate: current regional footprint pending confirmation]',
+                'title' => 'AI & agentic automation',
+                'description' => 'AI-led transformation and custom application development for automating business requirements, with Emiac Technologies as AI enablement partner.',
+            ],
+            [
+                'year' => 2026,
+                'title' => 'GCC talent & capability enablement',
+                'description' => 'AI-enabled GCC talent programmes, multidisciplinary capability pods, and managed workforce support.',
             ],
         ];
 
@@ -61,6 +69,21 @@ class CompanySeeder extends Seeder
             CompanyMilestone::updateOrCreate(
                 ['year' => $data['year'], 'title' => $data['title']],
                 [...$data, 'sort_order' => $order],
+            );
+        }
+    }
+
+    private function seedPartners(): void
+    {
+        $partners = [
+            'Stryker', 'Tata', 'Vocera', 'BT', 'Ananta Systems', 'QuestLabs',
+            'WillWare', 'Menhood', 'Ananttam', 'Squire Technologies',
+        ];
+
+        foreach ($partners as $order => $name) {
+            Partner::updateOrCreate(
+                ['name' => $name, 'partner_type' => 'alliance'],
+                ['sort_order' => $order, 'status' => 'draft'],
             );
         }
     }

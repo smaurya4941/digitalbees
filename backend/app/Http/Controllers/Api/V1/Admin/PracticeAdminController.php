@@ -54,7 +54,11 @@ class PracticeAdminController extends ApiController
     public function show(string $slug): JsonResponse
     {
         return ApiResponse::item(
-            new PracticeAdminResource($this->practices->findForAdmin($slug)->loadCount('subServices')->load('subServices')),
+            new PracticeAdminResource(
+                $this->practices->findForAdmin($slug)
+                    ->loadCount('subServices')
+                    ->load(['subServices', 'capabilities', 'workflows']),
+            ),
         );
     }
 
@@ -64,7 +68,7 @@ class PracticeAdminController extends ApiController
         $data = $request->validatedAttributes();
         $this->guardPublish($request, $data['status'] ?? null);
 
-        $practice = $this->practices->create($data);
+        $practice = $this->practices->create($data)->load(['subServices', 'capabilities', 'workflows']);
 
         return ApiResponse::item(new PracticeAdminResource($practice), ['created' => true])
             ->setStatusCode(201);
@@ -80,7 +84,7 @@ class PracticeAdminController extends ApiController
             $this->guardPublish($request, $data['status'], $practice->status?->value);
         }
 
-        $practice = $this->practices->update($practice, $data);
+        $practice = $this->practices->update($practice, $data)->load(['subServices', 'capabilities', 'workflows']);
         $this->recordSlugRedirect('/practices', $slug, $practice->slug);
 
         return ApiResponse::item(new PracticeAdminResource($practice));

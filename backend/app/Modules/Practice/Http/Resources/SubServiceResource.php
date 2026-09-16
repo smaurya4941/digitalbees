@@ -3,6 +3,7 @@
 namespace App\Modules\Practice\Http\Resources;
 
 use App\Modules\CaseStudy\Http\Resources\CaseStudySummaryResource;
+use App\Modules\Faq\Http\Resources\FaqResource;
 use App\Modules\Practice\Data\SubServiceDetail;
 use App\Support\Seo\SeoPayload;
 use Illuminate\Http\Request;
@@ -55,6 +56,8 @@ class SubServiceResource extends JsonResource
             ],
 
             'whats_included' => $subService->whats_included ?? [],
+
+            'faqs' => FaqResource::collection($subService->faqs),
 
             'case_study' => CaseStudySummaryResource::collection($detail->caseStudies->take(1))->resolve()[0] ?? null,
 
