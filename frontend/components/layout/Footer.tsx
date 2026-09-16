@@ -7,18 +7,22 @@ import { Container } from '@/components/ui/Container';
 import { NewsletterSignup } from '@/components/layout/NewsletterSignup';
 import { getSettings } from '@/lib/api/settings';
 import { getPublicNavigation, PublicNavItem } from '@/lib/api/navigation';
+import { getPractices } from '@/lib/api/practices';
 
 export default async function Footer() {
   const year = new Date().getFullYear();
-  const [settings, menus] = await Promise.all([
+  const [settings, menus, practices] = await Promise.all([
     getSettings().catch(() => ({} as import('@/lib/api/settings').SiteSettings)),
-    getPublicNavigation().catch(() => ({} as Record<string, PublicNavItem[]>))
+    getPublicNavigation().catch(() => ({} as Record<string, PublicNavItem[]>)),
+    getPractices().catch(() => [] as Awaited<ReturnType<typeof getPractices>>),
   ]);
   // CMS menu is authoritative; fall back to the static tree so the footer
   // never renders bare when the backend is unreachable or unseeded.
   const cmsFooter = menus.footer || [];
-  const footerGroups: PublicNavItem[] =
-    cmsFooter.length > 0
+  // Copied (not aliased) so the live-practices patch below never mutates a
+  // cached API response shared across requests.
+  const footerGroups: PublicNavItem[] = [
+    ...(cmsFooter.length > 0
       ? cmsFooter
       : footerNav.map((group, groupIndex) => ({
           id: -(groupIndex + 1),
@@ -32,7 +36,28 @@ export default async function Footer() {
             icon: null,
             children: [],
           })),
-        }));
+        }))),
+  ];
+
+  // The "Practices" (services) group is wired to live, published practices
+  // rather than the CMS menu's or static fallback's fixed list, so a
+  // new/archived practice is reflected without a menu edit — same reasoning
+  // as the header's Services dropdown.
+  if (practices.length > 0) {
+    const practicesGroup: PublicNavItem = {
+      id: -999,
+      label: 'Practices',
+      url: null,
+      icon: null,
+      children: practices.map((p) => ({ id: p.id, label: p.name, url: p.href, icon: null, children: [] })),
+    };
+    const existingIndex = footerGroups.findIndex((g) => g.label === 'Practices');
+    if (existingIndex >= 0) {
+      footerGroups[existingIndex] = practicesGroup;
+    } else {
+      footerGroups.push(practicesGroup);
+    }
+  }
 
   // CMS settings are authoritative; `siteConfig` is the build-time fallback.
   const siteName = settings['site.name'] || siteConfig.name;
