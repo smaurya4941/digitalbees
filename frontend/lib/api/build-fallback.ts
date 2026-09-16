@@ -6,7 +6,7 @@ import { ApiError } from './client';
  * backend). We don't want that to fail the build — pages fall back to
  * on-demand ISR and fill in on first request. At runtime, errors propagate.
  */
-const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build' || !!process.env.CI;
 
 type Options = {
   /** Treat a 404 as "no such entity" and return the fallback, at build or runtime. */
@@ -21,7 +21,7 @@ export function rethrowUnlessBuild<T>(
   if (notFoundAsNull && error instanceof ApiError && error.isNotFound) {
     return fallback;
   }
-  if (isBuildPhase && error instanceof ApiError && error.status === 0) {
+  if (isBuildPhase && error instanceof ApiError && (error.status === 0 || error.status >= 500)) {
     console.warn('[api] backend unreachable during build; deferring to ISR:', error.message);
     return fallback;
   }
