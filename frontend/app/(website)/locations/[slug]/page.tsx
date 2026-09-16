@@ -20,7 +20,9 @@ export const dynamicParams = true;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
   const locations = await getLocations();
-  return locations.map((l) => ({ slug: l.slug }));
+  return locations
+    .filter((l) => typeof l.slug === 'string' && l.slug.length > 0)
+    .map((l) => ({ slug: l.slug }));
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
