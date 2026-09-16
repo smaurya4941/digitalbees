@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  /* Obsidian Kinetic Design System Colors */
+  --color-amber-vibrant: #F5A623;
+  --color-amber-glow: rgba(245, 158, 11, 0.12);
+  --color-surface-dark: #090D16;
+  --color-surface-dark-card: #0F172A;
+  --color-surface-canvas: #FAFAFC;
+  --color-secondary-container: #fea619;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #94A3B8;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #181b25;
+  --color-error: #ba1a1a;
+  --color-secondary-fixed: #ffddb8;
+
+  /* Fonts mapping for Obsidian Kinetic */
+  --font-display-hero: 'Plus Jakarta Sans', sans-serif;
+  --font-headline-lg: 'Plus Jakarta Sans', sans-serif;
+  --font-headline-md: 'Plus Jakarta Sans', sans-serif;
+  --font-headline-sm: 'Plus Jakarta Sans', sans-serif;
+  --font-body-lg: 'Inter', sans-serif;
+  --font-body-md: 'Inter', sans-serif;
+  --font-body-sm: 'Inter', sans-serif;
+  --font-label-ui: 'Inter', sans-serif;
+  --font-label-eyebrow: 'Inter', sans-serif;
+  --font-stat-display: 'Plus Jakarta Sans', sans-serif;
+  --font-code-mono: 'JetBrains Mono', monospace;
+
+  /* Spacing */
+  --spacing-space-xs: 0.25rem;
+  --spacing-space-sm: 0.5rem;
+  --spacing-space-md: 1rem;
+  --spacing-space-lg: 1.5rem;
+  --spacing-space-xl: 2.5rem;
+  --spacing-space-2xl: 4rem;
+  --spacing-space-3xl: 6rem;
+  --spacing-gutter: 1.5rem;
+}

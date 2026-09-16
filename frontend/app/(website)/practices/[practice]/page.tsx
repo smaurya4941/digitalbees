@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PracticeTemplate } from '@/templates/PracticeTemplate';
+import { AiBeesTemplate } from '@/templates/AiBeesTemplate';
 import { getPractice, getPractices } from '@/lib/api/practices';
 import { toMetadata } from '@/lib/seo/metadata';
 
@@ -28,6 +29,10 @@ export default async function PracticePage({ params }: Params) {
   const practice = await getPractice(slug);
 
   if (!practice) notFound();
+
+  if (slug === 'ai-bees') {
+    return <AiBeesTemplate practice={practice} />;
+  }
 
   return <PracticeTemplate practice={practice} />;
 }
