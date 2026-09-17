@@ -1,9 +1,8 @@
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { PracticeTemplate } from '@/templates/PracticeTemplate';
-import { AiBeesTemplate } from '@/templates/AiBeesTemplate';
-import { getPractice, getPractices } from '@/lib/api/practices';
-import { toMetadata } from '@/lib/seo/metadata';
+﻿import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { StitchPracticeTemplate } from "@/templates/StitchPracticeTemplate";
+import { getPractice, getPractices } from "@/lib/api/practices";
+import { toMetadata } from "@/lib/seo/metadata";
 
 type Params = { params: Promise<{ practice: string }> };
 
@@ -24,15 +23,15 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return toMetadata(practice.seo);
 }
 
+/**
+ * All 7 practices route through StitchPracticeTemplate — the unified
+ * TeamBees Navy/Gold practice hub design. No slug-based branching.
+ */
 export default async function PracticePage({ params }: Params) {
   const { practice: slug } = await params;
   const practice = await getPractice(slug);
 
   if (!practice) notFound();
 
-  if (slug === 'ai-bees') {
-    return <AiBeesTemplate practice={practice} />;
-  }
-
-  return <PracticeTemplate practice={practice} />;
+  return <StitchPracticeTemplate practice={practice} />;
 }

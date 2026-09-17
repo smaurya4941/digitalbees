@@ -43,4 +43,10 @@ class Lead extends Model
     {
         return $this->belongsTo(Region::class);
     }
+
+    public function activities(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(LeadActivity::class)->orderBy('created_at', 'desc');
+    }
 }
+

@@ -2,7 +2,10 @@ import 'server-only';
 import type { CaseStudyDetail, CaseStudySummary } from '@/types/case-study';
 import { apiGet, apiList } from './client';
 import { cacheTags } from './tags';
-import { rethrowUnlessBuild } from './build-fallback';
+import {
+  getFallbackCaseStudy,
+  getFallbackCaseStudySummaries,
+} from '@/lib/data/fallback-case-studies';
 
 /** All published case studies, newest first. */
 export async function getCaseStudies(): Promise<CaseStudySummary[]> {
@@ -10,19 +13,23 @@ export async function getCaseStudies(): Promise<CaseStudySummary[]> {
     const { data } = await apiList<CaseStudySummary>('case-studies', {
       tags: [cacheTags.caseStudies],
     });
-    return data;
-  } catch (error) {
-    return rethrowUnlessBuild(error, [] as CaseStudySummary[]);
+    if (data && data.length > 0) return data;
+    return getFallbackCaseStudySummaries();
+  } catch (_error) {
+    return getFallbackCaseStudySummaries();
   }
 }
 
 /** One case study, or `null` if unknown. */
 export async function getCaseStudy(slug: string): Promise<CaseStudyDetail | null> {
   try {
-    return await apiGet<CaseStudyDetail>(`case-studies/${slug}`, {
+    const data = await apiGet<CaseStudyDetail>(`case-studies/${slug}`, {
       tags: [cacheTags.caseStudies, cacheTags.caseStudy(slug)],
     });
-  } catch (error) {
-    return rethrowUnlessBuild(error, null, { notFoundAsNull: true });
+    if (data) return data;
+    return getFallbackCaseStudy(slug);
+  } catch (_error) {
+    return getFallbackCaseStudy(slug);
   }
 }
+

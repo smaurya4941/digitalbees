@@ -1,0 +1,37 @@
+/* =========================================================================
+   StitchPracticeTemplate — TeamBees Navy/Gold design system
+   Matches the practice-hub-template.html Stitch output
+   ========================================================================= */
+@theme {
+  /* Brand tokens (match the homepage Stitch spec) */
+  --color-ph-navy:      #0B1F3A;
+  --color-ph-navy-deep: #071527;
+  --color-ph-navy-mid:  #132B4F;
+  --color-ph-gold:      #C6963A;
+  --color-ph-gold-muted:#D4AF37;
+
+  /* Surface tokens */
+  --color-ph-surface:        #FDFDFD;
+  --color-ph-surface-raised: #FFFFFF;
+  --color-ph-surface-sunken: #f2f3f9;
+  --color-ph-border:         rgba(196, 198, 206, 0.4);
+  --color-ph-border-gold:    rgba(198, 150, 58, 0.3);
+
+  /* Text */
+  --color-ph-text-primary:   #0B1F3A;
+  --color-ph-text-secondary: #44474d;
+  --color-ph-text-muted:     #75777e;
+}
+
+/* Sub-nav active highlight */
+.ph-subnav-link.active,
+.ph-subnav-link:hover {
+  color: var(--color-ph-gold);
+  border-left-color: var(--color-ph-gold);
+}
+
+/* Hexagon dot grid utility */
+.ph-dot-grid {
+  background-image: radial-gradient(rgba(198, 150, 58, 0.15) 1px, transparent 1px);
+  background-size: 24px 24px;
+}

@@ -77,4 +77,10 @@ class User extends Authenticatable
     {
         return $this->roles->first()?->name;
     }
+
+    public function leadActivities(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\App\Modules\Lead\Models\LeadActivity::class, 'performed_by');
+    }
 }
+

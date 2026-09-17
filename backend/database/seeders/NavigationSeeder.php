@@ -56,15 +56,11 @@ class NavigationSeeder extends Seeder
             ['label' => 'Company', 'custom_url' => null, 'children' => [
                 ['label' => 'Our Story', 'custom_url' => '/company/our-story'],
                 ['label' => 'Leadership', 'custom_url' => '/company/leadership'],
-                ['label' => 'Partnerships', 'custom_url' => '/company/partnerships'],
-                ['label' => 'Newsroom', 'custom_url' => '/company/newsroom'],
-                ['label' => 'ESG & Community', 'custom_url' => '/company/esg'],
-                ['label' => 'Careers', 'custom_url' => '/careers'],
-                ['label' => 'Insights', 'custom_url' => '/insights'],
-                ['label' => 'Resources', 'custom_url' => '/resources'],
                 ['label' => 'How We Work', 'custom_url' => '/how-we-work'],
-                ['label' => 'Privacy', 'custom_url' => '/privacy'],
-                ['label' => 'Terms', 'custom_url' => '/terms'],
+                ['label' => 'Partnerships', 'custom_url' => '/company/partnerships'],
+                ['label' => 'ESG & Community', 'custom_url' => '/company/esg'],
+                ['label' => 'Newsroom', 'custom_url' => '/company/newsroom'],
+                ['label' => 'Careers', 'custom_url' => '/careers'],
             ]],
             // Blueprint §32.1: the footer lists all seven practices.
             ['label' => 'Practices', 'custom_url' => null, 'children' => [

@@ -2,11 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Modules\Company\Models\ClientLogo;
 use App\Modules\Company\Models\CompanyMilestone;
 use App\Modules\Company\Models\Partner;
 use App\Modules\Page\Models\Page;
 use App\Modules\Page\Models\PageTemplate;
 use Illuminate\Database\Seeder;
+
 
 /**
  * The five Company sub-pages (blueprint §26.1), replacing the retired
@@ -85,8 +87,14 @@ class CompanySeeder extends Seeder
                 ['name' => $name, 'partner_type' => 'alliance'],
                 ['sort_order' => $order, 'status' => 'draft'],
             );
+
+            ClientLogo::updateOrCreate(
+                ['name' => $name],
+                ['display_order' => $order, 'status' => 'published'],
+            );
         }
     }
+
 
     private function seedNewsroom(): void
     {

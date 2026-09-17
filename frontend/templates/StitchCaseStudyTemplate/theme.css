@@ -1,0 +1,16 @@
+/* Case Study Template Custom Styles */
+
+.case-study-grid-pattern {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(198, 150, 58, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(198, 150, 58, 0.05) 1px, transparent 1px);
+}
+
+.case-study-hexagon {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+.case-study-glow-gold {
+  box-shadow: 0 0 40px -10px rgba(198, 150, 58, 0.25);
+}

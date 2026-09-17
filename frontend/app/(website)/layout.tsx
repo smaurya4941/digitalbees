@@ -1,5 +1,6 @@
 import NavBar, { NavLink } from '@/components/layout/NavBar';
 import Footer from '@/components/layout/Footer';
+import { CandidateModeProvider } from '@/lib/context/CandidateModeContext';
 import { getPublicNavigation, PublicNavItem } from '@/lib/api/navigation';
 import { getSettings } from '@/lib/api/settings';
 import { getPractices } from '@/lib/api/practices';
@@ -41,12 +42,12 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
   const contactPhone = settings['contact.phone'] || siteConfig.contact.phone;
 
   return (
-    <>
+    <CandidateModeProvider>
       <NavBar navItems={navItems} contactPhone={contactPhone} />
       <main id="main" className="flex-1">
         {children}
       </main>
       <Footer />
-    </>
+    </CandidateModeProvider>
   );
 }

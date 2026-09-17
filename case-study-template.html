@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Autonomous Financial Intelligence &amp; CRM Orchestration for Divo | TeamBees Corp</title>
+<!-- Material Symbols & Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-on-surface": "#eff0f6",
+            "surface-container-high": "#e7e8ee",
+            "surface-bright": "#f8f9ff",
+            "surface-container-low": "#f2f3f9",
+            "tertiary": "#0d0400",
+            "on-secondary-fixed": "#271900",
+            "surface-variant": "#e1e2e8",
+            "gold-muted": "#D4AF37",
+            "primary-fixed-dim": "#b5c7ea",
+            "primary-container": "#0b1f3a",
+            "glass-dark": "rgba(7, 19, 36, 0.75)",
+            "error": "#ba1a1a",
+            "surface-container-highest": "#e1e2e8",
+            "surface-dim": "#d8dae0",
+            "on-tertiary": "#ffffff",
+            "tertiary-container": "#321800",
+            "on-surface-variant": "#44474d",
+            "tertiary-fixed": "#ffdcc1",
+            "background": "#f8f9ff",
+            "surface-container": "#eceef3",
+            "on-background": "#191c20",
+            "secondary-container": "#ffc968",
+            "on-error": "#ffffff",
+            "on-primary-fixed": "#071c36",
+            "on-primary": "#ffffff",
+            "inverse-surface": "#2e3135",
+            "on-surface": "#191c20",
+            "secondary-fixed": "#ffdea9",
+            "surface-tint": "#4d5f7d",
+            "on-tertiary-container": "#a87e59",
+            "on-primary-fixed-variant": "#364764",
+            "on-primary-container": "#7587a7",
+            "on-error-container": "#93000a",
+            "on-secondary": "#ffffff",
+            "secondary": "#7d5800",
+            "on-tertiary-fixed": "#2e1500",
+            "surface": "#f8f9ff",
+            "tertiary-fixed-dim": "#eebd94",
+            "surface-ivory": "#FDFDFD",
+            "on-tertiary-fixed-variant": "#613f20",
+            "inverse-primary": "#b5c7ea",
+            "error-container": "#ffdad6",
+            "navy-deep": "#071324",
+            "primary-fixed": "#d6e3ff",
+            "primary": "#000615",
+            "on-secondary-container": "#775300",
+            "outline-variant": "#c4c6ce",
+            "on-secondary-fixed-variant": "#5e4100",
+            "secondary-fixed-dim": "#f3be5e",
+            "outline": "#75777e",
+            "bee-gold": "#C6963A"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "unit": "8px",
+            "gutter": "24px",
+            "container-max": "1280px",
+            "margin-desktop": "64px",
+            "margin-mobile": "16px"
+          },
+          "fontFamily": {
+            "headline-lg": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "body-lg": ["Inter"],
+            "display-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "label-sm": ["JetBrains Mono"],
+            "headline-xl": ["Inter"],
+            "title-md": ["Inter"]
+          },
+          "fontSize": {
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "display-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .hexagon-mark {
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    }
+    .grid-pattern {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(212, 175, 55, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased selection:bg-gold-muted selection:text-navy-deep">
+<!-- ========================================================================= -->
+<!-- 1. GLOBAL STICKY HEADER & BREADCRUMBS                                     -->
+<!-- ========================================================================= -->
+<header class="sticky top-0 w-full z-50 h-[72px] bg-navy-deep/90 dark:bg-navy-deep/95 backdrop-blur-md border-b border-outline-variant/10 shadow-[0px_20px_40px_rgba(11,31,58,0.08)]">
+<div class="flex items-center justify-between h-[72px] px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full">
+<!-- Brand Logo -->
+<a class="flex items-center gap-3 group" href="#">
+<div class="w-8 h-8 hexagon-mark bg-gold-muted flex items-center justify-center shadow-[0_0_12px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform duration-200">
+<span class="text-navy-deep font-bold text-xs tracking-tighter">TB</span>
+</div>
+<span class="font-title-md text-title-md text-surface-ivory tracking-tight uppercase font-bold">TeamBees Corp</span>
+</a>
+<!-- Desktop Nav Links -->
+<nav class="hidden md:flex items-center gap-8 text-sm">
+<a class="text-surface-ivory/80 hover:text-surface-ivory transition-colors duration-150 pb-1" href="#">Solutions</a>
+<a class="border-b-2 border-gold-muted text-gold-muted font-bold pb-1" href="#">Case Studies</a>
+<a class="text-surface-ivory/80 hover:text-surface-ivory transition-colors duration-150 pb-1" href="#">Architecture</a>
+<a class="text-surface-ivory/80 hover:text-surface-ivory transition-colors duration-150 pb-1" href="#">Consulting</a>
+<a class="text-surface-ivory/80 hover:text-surface-ivory transition-colors duration-150 pb-1" href="#">About</a>
+</nav>
+<!-- Trailing Action Cluster -->
+<div class="flex items-center gap-4">
+<button class="hidden lg:flex items-center gap-1 text-surface-ivory/70 hover:text-gold-muted transition-colors duration-150 font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[18px]">language</span>
+<span>US / EN</span>
+</button>
+<button class="text-surface-ivory/70 hover:text-gold-muted transition-colors duration-150 p-1">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</button>
+<a class="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-lg bg-gold-muted text-navy-deep font-title-md text-sm font-bold shadow-[0_4px_14px_rgba(212,175,55,0.25)] hover:bg-gold-muted/90 transition-all duration-200" href="#consultation">
+          Schedule Consultation
+        </a>
+</div>
+</div>
+</header>
+<!-- Breadcrumbs Sub-bar -->
+<div class="w-full bg-surface-ivory border-b border-outline-variant/15 py-3">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#">Home</a>
+<span class="material-symbols-outlined text-[14px] text-gold-muted">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Case Studies</a>
+<span class="material-symbols-outlined text-[14px] text-gold-muted">chevron_right</span>
+<span class="text-primary font-semibold truncate">Divo Multi-Agent CRM Orchestration</span>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- 2. CASE STUDY HERO SECTION                                                -->
+<!-- ========================================================================= -->
+<section class="relative bg-primary-container text-surface-ivory pt-16 pb-20 overflow-hidden">
+<!-- Visual Circuit / Atmospheric Glow Background -->
+<div class="absolute inset-0 grid-pattern opacity-30 pointer-events-none"></div>
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-gold-muted/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute bottom-0 left-1/4 w-72 h-72 bg-secondary-container/5 rounded-full blur-2xl pointer-events-none"></div>
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop relative z-10">
+<!-- Badges -->
+<div class="flex flex-wrap items-center gap-3 mb-6">
+<span class="px-3 py-1 rounded-full bg-surface-ivory/10 border border-surface-ivory/20 font-label-sm text-label-sm text-surface-ivory tracking-wide uppercase">
+          FINTECH &amp; BANKING
+        </span>
+<span class="px-3 py-1 rounded-full bg-gold-muted/20 border border-gold-muted/40 font-label-sm text-label-sm text-gold-muted tracking-wide uppercase flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-gold-muted animate-pulse"></span>
+          AI BEES &amp; DIGITAL BEES
+        </span>
+</div>
+<!-- Headline -->
+<h1 class="font-headline-xl text-headline-xl md:text-[54px] md:leading-[62px] text-surface-ivory font-bold tracking-tight max-w-4xl mb-6">
+        40% faster task execution, <span class="text-gold-muted">45–60 minutes saved</span> per user per day.
+      </h1>
+<p class="font-body-lg text-body-lg text-surface-ivory/80 max-w-3xl mb-12">
+        How TeamBees engineered an enterprise multi-agent workflow connecting core ledger systems and CRM pipelines into an autonomous loop with deterministic auditability and zero data leakage.
+      </p>
+<!-- Metadata Bar -->
+<div class="grid grid-cols-2 md:grid-cols-5 gap-4 p-6 rounded-xl bg-glass-dark border border-surface-ivory/10 backdrop-blur-md">
+<div>
+<span class="block font-label-sm text-label-sm text-surface-ivory/50 uppercase">Client</span>
+<span class="font-body-md text-body-md text-surface-ivory font-semibold">Divo Financial</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-surface-ivory/50 uppercase">Timeline</span>
+<span class="font-body-md text-body-md text-gold-muted font-semibold">14 Days to Production</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-surface-ivory/50 uppercase">Practice</span>
+<span class="font-body-md text-body-md text-surface-ivory font-semibold">AI Bees &amp; Digital Bees</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-surface-ivory/50 uppercase">Services</span>
+<span class="font-body-md text-body-md text-surface-ivory font-semibold">Agent Swarms, RAG, Integration</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-surface-ivory/50 uppercase">Region</span>
+<span class="font-body-md text-body-md text-surface-ivory font-semibold">USA &amp; India</span>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 3. IMPACT PROOF BAR (KEY METRICS RIBBON)                                 -->
+<!-- ========================================================================= -->
+<section class="relative -mt-8 z-20 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Metric 1 -->
+<div class="p-6 rounded-xl bg-navy-deep border border-outline-variant/20 shadow-xl flex flex-col justify-between">
+<span class="font-label-sm text-label-sm text-surface-ivory/60 uppercase">Operational Speed</span>
+<div class="my-2">
+<span class="font-headline-xl text-headline-xl text-gold-muted font-extrabold tracking-tight">40%</span>
+</div>
+<span class="font-body-md text-body-md text-surface-ivory/80">Faster Task Execution Across Ledger Ops</span>
+</div>
+<!-- Metric 2 -->
+<div class="p-6 rounded-xl bg-navy-deep border border-outline-variant/20 shadow-xl flex flex-col justify-between">
+<span class="font-label-sm text-label-sm text-surface-ivory/60 uppercase">Analyst Efficiency</span>
+<div class="my-2">
+<span class="font-headline-xl text-headline-xl text-gold-muted font-extrabold tracking-tight">45–60 m</span>
+</div>
+<span class="font-body-md text-body-md text-surface-ivory/80">Saved Per User / Day in High-Volume Teams</span>
+</div>
+<!-- Metric 3 -->
+<div class="p-6 rounded-xl bg-navy-deep border border-outline-variant/20 shadow-xl flex flex-col justify-between">
+<span class="font-label-sm text-label-sm text-surface-ivory/60 uppercase">Precision &amp; Audit</span>
+<div class="my-2">
+<span class="font-headline-xl text-headline-xl text-gold-muted font-extrabold tracking-tight">99.9%</span>
+</div>
+<span class="font-body-md text-body-md text-surface-ivory/80">Ledger Reconcile Accuracy with Zero Leaks</span>
+</div>
+<!-- Metric 4 -->
+<div class="p-6 rounded-xl bg-navy-deep border border-outline-variant/20 shadow-xl flex flex-col justify-between">
+<span class="font-label-sm text-label-sm text-surface-ivory/60 uppercase">Deployment Velocity</span>
+<div class="my-2">
+<span class="font-headline-xl text-headline-xl text-gold-muted font-extrabold tracking-tight">14 Days</span>
+</div>
+<span class="font-body-md text-body-md text-surface-ivory/80">Production Rollout with Zero Client Downtime</span>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 4. THE CHALLENGE (2-COLUMN EXECUTIVE OVERVIEW)                            -->
+<!-- ========================================================================= -->
+<section class="py-20 bg-surface">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="mb-4">
+<span class="font-label-sm text-label-sm text-gold-muted uppercase tracking-widest block font-bold">01 / Operational Bottleneck</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold mt-1">The Enterprise Challenge</h2>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8 items-start">
+<!-- Left: The Business Problem -->
+<div class="lg:col-span-7 bg-surface-ivory p-8 rounded-xl border border-outline-variant/20 shadow-sm">
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-4">
+            Disparate Systems, Manual Latency &amp; Operational Fragility
+          </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 leading-relaxed">
+            Divo Financial was grappling with severe latency between their institutional transaction engines and downstream customer relations management. Financial analysts spent upwards of 3 hours every morning manually parsing batch ledger extracts, cross-checking journal entries against Postgres clearing tables, and copying reconciliation notes into Salesforce.
+          </p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 leading-relaxed">
+            This fragmented manual pipeline not only caused customer-facing transaction dispute backlogs of 48+ hours, but also elevated risk during high-volume trading sessions where a single transposition error could trigger costly regulatory reconciliations.
+          </p>
+<div class="flex items-center gap-6 pt-4 border-t border-outline-variant/15">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[20px]">error</span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">3-Hour Daily Delay</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[20px]">warning</span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">High Transposition Risk</span>
+</div>
+</div>
+</div>
+<!-- Right: Executive Constraints Box -->
+<div class="lg:col-span-5 bg-navy-deep text-surface-ivory p-8 rounded-xl border-l-4 border-l-gold-muted border-t border-r border-b border-outline-variant/10 shadow-lg">
+<span class="font-label-sm text-label-sm text-gold-muted uppercase tracking-wider block mb-2">Architectural Mandates</span>
+<h3 class="font-title-md text-title-md font-bold mb-6">Strict Non-Negotiables</h3>
+<ul class="space-y-5">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-gold-muted text-[22px] shrink-0 mt-0.5">verified_user</span>
+<div>
+<strong class="block text-surface-ivory font-semibold text-sm">SOC2 Type II &amp; Banking Compliance</strong>
+<span class="text-surface-ivory/70 text-xs leading-relaxed">All LLM inference required dedicated, isolated VPC endpoints with zero public tenant telemetry caching.</span>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-gold-muted text-[22px] shrink-0 mt-0.5">balance</span>
+<div>
+<strong class="block text-surface-ivory font-semibold text-sm">Zero Hallucination Tolerance</strong>
+<span class="text-surface-ivory/70 text-xs leading-relaxed">Deterministic ledger state transitions. If an autonomous agent confidence dips below 98.5%, it must yield to human oversight.</span>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-gold-muted text-[22px] shrink-0 mt-0.5">history_edu</span>
+<div>
+<strong class="block text-surface-ivory font-semibold text-sm">Immutable Audit Logging</strong>
+<span class="text-surface-ivory/70 text-xs leading-relaxed">Cryptographically stamped chain of execution for every classification and sync step for SEC/FINRA audit readiness.</span>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 5. THE CONTEXT & ARCHITECTURE (SPLIT LAYOUT)                              -->
+<!-- ========================================================================= -->
+<section class="py-20 bg-surface-container-low border-y border-outline-variant/15">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="mb-4">
+<span class="font-label-sm text-label-sm text-gold-muted uppercase tracking-widest block font-bold">02 / System Topology</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold mt-1">Multi-Agent Consensus Architecture</h2>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-10">
+<!-- Left: Landscape Explanation -->
+<div class="lg:col-span-5 space-y-6">
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            TeamBees replaced the brittle batch scripting layers with an event-driven <strong>Agent Swarm Fabric</strong>. Operating on isolated Kubernetes clusters, the swarm coordinates distributed intelligence between disconnected core engines.
+          </p>
+<div class="space-y-4">
+<div class="p-4 bg-surface-ivory rounded-lg border border-outline-variant/20 flex gap-4">
+<div class="w-10 h-10 rounded bg-primary-container text-gold-muted flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]">database</span>
+</div>
+<div>
+<h4 class="font-title-md text-sm font-bold text-on-surface">Core SAP Ledger &amp; Postgres</h4>
+<p class="text-xs text-on-surface-variant mt-0.5">Streaming transaction log emissions ingested via change-data-capture (CDC) pipelines.</p>
+</div>
+</div>
+<div class="p-4 bg-surface-ivory rounded-lg border border-outline-variant/20 flex gap-4">
+<div class="w-10 h-10 rounded bg-primary-container text-gold-muted flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]">hub</span>
+</div>
+<div>
+<h4 class="font-title-md text-sm font-bold text-on-surface">Agent Swarm Supervisor</h4>
+<p class="text-xs text-on-surface-variant mt-0.5">Hierarchical task delegation routing transactions based on complexity and risk thresholds.</p>
+</div>
+</div>
+<div class="p-4 bg-surface-ivory rounded-lg border border-outline-variant/20 flex gap-4">
+<div class="w-10 h-10 rounded bg-primary-container text-gold-muted flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]">sync_alt</span>
+</div>
+<div>
+<h4 class="font-title-md text-sm font-bold text-on-surface">Bidirectional CRM Synchronization</h4>
+<p class="text-xs text-on-surface-variant mt-0.5">Real-time enrichment of Salesforce customer records with automated anomaly escalation flags.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: Topology Card / Visual Schematic -->
+<div class="lg:col-span-7 bg-navy-deep p-6 md:p-8 rounded-xl border border-outline-variant/20 text-surface-ivory relative overflow-hidden shadow-2xl">
+<div class="flex items-center justify-between pb-4 border-b border-surface-ivory/10 mb-6">
+<span class="font-label-sm text-label-sm text-gold-muted font-semibold">SWARM TOPOLOGY // ACTIVE GRAPH</span>
+<span class="flex items-center gap-1 text-xs text-surface-ivory/60">
+<span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span> Deterministic Execution
+            </span>
+</div>
+<!-- Schematic Nodes -->
+<div class="space-y-6">
+<!-- Ingestion Tier -->
+<div class="grid grid-cols-2 gap-4">
+<div class="p-3 bg-glass-dark rounded border border-surface-ivory/10 text-center">
+<span class="block font-label-sm text-xs text-surface-ivory/50">DATA EMITTER</span>
+<span class="font-title-md text-sm font-semibold text-surface-ivory">SAP Financials CDC</span>
+</div>
+<div class="p-3 bg-glass-dark rounded border border-surface-ivory/10 text-center">
+<span class="block font-label-sm text-xs text-surface-ivory/50">QUEUE FABRIC</span>
+<span class="font-title-md text-sm font-semibold text-surface-ivory">Apache Kafka Pipeline</span>
+</div>
+</div>
+<!-- Connector Down -->
+<div class="flex justify-center -my-2">
+<span class="material-symbols-outlined text-gold-muted text-[24px]">arrow_downward</span>
+</div>
+<!-- Supervisor Swarm Node -->
+<div class="p-5 rounded-lg bg-gradient-to-r from-primary-container to-navy-deep border-2 border-gold-muted/50 shadow-lg text-center relative">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-gold-muted text-navy-deep rounded-full font-label-sm text-[10px] font-bold">
+                LANGGRAPH ORCHESTRATION LAYER
+              </div>
+<h4 class="font-title-md text-base font-bold text-surface-ivory mt-1">Autonomous Swarm Supervisor</h4>
+<p class="font-body-md text-xs text-surface-ivory/70 mt-1">Contextual State Machine + Dynamic Tool Routing</p>
+<!-- Sub agents row -->
+<div class="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-surface-ivory/10">
+<div class="bg-navy-deep/80 p-2 rounded border border-surface-ivory/10 text-center">
+<span class="font-label-sm text-[11px] text-gold-muted block">SPECIALIST 01</span>
+<span class="text-xs text-surface-ivory">Ledger Classifier</span>
+</div>
+<div class="bg-navy-deep/80 p-2 rounded border border-surface-ivory/10 text-center">
+<span class="font-label-sm text-[11px] text-gold-muted block">SPECIALIST 02</span>
+<span class="text-xs text-surface-ivory">BM25 RAG Reranker</span>
+</div>
+<div class="bg-navy-deep/80 p-2 rounded border border-surface-ivory/10 text-center">
+<span class="font-label-sm text-[11px] text-gold-muted block">GATEWAY 03</span>
+<span class="text-xs text-surface-ivory">Audit Guardrail</span>
+</div>
+</div>
+</div>
+<!-- Connector Down -->
+<div class="flex justify-center -my-2">
+<span class="material-symbols-outlined text-gold-muted text-[24px]">arrow_downward</span>
+</div>
+<!-- Validation Gate & Sink -->
+<div class="grid grid-cols-2 gap-4">
+<div class="p-3 bg-glass-dark rounded border border-gold-muted/40 text-center">
+<span class="block font-label-sm text-xs text-gold-muted">VALIDATION GATE</span>
+<span class="font-title-md text-sm font-semibold text-surface-ivory">Human-in-the-Loop (&lt;98.5%)</span>
+</div>
+<div class="p-3 bg-glass-dark rounded border border-surface-ivory/10 text-center">
+<span class="block font-label-sm text-xs text-surface-ivory/50">DESTINATION SINK</span>
+<span class="font-title-md text-sm font-semibold text-surface-ivory">Salesforce Financial CRM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 6. OUR APPROACH / 4-STEP DELIVERY FRAMEWORK                               -->
+<!-- ========================================================================= -->
+<section class="py-20 bg-surface-ivory">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="text-center max-w-2xl mx-auto mb-16">
+<span class="font-label-sm text-label-sm text-gold-muted uppercase tracking-widest block font-bold">03 / Delivery Framework</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold mt-1">14-Day Production Cutover Plan</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">A deterministic, milestone-driven protocol designed to transition mission-critical financial operations without pausing active ledger settlements.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Step 1 -->
+<div class="bg-surface p-6 rounded-xl border border-outline-variant/20 hover:border-gold-muted transition-colors duration-200">
+<div class="w-12 h-12 rounded-full border-2 border-gold-muted text-gold-muted font-label-sm text-base font-bold flex items-center justify-center mb-6 bg-surface-ivory">
+            01
+          </div>
+<h3 class="font-title-md text-base font-bold text-on-surface mb-2">Discovery &amp; Schema Scoping</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+            Deterministic mapping of 180+ custom SAP accounting tables to standard Salesforce ledger entities with zero ambiguous schema conversions.
+          </p>
+</div>
+<!-- Step 2 -->
+<div class="bg-surface p-6 rounded-xl border border-outline-variant/20 hover:border-gold-muted transition-colors duration-200">
+<div class="w-12 h-12 rounded-full border-2 border-gold-muted text-gold-muted font-label-sm text-base font-bold flex items-center justify-center mb-6 bg-surface-ivory">
+            02
+          </div>
+<h3 class="font-title-md text-base font-bold text-on-surface mb-2">Guardrails &amp; Security Protocol</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+            Enforced zero data leakage RBAC gateways, token obfuscation for PII data, and cryptographic signature generation for state changes.
+          </p>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface p-6 rounded-xl border border-outline-variant/20 hover:border-gold-muted transition-colors duration-200">
+<div class="w-12 h-12 rounded-full border-2 border-gold-muted text-gold-muted font-label-sm text-base font-bold flex items-center justify-center mb-6 bg-surface-ivory">
+            03
+          </div>
+<h3 class="font-title-md text-base font-bold text-on-surface mb-2">Agent Swarm Orchestration</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+            Multi-agent consensus implementation via LangGraph with fallback circuit breakers and episodic memory vector caching.
+          </p>
+</div>
+<!-- Step 4 -->
+<div class="bg-surface p-6 rounded-xl border border-outline-variant/20 hover:border-gold-muted transition-colors duration-200">
+<div class="w-12 h-12 rounded-full border-2 border-gold-muted text-gold-muted font-label-sm text-base font-bold flex items-center justify-center mb-6 bg-surface-ivory">
+            04
+          </div>
+<h3 class="font-title-md text-base font-bold text-on-surface mb-2">Production Cutover &amp; Monitoring</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+            Dark-launch shadowing for 72 hours, validation against 2.4M past reconciliations, followed by live zero-downtime cutover.
+          </p>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 7. THE SOLUTION DEEP-DIVE                                                 -->
+<!-- ========================================================================= -->
+<section class="py-20 bg-primary-container text-surface-ivory">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="mb-4">
+<span class="font-label-sm text-label-sm text-gold-muted uppercase tracking-widest block font-bold">04 / Deep Dive Engineering</span>
+<h2 class="font-headline-lg text-headline-lg text-surface-ivory font-bold mt-1">Autonomous Execution &amp; Telemetry</h2>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-10">
+<!-- Interactive Code/Telemetry Console -->
+<div class="lg:col-span-7 bg-navy-deep rounded-xl border border-outline-variant/20 overflow-hidden shadow-2xl font-label-sm">
+<!-- Terminal Header -->
+<div class="bg-black/40 px-4 py-3 flex items-center justify-between border-b border-surface-ivory/10">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+<span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+<span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+<span class="text-xs text-surface-ivory/60 ml-2 font-mono">teambees-swarm-runtime.log</span>
+</div>
+<span class="text-xs text-gold-muted">LIVE TELEMETRY: OK</span>
+</div>
+<!-- Terminal Content -->
+<div class="p-5 text-xs font-mono space-y-2 text-surface-ivory/90 leading-relaxed overflow-x-auto">
+<p class="text-surface-ivory/40"># Initiating Consensus Loop on Transaction ID: TX_98124_DIV</p>
+<p><span class="text-gold-muted">[08:14:22.102]</span> <span class="text-blue-400">INGEST:</span> CDC Packet verified. Source: SAP_GL_POSTINGS. Hash: 0x9f8...a21</p>
+<p><span class="text-gold-muted">[08:14:22.145]</span> <span class="text-purple-400">SUPERVISOR:</span> Dispatched to LedgerSpecialistAgent with intent <span class="text-green-300">'RECONCILE_ESCROW'</span></p>
+<p><span class="text-gold-muted">[08:14:22.210]</span> <span class="text-yellow-400">RAG_RETRIEVE:</span> BM25 Reranker fetched 4 historic dispute patterns. Cosine Sim: 0.962</p>
+<div class="bg-primary/50 p-3 rounded my-2 border border-surface-ivory/10">
+<span class="text-gold-muted block font-bold">STATE MACHINE DECISION MATRIX:</span>
+<span class="text-surface-ivory/80">Confidence Score: <span class="text-green-400 font-bold">99.4%</span> (Threshold &gt;= 98.5%)</span><br/>
+<span class="text-surface-ivory/80">Action: <span class="text-surface-ivory font-bold">AUTO_COMMIT_JOURNAL_ENTRY</span></span><br/>
+<span class="text-surface-ivory/80">Sync Destination: Salesforce CRM Opportunity ID: 0064W00000abcXYZ</span>
+</div>
+<p><span class="text-gold-muted">[08:14:22.380]</span> <span class="text-green-400">AUDIT_LOG:</span> Cryptographic signature generated. Block height: 491,012. Ready for SEC inspect.</p>
+<p><span class="text-gold-muted">[08:14:22.411]</span> <span class="text-blue-400">SUCCESS:</span> Total latency: 309ms. Zero human intervention needed.</p>
+</div>
+</div>
+<!-- Key Capabilities Delivered -->
+<div class="lg:col-span-5 flex flex-col justify-center space-y-6">
+<div class="border-l-2 border-gold-muted pl-4">
+<h3 class="font-title-md text-lg font-bold text-surface-ivory">Autonomous Classification</h3>
+<p class="font-body-md text-sm text-surface-ivory/70 mt-1 leading-relaxed">
+              Disparate line items are categorized in sub-second cycles using fine-tuned specialized models running behind isolated enterprise boundaries.
+            </p>
+</div>
+<div class="border-l-2 border-gold-muted pl-4">
+<h3 class="font-title-md text-lg font-bold text-surface-ivory">Automatic Exception Escalation</h3>
+<p class="font-body-md text-sm text-surface-ivory/70 mt-1 leading-relaxed">
+              When an anomaly or dispute is detected, the agent constructs a pre-filled Slack or Salesforce briefing for human review, reducing research time from 40 minutes to 3 minutes.
+            </p>
+</div>
+<div class="border-l-2 border-gold-muted pl-4">
+<h3 class="font-title-md text-lg font-bold text-surface-ivory">Bidirectional CRM Synchronization</h3>
+<p class="font-body-md text-sm text-surface-ivory/70 mt-1 leading-relaxed">
+              Customer record enrichment updates dynamically with accurate settlement state, enabling front-line support reps to address inquiries without waiting on back-office batches.
+            </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 8. TECHNOLOGY STACK STRIP                                                 -->
+<!-- ========================================================================= -->
+<section class="py-12 bg-navy-deep border-b border-outline-variant/15 text-surface-ivory">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="text-xs font-label-sm text-gold-muted uppercase tracking-widest mb-6">TECHNOLOGY STACK &amp; RUNTIME ECOSYSTEM</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Category 1 -->
+<div class="p-4 bg-primary-container/40 rounded-lg border border-surface-ivory/10">
+<span class="block text-xs font-label-sm text-surface-ivory/50 uppercase mb-3">Foundation Models</span>
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 bg-surface-ivory/10 rounded font-label-sm text-xs font-medium text-surface-ivory">GPT-4o Enterprise</span>
+<span class="px-2.5 py-1 bg-surface-ivory/10 rounded font-label-sm text-xs font-medium text-surface-ivory">Claude 3.5 Sonnet</span>
+</div>
+</div>
+<!-- Category 2 -->
+<div class="p-4 bg-primary-container/40 rounded-lg border border-surface-ivory/10">
+<span class="block text-xs font-label-sm text-surface-ivory/50 uppercase mb-3">Orchestration</span>
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 bg-surface-ivory/10 rounded font-label-sm text-xs font-medium text-surface-ivory">LangGraph</span>
+<span class="px-2.5 py-1 bg-surface-ivory/10 rounded font-label-sm text-xs font-medium text-surface-ivory">Python 3.12</span>
+<span class="px-2.5 py-1 bg-surface-ivory/10 rounded font-label-sm text-xs font-medium text-surface-ivory">FastAPI</span>
+</div>
+</div>
+<!-- Category 3 -->
+<div class="p-4 bg-primary-container/40 rounded-lg border border-surface-ivory/10">
+<span class="block text-xs font-label-sm text-surface-ivory/50 uppercase mb-3">Data &amp; Messaging</span>
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 bg-surface-ivory/10 rounded font-label-sm text-xs font-medium text-surface-ivory">Apache Kafka</span>
+<span class="px-2.5 py-1 bg-surface-ivory/10 rounded font-label-sm text-xs font-medium text-surface-ivory">Redis Cluster</span>
+<span class="px-2.5 py-1 bg-surface-ivory/10 rounded font-label-sm text-xs font-medium text-surface-ivory">PostgreSQL 16</span>
+</div>
+</div>
+<!-- Category 4 -->
+<div class="p-4 bg-primary-container/40 rounded-lg border border-surface-ivory/10">
+<span class="block text-xs font-label-sm text-surface-ivory/50 uppercase mb-3">Infrastructure</span>
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 bg-surface-ivory/10 rounded font-label-sm text-xs font-medium text-surface-ivory">AWS EKS</span>
+<span class="px-2.5 py-1 bg-surface-ivory/10 rounded font-label-sm text-xs font-medium text-surface-ivory">Docker</span>
+<span class="px-2.5 py-1 bg-surface-ivory/10 rounded font-label-sm text-xs font-medium text-surface-ivory">Terraform Cloud</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 9. BUSINESS RESULTS & QUANTITATIVE IMPACT                                 -->
+<!-- ========================================================================= -->
+<section class="py-20 bg-surface">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="mb-4">
+<span class="font-label-sm text-label-sm text-gold-muted uppercase tracking-widest block font-bold">05 / Quantitative Validation</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold mt-1">Enterprise Business Impact</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
+<!-- Impact 1 -->
+<div class="bg-surface-ivory p-8 rounded-xl border border-outline-variant/20 shadow-sm flex flex-col justify-between">
+<div>
+<div class="w-12 h-12 rounded-lg bg-primary-container text-gold-muted flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[28px]">schedule</span>
+</div>
+<h3 class="font-title-md text-title-md font-bold text-on-surface mb-3">Operational Agility</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+              Eliminated 100% of weekend reconciliation backlogs. Analysts regained 60 minutes each morning, redirecting high-value cognitive effort to strategic portfolio risk analysis rather than manual spreadsheet syncing.
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant/15 text-gold-muted font-bold text-sm">
+            +3.5 Hours Reinvested Weekly Per Analyst
+          </div>
+</div>
+<!-- Impact 2 -->
+<div class="bg-surface-ivory p-8 rounded-xl border border-outline-variant/20 shadow-sm flex flex-col justify-between">
+<div>
+<div class="w-12 h-12 rounded-lg bg-primary-container text-gold-muted flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[28px]">verified</span>
+</div>
+<h3 class="font-title-md text-title-md font-bold text-on-surface mb-3">Auditable Precision</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+              Zero compliance breaches across 2.4 million transactions processed during the first quarter of deployment. Every ledger movement possesses a traceable cryptographic origin certificate.
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant/15 text-gold-muted font-bold text-sm">
+            100% Audit Readiness Maintained
+          </div>
+</div>
+<!-- Impact 3 -->
+<div class="bg-surface-ivory p-8 rounded-xl border border-outline-variant/20 shadow-sm flex flex-col justify-between">
+<div>
+<div class="w-12 h-12 rounded-lg bg-primary-container text-gold-muted flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-[28px]">trending_up</span>
+</div>
+<h3 class="font-title-md text-title-md font-bold text-on-surface mb-3">Elastic Scalability</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+              During end-of-month financial closing windows, the swarm effortlessly scaled to 5x standard throughput without adding headcount or expanding operational support shifts.
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant/15 text-gold-muted font-bold text-sm">
+            500% Peak Volume Handled Autonomously
+          </div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 10. EXECUTIVE CLIENT TESTIMONIAL                                          -->
+<!-- ========================================================================= -->
+<section class="py-16 bg-surface-container-low">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="bg-navy-deep text-surface-ivory rounded-2xl p-8 md:p-14 border border-outline-variant/20 shadow-2xl relative overflow-hidden">
+<div class="absolute -top-10 -right-10 w-64 h-64 bg-gold-muted/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative z-10 max-w-4xl mx-auto text-center">
+<span class="material-symbols-outlined text-gold-muted text-[56px] leading-none mb-6">format_quote</span>
+<blockquote class="font-headline-lg md:font-headline-xl text-title-md md:text-headline-lg font-medium text-surface-ivory leading-relaxed mb-8">
+            “TeamBees didn't just give us talent; they brought the architectural maturity to turn an ambitious AI vision into a rock-solid, compliant production system in two weeks.”
+          </blockquote>
+<div class="inline-flex flex-col items-center">
+<span class="font-title-md text-base font-bold text-gold-muted">Marcus Vance</span>
+<span class="font-label-sm text-xs text-surface-ivory/70 uppercase tracking-wider mt-0.5">VP of Engineering &amp; Operations, Divo Financial</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 11. RELATED CASE STUDIES (3-CARD GRID)                                    -->
+<!-- ========================================================================= -->
+<section class="py-20 bg-surface">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center justify-between mb-12">
+<div>
+<span class="font-label-sm text-label-sm text-gold-muted uppercase tracking-widest block font-bold">More Client Success Stories</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold mt-1">Engineered for Scaled Impact</h2>
+</div>
+<a class="hidden md:flex items-center gap-1 font-title-md text-sm font-bold text-primary hover:text-gold-muted transition-colors" href="#">
+          View all case studies <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Related 1 -->
+<div class="bg-surface-ivory rounded-xl border border-outline-variant/20 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div class="p-6">
+<span class="px-2.5 py-1 bg-surface-container rounded font-label-sm text-xs text-on-surface-variant font-semibold">ServiceNow Bees</span>
+<div class="mt-4 mb-2">
+<span class="font-headline-xl text-3xl font-extrabold text-gold-muted block">70%+</span>
+</div>
+<h3 class="font-title-md text-lg font-bold text-on-surface mb-2">CMDB Enterprise Overhaul</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+              Pruning hundreds of redundant custom fields to native OOTB architectures for a Fortune 100 enterprise tech giant.
+            </p>
+</div>
+<div class="p-6 pt-0">
+<a class="font-title-md text-sm font-bold text-primary hover:text-gold-muted flex items-center gap-1 transition-colors" href="#">
+              Read case study <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Related 2 -->
+<div class="bg-surface-ivory rounded-xl border border-outline-variant/20 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div class="p-6">
+<span class="px-2.5 py-1 bg-surface-container rounded font-label-sm text-xs text-on-surface-variant font-semibold">Energy Bees</span>
+<div class="mt-4 mb-2">
+<span class="font-headline-xl text-3xl font-extrabold text-gold-muted block">Sub-20ms</span>
+</div>
+<h3 class="font-title-md text-lg font-bold text-on-surface mb-2">Real-Time CTRM Trading Pipeline</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+              Accelerating commodity trading transaction ingestion and real-time risk positioning for a global energy conglomerate.
+            </p>
+</div>
+<div class="p-6 pt-0">
+<a class="font-title-md text-sm font-bold text-primary hover:text-gold-muted flex items-center gap-1 transition-colors" href="#">
+              Read case study <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Related 3 -->
+<div class="bg-surface-ivory rounded-xl border border-outline-variant/20 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div class="p-6">
+<span class="px-2.5 py-1 bg-surface-container rounded font-label-sm text-xs text-on-surface-variant font-semibold">Quality Bees</span>
+<div class="mt-4 mb-2">
+<span class="font-headline-xl text-3xl font-extrabold text-gold-muted block">Zero Defect</span>
+</div>
+<h3 class="font-title-md text-lg font-bold text-on-surface mb-2">Automated Medical QA Pipeline</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+              Rigorous multi-layer test automation and compliance documentation pipeline for class III medical device manufacturing.
+            </p>
+</div>
+<div class="p-6 pt-0">
+<a class="font-title-md text-sm font-bold text-primary hover:text-gold-muted flex items-center gap-1 transition-colors" href="#">
+              Read case study <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 12. FINAL FULL-WIDTH CONVERSION CTA BAND                                  -->
+<!-- ========================================================================= -->
+<section class="relative py-24 bg-primary-container text-surface-ivory overflow-hidden" id="consultation">
+<!-- Visual Glow & Tech Lines -->
+<div class="absolute inset-0 grid-pattern opacity-20 pointer-events-none"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gold-muted/15 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop relative z-10 text-center">
+<span class="font-label-sm text-label-sm text-gold-muted uppercase tracking-widest block font-bold mb-3">Enterprise Acceleration</span>
+<h2 class="font-headline-xl text-headline-xl md:text-[52px] font-bold text-surface-ivory tracking-tight mb-6 max-w-3xl mx-auto">
+        Ready to achieve similar outcomes for your enterprise?
+      </h2>
+<p class="font-body-lg text-body-lg text-surface-ivory/80 max-w-2xl mx-auto mb-10">
+        Our principal solution architects partner with your senior engineering and business teams to scope, prototype, and deliver production-grade AI agents in weeks.
+      </p>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+<a class="w-full sm:w-auto px-8 py-4 rounded-lg bg-gold-muted text-navy-deep font-title-md text-base font-bold shadow-[0_4px_20px_rgba(212,175,55,0.35)] hover:bg-gold-muted/90 transition-all duration-200" href="#">
+          Book an Architecture Consultation
+        </a>
+<a class="w-full sm:w-auto px-8 py-4 rounded-lg border border-surface-ivory/30 text-surface-ivory font-title-md text-base font-semibold hover:bg-surface-ivory/10 hover:border-surface-ivory transition-all duration-200" href="#">
+          Explore All Case Studies
+        </a>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 13. FULL ENTERPRISE MEGA FOOTER                                           -->
+<!-- ========================================================================= -->
+<footer class="w-full docked bg-primary dark:bg-navy-deep border-t border-outline-variant/15 text-surface-ivory py-16">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex flex-col gap-12">
+<!-- 5 Column Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+<!-- Col 1: Brand Info -->
+<div class="lg:col-span-1 space-y-4">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 hexagon-mark bg-gold-muted flex items-center justify-center">
+<span class="text-navy-deep font-bold text-[10px]">TB</span>
+</div>
+<span class="font-headline-lg text-headline-lg text-surface-ivory font-bold tracking-tight">TeamBees</span>
+</div>
+<p class="font-body-md text-xs text-surface-ivory/70 leading-relaxed">
+            Institutional technology partner delivering specialized agentic swarms, data architecture, and mission-critical cloud integrations for global leaders.
+          </p>
+<div class="pt-2 flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-surface-ivory/10 font-label-sm text-[10px] text-surface-ivory/80 border border-surface-ivory/20">SOC2 Type II</span>
+<span class="px-2 py-0.5 rounded bg-surface-ivory/10 font-label-sm text-[10px] text-surface-ivory/80 border border-surface-ivory/20">ISO 27001</span>
+</div>
+</div>
+<!-- Col 2: Practices -->
+<div>
+<h4 class="font-title-md text-sm font-bold text-gold-muted mb-4 uppercase tracking-wider">Practices</h4>
+<ul class="space-y-2.5 text-xs">
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">AI Bees &amp; Autonomous Agents</a></li>
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">ServiceNow Bees (CMDB &amp; ITSM)</a></li>
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">Energy &amp; Commodity Bees</a></li>
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">Quality &amp; Verification Bees</a></li>
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">Cloud &amp; Data Modernization</a></li>
+</ul>
+</div>
+<!-- Col 3: Industries -->
+<div>
+<h4 class="font-title-md text-sm font-bold text-gold-muted mb-4 uppercase tracking-wider">Industries</h4>
+<ul class="space-y-2.5 text-xs">
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">Banking &amp; Capital Markets</a></li>
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">Energy &amp; Utilities</a></li>
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">Healthcare &amp; Medical Tech</a></li>
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">Enterprise Software / SaaS</a></li>
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">Logistics &amp; Supply Chain</a></li>
+</ul>
+</div>
+<!-- Col 4: Locations -->
+<div>
+<h4 class="font-title-md text-sm font-bold text-gold-muted mb-4 uppercase tracking-wider">Locations</h4>
+<ul class="space-y-2.5 text-xs text-surface-ivory/70">
+<li><strong class="text-surface-ivory block">San Francisco, CA</strong> 100 Montgomery St, Suite 2100</li>
+<li><strong class="text-surface-ivory block">New York, NY</strong> 75 Rockefeller Plaza, FL 18</li>
+<li><strong class="text-surface-ivory block">Bangalore, India</strong> Global Technology Center, TechPark 4</li>
+<li><strong class="text-surface-ivory block">London, UK</strong> 1 Canada Square, Canary Wharf</li>
+</ul>
+</div>
+<!-- Col 5: Shared Component Anchor Links & Compliance -->
+<div>
+<h4 class="font-title-md text-sm font-bold text-gold-muted mb-4 uppercase tracking-wider">Governance</h4>
+<ul class="space-y-2.5 text-xs">
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">Architecture Blueprints</a></li>
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">Enterprise Security</a></li>
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">Impact Studies</a></li>
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">Executive Advisory</a></li>
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">Compliance &amp; Audits</a></li>
+<li><a class="text-surface-ivory/70 hover:text-surface-ivory transition-colors" href="#">Privacy Shield</a></li>
+</ul>
+</div>
+</div>
+<!-- Footer Bottom Strip -->
+<div class="pt-8 border-t border-surface-ivory/10 flex flex-col md:flex-row items-center justify-between gap-4 font-label-sm text-xs text-surface-ivory/60">
+<div>
+          © 2024 TeamBees Corp. All enterprise rights reserved. SOC2 Type II Certified &amp; ISO/IEC 27001 Compliant.
+        </div>
+<div class="flex items-center gap-6">
+<a class="hover:text-gold-muted transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-gold-muted transition-colors" href="#">Master Services Agreement</a>
+<a class="hover:text-gold-muted transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-gold-muted transition-colors" href="#">Security Disclosure</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

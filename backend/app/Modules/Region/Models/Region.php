@@ -32,6 +32,12 @@ class Region extends Model
         return $this->hasMany(Location::class);
     }
 
+    public function practicePages(): HasMany
+    {
+        return $this->hasMany(RegionPracticePage::class);
+    }
+
+
     protected function searchResultType(): string
     {
         return 'region';

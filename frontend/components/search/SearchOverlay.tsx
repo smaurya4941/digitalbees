@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Search, X, Loader2 } from 'lucide-react';
 import { apiGetClient, ClientApiError } from '@/lib/api/forms';
 
 type SearchHit = {
@@ -17,11 +16,19 @@ const TYPE_LABELS: Record<string, string> = {
   industry: 'Industries',
   region: 'Regions',
   technology: 'Technologies',
-  case_study: 'Case studies',
-  insight: 'Insights',
+  case_study: 'Case Studies',
+  insight: 'Publications',
   resource: 'Resources',
-  career: 'Careers',
+  career: 'Open Jobs',
 };
+
+const POPULAR_QUERIES = [
+  'ServiceNow ITOM',
+  'Openlink Endur',
+  'SOC2 Testing',
+  '48h IT Staffing',
+  'AI Agent Pods',
+];
 
 function groupByType(hits: SearchHit[]): Array<[string, SearchHit[]]> {
   const groups = new Map<string, SearchHit[]>();
@@ -38,11 +45,6 @@ type SearchOverlayProps = {
   onClose: () => void;
 };
 
-/**
- * Full-screen search overlay (blueprint §30.1): live-as-you-type results
- * grouped by content type. Debounced, client-side — hits the backend
- * directly rather than through the server-only `lib/api/client.ts`.
- */
 export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const [query, setQuery] = useState('');
   const [hits, setHits] = useState<SearchHit[] | null>(null);
@@ -50,7 +52,15 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (open) inputRef.current?.focus();
+    if (open) {
+      inputRef.current?.focus();
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [open]);
 
   useEffect(() => {
@@ -64,7 +74,10 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   }, [open, onClose]);
 
   useEffect(() => {
-    if (query.trim().length < 2) return;
+    if (query.trim().length < 2) {
+      setHits(null);
+      return;
+    }
 
     const controller = new AbortController();
 
@@ -79,7 +92,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
       } finally {
         setLoading(false);
       }
-    }, 250);
+    }, 200);
 
     return () => {
       clearTimeout(timer);
@@ -92,61 +105,156 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const groups = hits ? groupByType(hits) : [];
 
   return (
-    <div className="fixed inset-0 z-[300] bg-brand-navy-deep/95 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Search">
-      <div className="mx-auto flex h-full max-w-3xl flex-col px-6 py-16 md:py-24">
-        <div className="flex items-center gap-4 border-b border-white/20 pb-4">
-          <Search size={24} className="shrink-0 text-white/60" aria-hidden />
+    <div
+      className="fixed inset-0 z-[300] bg-[#071527]/98 backdrop-blur-xl flex flex-col text-white animate-in fade-in duration-200"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Search TeamBees Corp Intelligence"
+    >
+      {/* Top Header Bar */}
+      <div className="border-b border-white/10 px-6 py-4 flex items-center justify-between max-w-5xl mx-auto w-full">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-[#C6963A]/20 text-[#C6963A] flex items-center justify-center font-bold">
+            <span className="material-symbols-outlined text-[20px]">search</span>
+          </div>
+          <div>
+            <span className="text-[10px] font-mono text-[#C6963A] uppercase tracking-wider block">
+              // Global Index
+            </span>
+            <div className="text-sm font-bold text-white">Search TeamBees Intelligence &amp; Services</div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 text-xs font-mono text-white/50">
+          <span className="hidden sm:inline px-2 py-1 rounded bg-[#0B1F3A] border border-white/10">
+            ESC to exit
+          </span>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close search"
+            className="w-8 h-8 rounded-lg bg-[#0B1F3A] hover:bg-rose-500/20 hover:text-rose-300 text-white/70 flex items-center justify-center border border-white/10 transition"
+          >
+            <span className="material-symbols-outlined text-[18px]">close</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Main Container */}
+      <div className="max-w-4xl mx-auto w-full px-6 py-8 flex-1 overflow-y-auto flex flex-col">
+        {/* Large Input Field */}
+        <div className="relative flex items-center mb-4">
+          <span className="material-symbols-outlined absolute left-5 text-[#C6963A] text-[26px]">
+            search
+          </span>
           <input
             ref={inputRef}
             type="search"
             value={query}
-            onChange={(event) => {
-              const value = event.target.value;
-              setQuery(value);
-              if (value.trim().length < 2) setHits(null);
-            }}
-            placeholder="Search practices, industries, case studies…"
-            className="w-full bg-transparent text-h4 text-white placeholder:text-white/40 focus:outline-none"
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search practices, industries, case studies, jobs…"
+            className="w-full bg-[#0B1F3A]/80 border-2 border-[#C6963A] rounded-2xl py-4 pl-14 pr-24 text-lg md:text-xl text-white placeholder:text-white/40 focus:outline-none shadow-[0_0_30px_rgba(198,150,58,0.2)]"
           />
-          {loading && <Loader2 size={20} className="shrink-0 animate-spin text-white/60" aria-hidden />}
-          <button type="button" onClick={onClose} aria-label="Close search" className="shrink-0 text-white/60 hover:text-white">
-            <X size={24} />
-          </button>
+          {loading ? (
+            <div className="absolute right-4 w-5 h-5 border-2 border-[#C6963A] border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <span className="hidden sm:inline absolute right-4 px-2 py-1 rounded bg-[#071527] text-[#C6963A] text-xs font-mono border border-[#C6963A]/30">
+              RETURN ↵
+            </span>
+          )}
         </div>
 
-        <div className="mt-8 flex-1 overflow-y-auto">
+        {/* Popular query chips */}
+        <div className="flex flex-wrap items-center gap-2 mb-8 text-xs font-mono text-white/50">
+          <span>Popular:</span>
+          {POPULAR_QUERIES.map((pq) => (
+            <button
+              key={pq}
+              type="button"
+              onClick={() => setQuery(pq)}
+              className="text-white/80 hover:text-[#C6963A] hover:underline px-1 py-0.5 rounded transition"
+            >
+              {pq}
+            </button>
+          ))}
+        </div>
+
+        {/* Search Results */}
+        <div className="flex-1">
           {query.trim().length >= 2 && !loading && groups.length === 0 && (
-            <div className="text-body-lg text-white/70">
-              <p>We couldn&apos;t find a match for that. Try a different term.</p>
-              <p className="mt-4">
-                Can&apos;t find what you&apos;re looking for?{' '}
-                <Link href="/contact-us" onClick={onClose} className="underline hover:text-white">
-                  Contact us
-                </Link>{' '}
-                and we&apos;ll point you in the right direction.
+            <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/10 text-center max-w-lg mx-auto space-y-4">
+              <div className="w-12 h-12 rounded-full bg-[#C6963A]/10 text-[#C6963A] flex items-center justify-center mx-auto">
+                <span className="material-symbols-outlined text-[28px]">search_off</span>
+              </div>
+              <h3 className="text-lg font-bold text-white">No exact match found</h3>
+              <p className="text-sm text-white/60">
+                We couldn&apos;t find an exact match for &ldquo;{query}&rdquo;. You can consult directly with our solutions architects.
               </p>
+              <Link
+                href="/contact-us"
+                onClick={onClose}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#C6963A] text-[#0B1F3A] font-bold text-xs uppercase tracking-wider hover:opacity-90 transition"
+              >
+                <span>Book a Consultation</span>
+                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </Link>
             </div>
           )}
 
-          {groups.map(([type, typeHits]) => (
-            <div key={type} className="mb-8">
-              <h2 className="text-eyebrow uppercase text-brand-gold-soft">{TYPE_LABELS[type] ?? type}</h2>
-              <ul className="mt-3 flex flex-col gap-2">
-                {typeHits.map((hit) => (
-                  <li key={`${hit.type}-${hit.url}`}>
-                    <Link
-                      href={hit.url}
-                      onClick={onClose}
-                      className="block rounded-lg px-3 py-2 text-body-lg text-white transition-colors hover:bg-white/10"
-                    >
-                      <span className="font-semibold">{hit.title}</span>
-                      {hit.excerpt && <span className="ml-2 text-white/60">{hit.excerpt}</span>}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+          {groups.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {groups.map(([type, typeHits]) => (
+                <div key={type} className="space-y-3">
+                  <div className="flex items-center justify-between text-xs font-mono text-white/50 border-b border-white/10 pb-1">
+                    <span className="uppercase text-[#C6963A] font-bold">
+                      {TYPE_LABELS[type] ?? type} ({typeHits.length})
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    {typeHits.map((hit) => (
+                      <Link
+                        key={`${hit.type}-${hit.url}`}
+                        href={hit.url}
+                        onClick={onClose}
+                        className="block p-3 rounded-lg bg-[#0B1F3A]/60 hover:bg-[#0B1F3A] border border-white/5 hover:border-[#C6963A]/40 transition group"
+                      >
+                        <div className="font-bold text-xs text-white group-hover:text-[#C6963A] transition">
+                          {hit.title}
+                        </div>
+                        {hit.excerpt && (
+                          <p className="text-[11px] text-white/50 mt-1 line-clamp-2">
+                            {hit.excerpt}
+                          </p>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
+
+          {/* AI Bee Assistant Fallback Card (When no query or after results) */}
+          <div className="mt-8 p-5 rounded-2xl bg-[#C6963A]/10 border border-[#C6963A]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-[#C6963A] text-[#0B1F3A] flex items-center justify-center font-bold shrink-0">
+                <span className="material-symbols-outlined text-[24px]">smart_toy</span>
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-white">Can&apos;t find what you&apos;re looking for?</h4>
+                <p className="text-xs text-white/70 mt-0.5">
+                  Our Bee Assistant can match your exact enterprise tech stack or draft an RFP spec.
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/contact-us"
+              onClick={onClose}
+              className="px-4 py-2 rounded-lg bg-[#C6963A] hover:bg-[#D4AF37] text-[#0B1F3A] font-bold text-xs tracking-wider uppercase transition whitespace-nowrap text-center shrink-0"
+            >
+              Ask Bee Assistant →
+            </Link>
+          </div>
         </div>
       </div>
     </div>

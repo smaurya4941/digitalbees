@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeamBees Corp — Header & Mega-Menu Design Specification</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy: {
+          deep: '#071527',
+          DEFAULT: '#0B1F3A',
+          surface: '#0F2748',
+          card: '#132E54',
+          subtle: '#1C3E6E'
+        },
+        gold: {
+          DEFAULT: '#C6963A',
+          hover: '#D4A74C',
+          muted: '#E5C07B',
+          light: '#F5E7C8',
+          pale: '#FFF9EE'
+        },
+        surface: {
+          ivory: '#FDFDFD',
+          muted: '#F5F7FA',
+          border: '#E2E8F0'
+        }
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace']
+      }
+    }
+  }
+}
+</script>
+<style>
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.filled-icon {
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #071527; }
+::-webkit-scrollbar-thumb { background: #1C3E6E; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #C6963A; }
+
+.spec-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.glass-panel {
+  background: rgba(11, 31, 58, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(198, 150, 58, 0.25);
+}
+.interactive-tab.active {
+  background: #C6963A;
+  color: #071527;
+  font-weight: 700;
+}
+</style>
+</head>
+<body class="bg-[#050C17] text-slate-100 font-sans antialiased min-h-screen">
+
+  <!-- TOP SPECIFICATION META BAR -->
+  <header class="border-b border-navy-subtle/50 bg-navy-deep/90 sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-[1720px] mx-auto px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded bg-gold flex items-center justify-center text-navy-deep font-black text-sm shadow-[0_0_12px_rgba(198,150,58,0.4)]">
+            <span class="material-symbols-outlined text-[18px]">hub</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white text-sm tracking-wide">TeamBees.</span>
+              <span class="text-xs text-gold/80 font-mono font-medium">Design System Spec</span>
+            </div>
+            <p class="text-[11px] text-slate-400">Enterprise Sticky Header & Mega-Menu System v2.4</p>
+          </div>
+        </div>
+
+        <div class="h-6 w-px bg-slate-800 hidden md:block"></div>
+
+        <div class="hidden lg:flex items-center gap-2 text-[11px] font-mono text-slate-400">
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Production Ready</span>
+          <span class="text-slate-600">|</span>
+          <span>72px Sticky Shell</span>
+          <span class="text-slate-600">|</span>
+          <span>7 Practices + 10 Industries</span>
+        </div>
+      </div>
+
+      <!-- Quick Jump Controller -->
+      <div class="flex items-center gap-2 overflow-x-auto py-1">
+        <span class="text-xs font-mono text-slate-400 mr-1 hidden sm:inline">Inspect State:</span>
+        <button onclick="scrollToSection('section-desktop-headers')" class="px-2.5 py-1 rounded text-xs font-mono bg-navy-surface hover:bg-gold hover:text-navy-deep transition border border-slate-700/60 text-slate-300">1. Header States</button>
+        <button onclick="scrollToSection('section-practices-menu')" class="px-2.5 py-1 rounded text-xs font-mono bg-navy-surface hover:bg-gold hover:text-navy-deep transition border border-slate-700/60 text-slate-300">2. Practices Mega-Menu</button>
+        <button onclick="scrollToSection('section-industries-menu')" class="px-2.5 py-1 rounded text-xs font-mono bg-navy-surface hover:bg-gold hover:text-navy-deep transition border border-slate-700/60 text-slate-300">3. Industries Grid</button>
+        <button onclick="scrollToSection('section-locations-menu')" class="px-2.5 py-1 rounded text-xs font-mono bg-navy-surface hover:bg-gold hover:text-navy-deep transition border border-slate-700/60 text-slate-300">4. Locations</button>
+        <button onclick="scrollToSection('section-insights-menu')" class="px-2.5 py-1 rounded text-xs font-mono bg-navy-surface hover:bg-gold hover:text-navy-deep transition border border-slate-700/60 text-slate-300">5. Insights</button>
+        <button onclick="scrollToSection('section-search-modal')" class="px-2.5 py-1 rounded text-xs font-mono bg-navy-surface hover:bg-gold hover:text-navy-deep transition border border-slate-700/60 text-slate-300">6. Search Overlay</button>
+        <button onclick="scrollToSection('section-mobile-system')" class="px-2.5 py-1 rounded text-xs font-mono bg-navy-surface hover:bg-gold hover:text-navy-deep transition border border-slate-700/60 text-slate-300">7. Mobile Overlay</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CANVAS CONTAINER -->
+  <main class="max-w-[1720px] mx-auto px-4 md:px-8 py-10 space-y-20">
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 1: DESKTOP STICKY HEADER (TRANSPARENT VS SOLID SCROLLED) -->
+    <!-- ========================================================================= -->
+    <section id="section-desktop-headers" class="space-y-6 scroll-mt-20">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-navy-subtle/50 pb-4 gap-3">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="spec-badge bg-gold/10 text-gold border border-gold/30">Component 01</span>
+            <span class="text-xs font-mono text-slate-400">Height: 72px (4.5rem) • Sticky Shell</span>
+          </div>
+          <h2 class="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
+            Desktop Header Architecture & Dual Surface States
+          </h2>
+          <p class="text-sm text-slate-400 max-w-3xl mt-1">
+            Engineered with high-contrast typography, contextual region selectors, candidate-routing toggles, and a gold primary conversion trigger.
+          </p>
+        </div>
+        <div class="flex items-center gap-3 text-xs font-mono">
+          <span class="px-2.5 py-1 rounded bg-navy-surface text-slate-300 border border-slate-700/50">Z-Index: 50</span>
+          <span class="px-2.5 py-1 rounded bg-navy-surface text-gold border border-gold/30">Brand: #0B1F3A + #C6963A</span>
+        </div>
+      </div>
+
+      <!-- STATE A: TRANSPARENT HERO OVERLAY -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between text-xs font-mono px-2 text-slate-400">
+          <span class="flex items-center gap-2 text-gold">
+            <span class="w-2 h-2 rounded-full bg-gold"></span>
+            <strong>STATE A:</strong> Transparent Hero State (Resting on dark 3D network / Hero background)
+          </span>
+          <span class="text-slate-500">CSS: bg-transparent | border-b border-white/10</span>
+        </div>
+
+        <!-- Rendered State A in simulated Hero -->
+        <div class="relative rounded-2xl overflow-hidden border border-navy-subtle/80 bg-navy-deep shadow-2xl">
+          <!-- Simulated Hero Texture Backdrop -->
+          <div class="absolute inset-0 opacity-40 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/40 via-navy-deep to-[#050C17]"></div>
+          <div class="absolute top-0 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl pointer-events-none"></div>
+
+          <!-- THE HEADER BAR STATE A -->
+          <div class="relative z-10 h-[72px] px-8 flex items-center justify-between border-b border-white/10 backdrop-blur-[2px]">
+            <!-- Left: Brand Logo -->
+            <div class="flex items-center gap-3 group cursor-pointer">
+              <div class="w-9 h-9 rounded-lg bg-gold flex items-center justify-center text-navy-deep font-black shadow-[0_0_16px_rgba(198,150,58,0.35)] group-hover:scale-105 transition-transform duration-200">
+                <span class="material-symbols-outlined text-[22px]">hub</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-xl font-bold tracking-tight text-white group-hover:text-gold transition-colors">TeamBees<span class="text-gold">.</span></span>
+                <span class="text-[9px] font-mono tracking-widest text-slate-400 uppercase -mt-1">Enterprise Pods</span>
+              </div>
+            </div>
+
+            <!-- Center-Left: Primary Navigation -->
+            <nav class="hidden xl:flex items-center gap-1 text-[13.5px] font-medium tracking-wide">
+              <a href="#practices" class="px-3.5 py-2 rounded-md text-white hover:text-gold hover:bg-white/5 transition flex items-center gap-1.5 group">
+                Practices
+                <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-gold group-hover:rotate-180 transition-transform duration-200">expand_more</span>
+              </a>
+              <a href="#industries" class="px-3.5 py-2 rounded-md text-slate-200 hover:text-gold hover:bg-white/5 transition flex items-center gap-1.5 group">
+                Industries
+                <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-gold group-hover:rotate-180 transition-transform duration-200">expand_more</span>
+              </a>
+              <a href="#locations" class="px-3.5 py-2 rounded-md text-slate-200 hover:text-gold hover:bg-white/5 transition flex items-center gap-1.5 group">
+                Locations
+                <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-gold group-hover:rotate-180 transition-transform duration-200">expand_more</span>
+              </a>
+              <a href="#insights" class="px-3.5 py-2 rounded-md text-slate-200 hover:text-gold hover:bg-white/5 transition flex items-center gap-1.5 group">
+                Insights
+                <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-gold group-hover:rotate-180 transition-transform duration-200">expand_more</span>
+              </a>
+              <a href="#casestudies" class="px-3.5 py-2 rounded-md text-slate-200 hover:text-gold hover:bg-white/5 transition">Case Studies</a>
+              <a href="#careers" class="px-3.5 py-2 rounded-md text-slate-200 hover:text-gold hover:bg-white/5 transition flex items-center gap-1.5">
+                Careers
+                <span class="px-1.5 py-0.5 text-[10px] font-mono font-semibold bg-emerald-500/20 text-emerald-300 rounded border border-emerald-500/30">Hiring</span>
+              </a>
+            </nav>
+
+            <!-- Right: Utility Cluster -->
+            <div class="flex items-center gap-4">
+              <!-- Search Trigger Button -->
+              <button onclick="toggleSearchModal(true)" class="w-9 h-9 rounded-lg flex items-center justify-center text-slate-300 hover:text-gold hover:bg-white/10 transition border border-white/10" title="Quick Search (Press /)">
+                <span class="material-symbols-outlined text-[18px]">search</span>
+              </button>
+
+              <!-- Region Selector -->
+              <div class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-gold/50 cursor-pointer transition text-xs font-medium text-slate-200 group">
+                <span class="material-symbols-outlined text-[16px] text-gold">public</span>
+                <span>US / Global</span>
+                <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-gold transition">expand_more</span>
+              </div>
+
+              <!-- For Candidates Toggle Switch -->
+              <div class="hidden lg:flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-navy-surface/60 border border-white/10 text-xs">
+                <span class="text-slate-400 text-[11px] font-mono uppercase">Candidates</span>
+                <!-- Custom iOS-style toggle -->
+                <div class="w-8 h-4 bg-slate-700 rounded-full p-0.5 cursor-pointer flex items-center hover:bg-slate-600 transition">
+                  <div class="w-3 h-3 bg-white rounded-full shadow-sm"></div>
+                </div>
+              </div>
+
+              <!-- Primary CTA Button -->
+              <button class="px-5 py-2.5 rounded-lg bg-gold hover:bg-gold-hover text-navy-deep font-bold text-xs tracking-wider uppercase transition shadow-[0_4px_16px_rgba(198,150,58,0.25)] flex items-center gap-1.5">
+                <span>Book a Consultation</span>
+                <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Hero Context Simulation -->
+          <div class="px-8 py-10 flex items-center justify-between text-slate-400">
+            <div>
+              <span class="text-xs font-mono text-gold uppercase tracking-wider">// Global Talent & Technology Partner</span>
+              <h3 class="text-3xl font-extrabold text-white mt-1">Talent and technology, from the same partner.</h3>
+              <p class="text-xs text-slate-400 mt-1">Seven specialist practices. Six global delivery regions. One dedicated team.</p>
+            </div>
+            <div class="text-right text-xs font-mono text-slate-500">
+              [Simulated Hero Viewport — 100vh Anchor]
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE B: SCROLLED SOLID STATE -->
+      <div class="space-y-2 pt-4">
+        <div class="flex items-center justify-between text-xs font-mono px-2 text-slate-400">
+          <span class="flex items-center gap-2 text-emerald-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <strong>STATE B:</strong> Scrolled Solid State (Fixed viewport tracking, 96% opacity, 1px gold hairline)
+          </span>
+          <span class="text-slate-500">CSS: bg-[#0B1F3A]/96 | backdrop-blur-md | border-b border-[#C6963A]/40 | shadow-2xl</span>
+        </div>
+
+        <!-- Rendered State B -->
+        <div class="rounded-2xl overflow-hidden border border-navy-subtle/80 bg-[#0B1F3A]/96 shadow-[0_12px_40px_rgba(7,21,39,0.7)] backdrop-blur-md">
+          <div class="h-[72px] px-8 flex items-center justify-between border-b border-gold/40">
+            <!-- Left: Brand Logo -->
+            <div class="flex items-center gap-3 group cursor-pointer">
+              <div class="w-9 h-9 rounded-lg bg-gold flex items-center justify-center text-navy-deep font-black shadow-[0_0_12px_rgba(198,150,58,0.3)]">
+                <span class="material-symbols-outlined text-[22px]">hub</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-xl font-bold tracking-tight text-white">TeamBees<span class="text-gold">.</span></span>
+                <span class="text-[9px] font-mono tracking-widest text-gold/80 uppercase -mt-1">Corporate Delivery</span>
+              </div>
+            </div>
+
+            <!-- Center-Left: Primary Navigation with Active/Hover Indicators -->
+            <nav class="hidden xl:flex items-center gap-1 text-[13.5px] font-medium tracking-wide">
+              <!-- Active state example on Practices -->
+              <a href="#practices" class="px-3.5 py-2 rounded-md text-gold font-semibold bg-white/5 transition flex items-center gap-1.5 border-b-2 border-gold">
+                Practices
+                <span class="material-symbols-outlined text-[16px] text-gold rotate-180">expand_more</span>
+              </a>
+              <a href="#industries" class="px-3.5 py-2 rounded-md text-slate-200 hover:text-gold hover:bg-white/5 transition flex items-center gap-1.5 group">
+                Industries
+                <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-gold group-hover:rotate-180 transition">expand_more</span>
+              </a>
+              <a href="#locations" class="px-3.5 py-2 rounded-md text-slate-200 hover:text-gold hover:bg-white/5 transition flex items-center gap-1.5 group">
+                Locations
+                <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-gold group-hover:rotate-180 transition">expand_more</span>
+              </a>
+              <a href="#insights" class="px-3.5 py-2 rounded-md text-slate-200 hover:text-gold hover:bg-white/5 transition flex items-center gap-1.5 group">
+                Insights
+                <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-gold group-hover:rotate-180 transition">expand_more</span>
+              </a>
+              <a href="#casestudies" class="px-3.5 py-2 rounded-md text-slate-200 hover:text-gold hover:bg-white/5 transition">Case Studies</a>
+              <a href="#careers" class="px-3.5 py-2 rounded-md text-slate-200 hover:text-gold hover:bg-white/5 transition flex items-center gap-1.5">
+                Careers
+                <span class="px-1.5 py-0.5 text-[10px] font-mono font-semibold bg-emerald-500/20 text-emerald-300 rounded border border-emerald-500/30">Hiring</span>
+              </a>
+            </nav>
+
+            <!-- Right: Utility Cluster -->
+            <div class="flex items-center gap-4">
+              <!-- Search Trigger Button -->
+              <button onclick="toggleSearchModal(true)" class="w-9 h-9 rounded-lg flex items-center justify-center text-slate-300 hover:text-gold hover:bg-white/10 transition border border-slate-700/60" title="Search">
+                <span class="material-symbols-outlined text-[18px]">search</span>
+              </button>
+
+              <!-- Region Selector -->
+              <div class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-navy-surface border border-slate-700/60 hover:border-gold/50 cursor-pointer transition text-xs font-medium text-slate-200">
+                <span class="material-symbols-outlined text-[16px] text-gold">public</span>
+                <span>US / Global</span>
+                <span class="material-symbols-outlined text-[15px] text-slate-400">expand_more</span>
+              </div>
+
+              <!-- For Candidates Toggle Switch (Active state demonstration) -->
+              <div class="hidden lg:flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-navy-surface border border-slate-700/60 text-xs">
+                <span class="text-slate-300 text-[11px] font-mono uppercase">Candidates</span>
+                <div class="w-8 h-4 bg-gold rounded-full p-0.5 cursor-pointer flex items-center justify-end transition shadow-inner">
+                  <div class="w-3 h-3 bg-navy-deep rounded-full shadow-sm font-bold text-[8px] flex items-center justify-center">✓</div>
+                </div>
+              </div>
+
+              <!-- Primary CTA Button -->
+              <button class="px-5 py-2.5 rounded-lg bg-gold hover:bg-gold-hover text-navy-deep font-bold text-xs tracking-wider uppercase transition shadow-[0_4px_20px_rgba(198,150,58,0.35)] flex items-center gap-1.5">
+                <span>Book a Consultation</span>
+                <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 2: OPEN STATE: 'PRACTICES' MEGA-MENU PANEL -->
+    <!-- ========================================================================= -->
+    <section id="section-practices-menu" class="space-y-6 scroll-mt-20">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-navy-subtle/50 pb-4 gap-3">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="spec-badge bg-blue-500/10 text-blue-400 border border-blue-500/30">Component 02</span>
+            <span class="text-xs font-mono text-slate-400">Dropdown Trigger: &lsquo;Practices&rsquo; • Full-Width Panel</span>
+          </div>
+          <h2 class="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
+            Open State: &lsquo;Practices&rsquo; Mega-Menu Panel
+          </h2>
+          <p class="text-sm text-slate-400 max-w-3xl mt-1">
+            7 dedicated practice columns with distinct brand color accents, enterprise sub-service taxonomies, and an integrated real-time featured case study card.
+          </p>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
+          <span class="px-2 py-1 rounded bg-navy-surface border border-slate-700">7 Practice Columns + 1 Spotlight Card</span>
+        </div>
+      </div>
+
+      <!-- THE MEGA MENU CONTAINER -->
+      <div class="rounded-2xl overflow-hidden glass-panel shadow-[0_25px_60px_rgba(0,0,0,0.6)] border border-gold/30">
+        <!-- Top Sub-Navigation Header -->
+        <div class="px-8 py-3.5 bg-navy-deep/80 border-b border-white/10 flex flex-wrap items-center justify-between text-xs">
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-gold font-semibold uppercase tracking-wider text-[11px]">// Practice Architecture</span>
+            <span class="text-slate-500">|</span>
+            <span class="text-slate-300">Specialized pods engineered to sit inside enterprise runtimes</span>
+          </div>
+          <a href="#architecture" class="text-gold hover:text-gold-hover font-mono text-[11px] flex items-center gap-1 font-medium transition">
+            <span>Explore Swarm Architecture Framework</span>
+            <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+          </a>
+        </div>
+
+        <!-- Mega Menu Grid (7 Practice Columns + 1 Card) -->
+        <div class="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-6 xl:gap-5">
+
+          <!-- 1. Talent Bees -->
+          <div class="space-y-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#4A6FA1]/40 transition group">
+            <div class="flex items-center gap-2 border-b border-white/10 pb-2.5">
+              <div class="w-7 h-7 rounded bg-[#4A6FA1]/20 text-[#4A6FA1] flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[17px]">groups</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-white group-hover:text-[#4A6FA1] transition">Talent Bees</h4>
+                <span class="text-[10px] font-mono text-[#4A6FA1] uppercase tracking-wider">Core Talent</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5 text-xs text-slate-300">
+              <li><a href="#" class="hover:text-gold transition block py-1">IT Staffing</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Non-IT Staffing</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Executive Search</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Contract Staffing</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Staff Augmentation</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">RPO & MSP Programs</a></li>
+            </ul>
+            <div class="pt-2 text-[10px] font-mono text-slate-500 border-t border-white/5">
+              48h candidate submittal
+            </div>
+          </div>
+
+          <!-- 2. Digital Bees -->
+          <div class="space-y-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#3F8FA5]/40 transition group">
+            <div class="flex items-center gap-2 border-b border-white/10 pb-2.5">
+              <div class="w-7 h-7 rounded bg-[#3F8FA5]/20 text-[#3F8FA5] flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[17px]">developer_mode</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-white group-hover:text-[#3F8FA5] transition">Digital Bees</h4>
+                <span class="text-[10px] font-mono text-[#3F8FA5] uppercase tracking-wider">Engineering</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5 text-xs text-slate-300">
+              <li><a href="#" class="hover:text-gold transition block py-1">Software Development</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Digital Transformation</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Cloud Engineering</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">DevOps & SRE</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Product Engineering</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Data Engineering</a></li>
+            </ul>
+            <div class="pt-2 text-[10px] font-mono text-slate-500 border-t border-white/5">
+              Cloud-native architecture
+            </div>
+          </div>
+
+          <!-- 3. AI Bees (Featured practice) -->
+          <div class="space-y-3 p-3 rounded-xl bg-[#6B4FA1]/10 border border-[#6B4FA1]/30 hover:border-[#6B4FA1] transition group relative">
+            <span class="absolute -top-2 right-2 px-1.5 py-0.2 bg-[#6B4FA1] text-white text-[9px] font-mono font-bold rounded">CORE POD</span>
+            <div class="flex items-center gap-2 border-b border-white/10 pb-2.5">
+              <div class="w-7 h-7 rounded bg-[#6B4FA1]/30 text-purple-300 flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[17px]">smart_toy</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-white group-hover:text-purple-300 transition">AI Bees</h4>
+                <span class="text-[10px] font-mono text-purple-300 uppercase tracking-wider">GenAI & Agents</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5 text-xs text-slate-200">
+              <li><a href="#" class="hover:text-gold transition block py-1 font-medium">AI Agents & Swarms</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Generative AI</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">LLM Development</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">AI Automation</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">AI Consulting & ROI</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Enterprise AI Integration</a></li>
+            </ul>
+            <div class="pt-2 text-[10px] font-mono text-purple-300 border-t border-[#6B4FA1]/20">
+              Production Swarm topology
+            </div>
+          </div>
+
+          <!-- 4. Marketing Bees -->
+          <div class="space-y-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#B8862B]/40 transition group">
+            <div class="flex items-center gap-2 border-b border-white/10 pb-2.5">
+              <div class="w-7 h-7 rounded bg-[#B8862B]/20 text-[#B8862B] flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[17px]">campaign</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-white group-hover:text-[#B8862B] transition">Marketing Bees</h4>
+                <span class="text-[10px] font-mono text-[#B8862B] uppercase tracking-wider">Growth</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5 text-xs text-slate-300">
+              <li><a href="#" class="hover:text-gold transition block py-1">Marketing Staff Aug</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Social Media Ops</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Technical SEO</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">PPC & Paid Acquisition</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Content Marketing</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">HubSpot & Marketo</a></li>
+            </ul>
+            <div class="pt-2 text-[10px] font-mono text-slate-500 border-t border-white/5">
+              Multi-channel ROI
+            </div>
+          </div>
+
+          <!-- 5. Quality Bees -->
+          <div class="space-y-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#4A8F6B]/40 transition group">
+            <div class="flex items-center gap-2 border-b border-white/10 pb-2.5">
+              <div class="w-7 h-7 rounded bg-[#4A8F6B]/20 text-[#4A8F6B] flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[17px]">verified</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-white group-hover:text-[#4A8F6B] transition">Quality Bees</h4>
+                <span class="text-[10px] font-mono text-[#4A8F6B] uppercase tracking-wider">Assurance</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5 text-xs text-slate-300">
+              <li><a href="#" class="hover:text-gold transition block py-1">Manual Testing</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Automation Testing</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Performance & Load</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Security Testing</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">AI System Testing</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">CI/CD Quality Gates</a></li>
+            </ul>
+            <div class="pt-2 text-[10px] font-mono text-slate-500 border-t border-white/5">
+              Zero defect tolerance
+            </div>
+          </div>
+
+          <!-- 6. ServiceNow Bees -->
+          <div class="space-y-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#2E6B4F]/40 transition group">
+            <div class="flex items-center gap-2 border-b border-white/10 pb-2.5">
+              <div class="w-7 h-7 rounded bg-[#2E6B4F]/20 text-[#2E6B4F] flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[17px]">terminal</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-white group-hover:text-[#2E6B4F] transition">ServiceNow</h4>
+                <span class="text-[10px] font-mono text-[#2E6B4F] uppercase tracking-wider">Enterprise Suite</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5 text-xs text-slate-300">
+              <li><a href="#" class="hover:text-gold transition block py-1">Consulting & Audit</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">ITSM & ITOM Dev</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Full Implementation</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Managed Support</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Certified Staffing</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">CMDB Health Checks</a></li>
+            </ul>
+            <div class="pt-2 text-[10px] font-mono text-slate-500 border-t border-white/5">
+              Certified implementation
+            </div>
+          </div>
+
+          <!-- 7. Energy Bees -->
+          <div class="space-y-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#8A5A2E]/40 transition group">
+            <div class="flex items-center gap-2 border-b border-white/10 pb-2.5">
+              <div class="w-7 h-7 rounded bg-[#8A5A2E]/20 text-[#E5C07B] flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[17px]">bolt</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-white group-hover:text-gold transition">Energy Bees</h4>
+                <span class="text-[10px] font-mono text-[#E5C07B] uppercase tracking-wider">CTRM Trading</span>
+              </div>
+            </div>
+            <ul class="space-y-1.5 text-xs text-slate-300">
+              <li><a href="#" class="hover:text-gold transition block py-1">Openlink Endur</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Allegro CTRM</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">RightAngle Systems</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">TriplePoint Services</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Energy Trading Advisory</a></li>
+              <li><a href="#" class="hover:text-gold transition block py-1">Risk & Settlement Ops</a></li>
+            </ul>
+            <div class="pt-2 text-[10px] font-mono text-slate-500 border-t border-white/5">
+              Commodities & Trading
+            </div>
+          </div>
+
+          <!-- 8. Right-side Spotlight Card: Featured Case Study -->
+          <div class="rounded-xl p-4 bg-gradient-to-b from-navy-surface to-navy-deep border border-gold/40 flex flex-col justify-between shadow-lg relative overflow-hidden group">
+            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-gold/10 rounded-full blur-xl pointer-events-none"></div>
+
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono font-bold text-gold uppercase tracking-wider">Featured Story</span>
+                <span class="px-1.5 py-0.5 text-[9px] font-mono bg-gold/20 text-gold rounded border border-gold/30">AI + FinTech</span>
+              </div>
+              <h5 class="font-bold text-white text-sm leading-snug group-hover:text-gold transition">
+                Divo Multi-Agent CRM Orchestration
+              </h5>
+              <p class="text-[11px] text-slate-300 leading-relaxed">
+                Deployed autonomous agent pods connecting core ledger streams to customer CRM with zero leakage.
+              </p>
+
+              <!-- Gold Key Metric -->
+              <div class="pt-2 pb-1 border-y border-white/10">
+                <div class="text-2xl font-black text-gold font-mono tracking-tight">40% FASTER</div>
+                <div class="text-[10px] text-slate-400 font-medium">Task execution (45–60 mins saved per user/day)</div>
+              </div>
+            </div>
+
+            <div class="pt-3">
+              <a href="#casestudy-divo" class="text-xs font-bold text-gold hover:text-white flex items-center justify-between group-hover:translate-x-1 transition-transform">
+                <span>Read case study</span>
+                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mega-Menu Bottom Footer Strip -->
+        <div class="px-8 py-3.5 bg-navy-deep border-t border-white/10 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-6 text-slate-400 font-mono text-[11px]">
+            <span>SOC2 Type II Certified</span>
+            <span>•</span>
+            <span>ISO 27001 Compliant</span>
+            <span>•</span>
+            <span>100% Dedicated Delivery Teams</span>
+          </div>
+          <a href="#all-practices" class="font-bold text-gold hover:text-white transition flex items-center gap-1.5">
+            <span>View all 7 Practices & Pod Specs</span>
+            <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 3: OPEN STATE: 'INDUSTRIES' MEGA-MENU PANEL -->
+    <!-- ========================================================================= -->
+    <section id="section-industries-menu" class="space-y-6 scroll-mt-20">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-navy-subtle/50 pb-4 gap-3">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="spec-badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">Component 03</span>
+            <span class="text-xs font-mono text-slate-400">Dropdown Trigger: &lsquo;Industries&rsquo; • 5x2 Structured Grid</span>
+          </div>
+          <h2 class="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
+            Open State: &lsquo;Industries&rsquo; Mega-Menu Panel
+          </h2>
+          <p class="text-sm text-slate-400 max-w-3xl mt-1">
+            10 structured enterprise domain cards with Material Symbol iconography, executive titles, and verified 1-line production outcome metrics.
+          </p>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
+          <span class="px-2 py-1 rounded bg-navy-surface border border-slate-700">10 Specialized Industry Pods</span>
+        </div>
+      </div>
+
+      <!-- THE INDUSTRIES DROPDOWN CONTAINER -->
+      <div class="rounded-2xl overflow-hidden glass-panel shadow-[0_25px_60px_rgba(0,0,0,0.6)] border border-gold/30">
+        <!-- Panel Header -->
+        <div class="px-8 py-3.5 bg-navy-deep/80 border-b border-white/10 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-gold font-semibold uppercase tracking-wider text-[11px]">// Enterprise Industry Footprint</span>
+            <span class="text-slate-500">|</span>
+            <span class="text-slate-300">Compliant domain engineering across highly-regulated verticals</span>
+          </div>
+          <span class="font-mono text-[11px] text-slate-400">Click any sector to view case blueprints</span>
+        </div>
+
+        <!-- 5x2 Structured Grid -->
+        <div class="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+
+          <!-- 1. Banking & Financial Services -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition group cursor-pointer">
+            <div class="w-9 h-9 rounded-lg bg-navy-surface text-gold flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">account_balance</span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-gold transition">Banking & Financial Services</h4>
+            <div class="mt-2 text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">trending_up</span>
+              <span>40% faster claims processing</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Core ledger sync, SOX compliance, algorithmic settlement.</p>
+          </div>
+
+          <!-- 2. Healthcare & Life Sciences -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition group cursor-pointer">
+            <div class="w-9 h-9 rounded-lg bg-navy-surface text-gold flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">health_and_safety</span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-gold transition">Healthcare & Life Sciences</h4>
+            <div class="mt-2 text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">check_circle</span>
+              <span>99.9% clinical data accuracy</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">HIPAA compliant pipelines, synthetic clinical trial data.</p>
+          </div>
+
+          <!-- 3. Energy & Utilities -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition group cursor-pointer">
+            <div class="w-9 h-9 rounded-lg bg-navy-surface text-gold flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">electric_bolt</span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-gold transition">Energy & Utilities</h4>
+            <div class="mt-2 text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">speed</span>
+              <span>Zero-latency CTRM pipelines</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Endur, Allegro, RightAngle and physical commodity risk.</p>
+          </div>
+
+          <!-- 4. SaaS & Technology -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition group cursor-pointer">
+            <div class="w-9 h-9 rounded-lg bg-navy-surface text-gold flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">cloud_sync</span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-gold transition">SaaS & Technology</h4>
+            <div class="mt-2 text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">rocket_launch</span>
+              <span>3x faster feature velocity</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Dedicated full-stack engineering pods & multi-tenant scaling.</p>
+          </div>
+
+          <!-- 5. Retail & eCommerce -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition group cursor-pointer">
+            <div class="w-9 h-9 rounded-lg bg-navy-surface text-gold flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-gold transition">Retail & eCommerce</h4>
+            <div class="mt-2 text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">show_chart</span>
+              <span>68% conversion lift in peaks</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Headless architecture, inventory streaming, search AI.</p>
+          </div>
+
+          <!-- 6. Manufacturing & Industrial -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition group cursor-pointer">
+            <div class="w-9 h-9 rounded-lg bg-navy-surface text-gold flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">precision_manufacturing</span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-gold transition">Manufacturing & Industrial</h4>
+            <div class="mt-2 text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">build</span>
+              <span>45% downtime reduction</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Predictive maintenance, IoT telemetry, ERP modernization.</p>
+          </div>
+
+          <!-- 7. Public Sector & Government -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition group cursor-pointer">
+            <div class="w-9 h-9 rounded-lg bg-navy-surface text-gold flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">policy</span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-gold transition">Public Sector & Government</h4>
+            <div class="mt-2 text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">security</span>
+              <span>FedRAMP & SOC2 certified</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Air-gapped deployment, sovereign cloud data isolation.</p>
+          </div>
+
+          <!-- 8. Telecom & Media -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition group cursor-pointer">
+            <div class="w-9 h-9 rounded-lg bg-navy-surface text-gold flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">cell_tower</span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-gold transition">Telecom & Media</h4>
+            <div class="mt-2 text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">stream</span>
+              <span>50M+ subscriber data stream</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Real-time edge billing, 5G orchestration, low latency.</p>
+          </div>
+
+          <!-- 9. Logistics & Supply Chain -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition group cursor-pointer">
+            <div class="w-9 h-9 rounded-lg bg-navy-surface text-gold flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">local_shipping</span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-gold transition">Logistics & Supply Chain</h4>
+            <div class="mt-2 text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">route</span>
+              <span>Real-time fleet telemetry</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Automated warehouse dispatch, customs compliance, ETA AI.</p>
+          </div>
+
+          <!-- 10. Global System Integrators (GSIs) -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition group cursor-pointer">
+            <div class="w-9 h-9 rounded-lg bg-navy-surface text-gold flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">handshake</span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-gold transition">Global System Integrators</h4>
+            <div class="mt-2 text-xs font-mono text-emerald-400 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">star</span>
+              <span>Strategic Tier-1 channel partner</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Subcontracting pods, white-label engineering delivery.</p>
+          </div>
+
+        </div>
+
+        <!-- Industries Footer Strip -->
+        <div class="px-8 py-3.5 bg-navy-deep border-t border-white/10 flex items-center justify-between text-xs">
+          <div class="text-slate-400">
+            Need an enterprise MSA with custom governance protocols?
+          </div>
+          <a href="#inquire-enterprise" class="font-bold text-gold hover:text-white transition flex items-center gap-1">
+            <span>Schedule Industry Architecture Review</span>
+            <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 4: OPEN STATE: 'LOCATIONS' MEGA-MENU PANEL -->
+    <!-- ========================================================================= -->
+    <section id="section-locations-menu" class="space-y-6 scroll-mt-20">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-navy-subtle/50 pb-4 gap-3">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="spec-badge bg-amber-500/10 text-amber-400 border border-amber-500/30">Component 04</span>
+            <span class="text-xs font-mono text-slate-400">Dropdown Trigger: &lsquo;Locations&rsquo; • 6 Regional Delivery Hubs</span>
+          </div>
+          <h2 class="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
+            Open State: &lsquo;Locations&rsquo; Mega-Menu Panel
+          </h2>
+          <p class="text-sm text-slate-400 max-w-3xl mt-1">
+            6 global delivery hubs with geographic flags, specific office addresses/mandates, and direct regional compliance links.
+          </p>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
+          <span class="px-2 py-1 rounded bg-navy-surface border border-slate-700">6 Global Entity Jurisdictions</span>
+        </div>
+      </div>
+
+      <!-- THE LOCATIONS PANEL CONTAINER -->
+      <div class="rounded-2xl overflow-hidden glass-panel shadow-[0_25px_60px_rgba(0,0,0,0.6)] border border-gold/30">
+        <div class="px-8 py-3.5 bg-navy-deep/80 border-b border-white/10 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-gold font-semibold uppercase tracking-wider text-[11px]">// Global Delivery Grid</span>
+            <span class="text-slate-500">|</span>
+            <span class="text-slate-300">Local enough to matter, global enough to scale</span>
+          </div>
+          <span class="text-emerald-400 font-mono text-[11px] flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+            24/7 Follow-the-Sun Engineering
+          </span>
+        </div>
+
+        <!-- 6 Regional Cards -->
+        <div class="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+
+          <!-- 1. USA -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition flex flex-col justify-between group">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">🇺🇸</span>
+                <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-gold/10 text-gold border border-gold/20">Americas</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-white text-sm group-hover:text-gold transition">United States</h4>
+                <div class="text-[11px] font-mono text-slate-400">New York &bull; San Francisco</div>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed pt-1">
+                Enterprise client relations, North American governance & executive search operations.
+              </p>
+            </div>
+            <div class="pt-4 border-t border-white/10 mt-3 flex items-center justify-between text-[11px] font-mono">
+              <a href="#" class="text-gold hover:underline flex items-center gap-1">
+                <span>Compliance</span>
+                <span class="material-symbols-outlined text-[13px]">arrow_outward</span>
+              </a>
+              <span class="text-slate-500 text-[10px]">W2 / C2C</span>
+            </div>
+          </div>
+
+          <!-- 2. India -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition flex flex-col justify-between group">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">🇮🇳</span>
+                <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Delivery Lab</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-white text-sm group-hover:text-gold transition">India</h4>
+                <div class="text-[11px] font-mono text-slate-400">Bangalore &bull; Noida</div>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed pt-1">
+                Primary engineering delivery center, dedicated AI pod training & automated QA facilities.
+              </p>
+            </div>
+            <div class="pt-4 border-t border-white/10 mt-3 flex items-center justify-between text-[11px] font-mono">
+              <a href="#" class="text-gold hover:underline flex items-center gap-1">
+                <span>Compliance</span>
+                <span class="material-symbols-outlined text-[13px]">arrow_outward</span>
+              </a>
+              <span class="text-slate-500 text-[10px]">ISO 27001</span>
+            </div>
+          </div>
+
+          <!-- 3. Singapore -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition flex flex-col justify-between group">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">🇸🇬</span>
+                <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">APAC HQ</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-white text-sm group-hover:text-gold transition">Singapore</h4>
+                <div class="text-[11px] font-mono text-slate-400">Marina Bay Financial Centre</div>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed pt-1">
+                APAC financial engineering node, cross-border fintech integrations & commodity trading.
+              </p>
+            </div>
+            <div class="pt-4 border-t border-white/10 mt-3 flex items-center justify-between text-[11px] font-mono">
+              <a href="#" class="text-gold hover:underline flex items-center gap-1">
+                <span>Compliance</span>
+                <span class="material-symbols-outlined text-[13px]">arrow_outward</span>
+              </a>
+              <span class="text-slate-500 text-[10px]">MAS Regs</span>
+            </div>
+          </div>
+
+          <!-- 4. UAE -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition flex flex-col justify-between group">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">🇦🇪</span>
+                <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">MENA Hub</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-white text-sm group-hover:text-gold transition">United Arab Emirates</h4>
+                <div class="text-[11px] font-mono text-slate-400">Dubai DIFC</div>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed pt-1">
+                Regional regulatory compliance, Emiratization advisory & public sector digital programs.
+              </p>
+            </div>
+            <div class="pt-4 border-t border-white/10 mt-3 flex items-center justify-between text-[11px] font-mono">
+              <a href="#" class="text-gold hover:underline flex items-center gap-1">
+                <span>Compliance</span>
+                <span class="material-symbols-outlined text-[13px]">arrow_outward</span>
+              </a>
+              <span class="text-slate-500 text-[10px]">DIFC Data Law</span>
+            </div>
+          </div>
+
+          <!-- 5. United Kingdom -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition flex flex-col justify-between group">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">🇬🇧</span>
+                <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">EMEA Hub</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-white text-sm group-hover:text-gold transition">United Kingdom</h4>
+                <div class="text-[11px] font-mono text-slate-400">London &bull; Canary Wharf</div>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed pt-1">
+                IR35 advisory, UK GDPR data privacy protocols & tier-1 investment banking pods.
+              </p>
+            </div>
+            <div class="pt-4 border-t border-white/10 mt-3 flex items-center justify-between text-[11px] font-mono">
+              <a href="#" class="text-gold hover:underline flex items-center gap-1">
+                <span>Compliance</span>
+                <span class="material-symbols-outlined text-[13px]">arrow_outward</span>
+              </a>
+              <span class="text-slate-500 text-[10px]">IR35 Safe</span>
+            </div>
+          </div>
+
+          <!-- 6. Australia -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-gold hover:bg-white/[0.06] transition flex flex-col justify-between group">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">🇦🇺</span>
+                <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">ANZ Expansion</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-white text-sm group-hover:text-gold transition">Australia</h4>
+                <div class="text-[11px] font-mono text-slate-400">Sydney CBD</div>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed pt-1">
+                Australian Privacy Principles, mining & clean energy technology initiatives.
+              </p>
+            </div>
+            <div class="pt-4 border-t border-white/10 mt-3 flex items-center justify-between text-[11px] font-mono">
+              <a href="#" class="text-gold hover:underline flex items-center gap-1">
+                <span>Compliance</span>
+                <span class="material-symbols-outlined text-[13px]">arrow_outward</span>
+              </a>
+              <span class="text-slate-500 text-[10px]">APRA CPS 234</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="px-8 py-3.5 bg-navy-deep border-t border-white/10 flex items-center justify-between text-xs">
+          <div class="text-slate-400 font-mono text-[11px]">
+            Looking for multi-jurisdiction master service agreements?
+          </div>
+          <a href="#compliance" class="font-bold text-gold hover:text-white transition flex items-center gap-1">
+            <span>Download Enterprise Global Compliance Whitepaper</span>
+            <span class="material-symbols-outlined text-[15px]">download</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 5: OPEN STATE: 'INSIGHTS' DROPDOWN -->
+    <!-- ========================================================================= -->
+    <section id="section-insights-menu" class="space-y-6 scroll-mt-20">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-navy-subtle/50 pb-4 gap-3">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="spec-badge bg-rose-500/10 text-rose-400 border border-rose-500/30">Component 05</span>
+            <span class="text-xs font-mono text-slate-400">Dropdown Trigger: &lsquo;Insights&rsquo; • Resource Taxonomy + Articles</span>
+          </div>
+          <h2 class="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
+            Open State: &lsquo;Insights&rsquo; Dropdown Panel
+          </h2>
+          <p class="text-sm text-slate-400 max-w-3xl mt-1">
+            Categorized research links paired with a high-impact trio of recent engineering whitepapers and benchmarks.
+          </p>
+        </div>
+      </div>
+
+      <!-- INSIGHTS PANEL CONTAINER -->
+      <div class="rounded-2xl overflow-hidden glass-panel shadow-[0_25px_60px_rgba(0,0,0,0.6)] border border-gold/30">
+        <div class="grid grid-cols-1 lg:grid-cols-12">
+
+          <!-- Left Columns: Resource Navigation -->
+          <div class="lg:col-span-4 p-8 border-b lg:border-b-0 lg:border-r border-white/10 space-y-6 bg-navy-deep/60">
+            <div>
+              <span class="text-[11px] font-mono text-gold uppercase tracking-wider font-semibold">// Research & Knowledge Base</span>
+              <h3 class="text-lg font-bold text-white mt-1">Direct from the engineering floor.</h3>
+              <p class="text-xs text-slate-400 mt-1">Field-tested insights from our 500+ deployed technologists.</p>
+            </div>
+
+            <div class="space-y-2">
+              <a href="#blog" class="p-3 rounded-lg bg-white/[0.02] hover:bg-white/5 border border-white/5 hover:border-gold/40 flex items-center justify-between group transition">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded bg-navy-surface text-gold flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[18px]">article</span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-bold text-white group-hover:text-gold transition">Technical Blog & Notes</div>
+                    <div class="text-[11px] text-slate-400">Weekly architectural deep dives</div>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-[16px] text-slate-500 group-hover:text-gold group-hover:translate-x-1 transition">chevron_right</span>
+              </a>
+
+              <a href="#guides" class="p-3 rounded-lg bg-white/[0.02] hover:bg-white/5 border border-white/5 hover:border-gold/40 flex items-center justify-between group transition">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded bg-navy-surface text-gold flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[18px]">menu_book</span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-bold text-white group-hover:text-gold transition">Guides & Whitepapers</div>
+                    <div class="text-[11px] text-slate-400">Enterprise migration blueprints</div>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-[16px] text-slate-500 group-hover:text-gold group-hover:translate-x-1 transition">chevron_right</span>
+              </a>
+
+              <a href="#webinars" class="p-3 rounded-lg bg-white/[0.02] hover:bg-white/5 border border-white/5 hover:border-gold/40 flex items-center justify-between group transition">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded bg-navy-surface text-gold flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[18px]">podcasts</span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-bold text-white group-hover:text-gold transition">Webinars & Events</div>
+                    <div class="text-[11px] text-slate-400">Live Q&A with Principal Architects</div>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-[16px] text-slate-500 group-hover:text-gold group-hover:translate-x-1 transition">chevron_right</span>
+              </a>
+
+              <a href="#reports" class="p-3 rounded-lg bg-white/[0.02] hover:bg-white/5 border border-white/5 hover:border-gold/40 flex items-center justify-between group transition">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded bg-navy-surface text-gold flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[18px]">query_stats</span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-bold text-white group-hover:text-gold transition">Benchmark Reports</div>
+                    <div class="text-[11px] text-slate-400">2025 AI Engineering ROI Index</div>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-[16px] text-slate-500 group-hover:text-gold group-hover:translate-x-1 transition">chevron_right</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Right Columns: 3 Article Spotlight Cards -->
+          <div class="lg:col-span-8 p-8 space-y-4">
+            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+              <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Latest Architecture Publications</span>
+              <a href="#all-insights" class="text-xs font-bold text-gold hover:underline flex items-center gap-1">
+                <span>View all insights</span>
+                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Article 1 -->
+              <div class="p-4 rounded-xl bg-white/[0.02] border border-white/10 hover:border-gold/50 transition flex flex-col justify-between group cursor-pointer">
+                <div class="space-y-2.5">
+                  <div class="flex items-center justify-between text-[10px] font-mono">
+                    <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">AI & Automation</span>
+                    <span class="text-slate-400">5 min read</span>
+                  </div>
+                  <h4 class="font-bold text-sm text-white group-hover:text-gold transition leading-snug">
+                    Deploying Multi-Agent Systems in Regulated Financial Environments
+                  </h4>
+                  <p class="text-[11px] text-slate-400 leading-relaxed">
+                    Cryptographic ledger state verification and deterministic human-in-the-loop audit trails.
+                  </p>
+                </div>
+                <div class="pt-3 text-[11px] text-gold font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  <span>Read publication</span>
+                  <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                </div>
+              </div>
+
+              <!-- Article 2 -->
+              <div class="p-4 rounded-xl bg-white/[0.02] border border-white/10 hover:border-gold/50 transition flex flex-col justify-between group cursor-pointer">
+                <div class="space-y-2.5">
+                  <div class="flex items-center justify-between text-[10px] font-mono">
+                    <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">ServiceNow</span>
+                    <span class="text-slate-400">7 min read</span>
+                  </div>
+                  <h4 class="font-bold text-sm text-white group-hover:text-gold transition leading-snug">
+                    Moving 70%+ Custom Fields to OOTB: A CMDB Overhaul Case Study
+                  </h4>
+                  <p class="text-[11px] text-slate-400 leading-relaxed">
+                    How enterprise architects pruned 8 years of technical debt in Washington DC release.
+                  </p>
+                </div>
+                <div class="pt-3 text-[11px] text-gold font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  <span>Read publication</span>
+                  <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                </div>
+              </div>
+
+              <!-- Article 3 -->
+              <div class="p-4 rounded-xl bg-white/[0.02] border border-white/10 hover:border-gold/50 transition flex flex-col justify-between group cursor-pointer">
+                <div class="space-y-2.5">
+                  <div class="flex items-center justify-between text-[10px] font-mono">
+                    <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">Workforce Strategy</span>
+                    <span class="text-slate-400">4 min read</span>
+                  </div>
+                  <h4 class="font-bold text-sm text-white group-hover:text-gold transition leading-snug">
+                    Why Modern Enterprise Teams Combine Headcount with Delivery Pods
+                  </h4>
+                  <p class="text-[11px] text-slate-400 leading-relaxed">
+                    The strategic difference between pure staff-aug and accountable technical squads.
+                  </p>
+                </div>
+                <div class="pt-3 text-[11px] text-gold font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  <span>Read publication</span>
+                  <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 6: FULL-SCREEN SEARCH OVERLAY -->
+    <!-- ========================================================================= -->
+    <section id="section-search-modal" class="space-y-6 scroll-mt-20">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-navy-subtle/50 pb-4 gap-3">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="spec-badge bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">Component 06</span>
+            <span class="text-xs font-mono text-slate-400">Interactive Modal State • Command-Palette UX</span>
+          </div>
+          <h2 class="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
+            Full-Screen Search & Discovery Overlay
+          </h2>
+          <p class="text-sm text-slate-400 max-w-3xl mt-1">
+            Fast keyboard-navigable search indexed by Practices, Industries, Case Blueprints, Insights, and Open Talent Requisitions, backed by an AI Bee Assistant fallback.
+          </p>
+        </div>
+      </div>
+
+      <!-- Rendered Search Overlay Simulation -->
+      <div class="relative rounded-2xl overflow-hidden border border-gold/40 bg-[#071527] shadow-[0_30px_90px_rgba(0,0,0,0.8)] p-6 md:p-10">
+        <!-- Close trigger top right -->
+        <div class="flex items-center justify-between pb-6 border-b border-white/10">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded bg-gold/20 text-gold flex items-center justify-center font-bold">
+              <span class="material-symbols-outlined text-[20px]">search</span>
+            </div>
+            <div>
+              <span class="text-xs font-mono text-gold uppercase tracking-wider">// Global Index</span>
+              <div class="text-sm font-bold text-white">Search TeamBees Corp Intelligence & Services</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
+            <span class="px-2 py-1 rounded bg-navy-surface border border-slate-700">ESC to exit</span>
+            <button class="w-8 h-8 rounded-lg bg-navy-surface hover:bg-rose-500/20 hover:text-rose-300 text-slate-300 flex items-center justify-center border border-white/10 transition">
+              <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- The Central Large Search Input -->
+        <div class="my-8 max-w-3xl mx-auto">
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-5 text-gold text-[28px]">search</span>
+            <input 
+              type="text" 
+              value="AI Agent Pods for Banking CRM" 
+              class="w-full bg-navy-surface/80 border-2 border-gold rounded-2xl py-4 pl-16 pr-24 text-lg md:text-xl text-white font-medium focus:outline-none shadow-[0_0_30px_rgba(198,150,58,0.2)]"
+            />
+            <span class="absolute right-4 px-2 py-1 rounded bg-navy-deep text-gold text-xs font-mono border border-gold/30">
+              RETURN ↵
+            </span>
+          </div>
+          <div class="flex items-center gap-3 mt-3 px-2 text-xs font-mono text-slate-400">
+            <span>Popular:</span>
+            <button class="text-slate-300 hover:text-gold underline">ServiceNow ITOM</button>
+            <span>&bull;</span>
+            <button class="text-slate-300 hover:text-gold underline">Openlink Endur</button>
+            <span>&bull;</span>
+            <button class="text-slate-300 hover:text-gold underline">SOC2 Testing</button>
+            <span>&bull;</span>
+            <button class="text-slate-300 hover:text-gold underline">48h IT Staffing</button>
+          </div>
+        </div>
+
+        <!-- Categorized Live Results Matrix -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-4 border-t border-white/10">
+
+          <!-- Col 1: Practices (2 matches) -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-white/5 pb-1">
+              <span class="uppercase text-gold font-bold">Practices (2)</span>
+              <span>Direct Pods</span>
+            </div>
+            <div class="space-y-2">
+              <a href="#" class="block p-3 rounded-lg bg-navy-surface/60 hover:bg-navy-surface border border-white/5 hover:border-gold/40 transition group">
+                <div class="font-bold text-xs text-white group-hover:text-gold">AI Bees &bull; Swarm Engineering</div>
+                <p class="text-[11px] text-slate-400 mt-1">Autonomous multi-agent pods with deterministic CRM routing.</p>
+              </a>
+              <a href="#" class="block p-3 rounded-lg bg-navy-surface/60 hover:bg-navy-surface border border-white/5 hover:border-gold/40 transition group">
+                <div class="font-bold text-xs text-white group-hover:text-gold">Digital Bees &bull; Data Pipelines</div>
+                <p class="text-[11px] text-slate-400 mt-1">Real-time Kafka & streaming telemetry connectors.</p>
+              </a>
+            </div>
+          </div>
+
+          <!-- Col 2: Case Studies (1 match) -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-white/5 pb-1">
+              <span class="uppercase text-gold font-bold">Case Studies (1)</span>
+              <span>Verified ROI</span>
+            </div>
+            <a href="#" class="block p-3 rounded-lg bg-navy-surface/60 hover:bg-navy-surface border border-gold/30 hover:border-gold transition group">
+              <div class="flex items-center justify-between text-[10px] font-mono text-gold mb-1">
+                <span>Divo Financial</span>
+                <span>40% FASTER</span>
+              </div>
+              <div class="font-bold text-xs text-white group-hover:text-gold">Autonomous Multi-Agent CRM Integration</div>
+              <p class="text-[11px] text-slate-400 mt-1">Reduced manual reconciliation time across banking systems by 60 mins/day.</p>
+            </a>
+          </div>
+
+          <!-- Col 3: Insights & Docs (2 matches) -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-white/5 pb-1">
+              <span class="uppercase text-gold font-bold">Publications (2)</span>
+              <span>Architecture</span>
+            </div>
+            <div class="space-y-2">
+              <a href="#" class="block p-3 rounded-lg bg-navy-surface/60 hover:bg-navy-surface border border-white/5 hover:border-gold/40 transition group">
+                <div class="text-[10px] font-mono text-purple-300">Whitepaper &bull; 8 pages</div>
+                <div class="font-bold text-xs text-white group-hover:text-gold mt-0.5">Multi-Agent Systems in Regulated Banking</div>
+              </a>
+              <a href="#" class="block p-3 rounded-lg bg-navy-surface/60 hover:bg-navy-surface border border-white/5 hover:border-gold/40 transition group">
+                <div class="text-[10px] font-mono text-emerald-300">Technical Note &bull; 5 min</div>
+                <div class="font-bold text-xs text-white group-hover:text-gold mt-0.5">Zero Data Leakage RBAC in LLM Gateways</div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Col 4: Open Roles & AI Assistant Fallback -->
+          <div class="space-y-4">
+            <div class="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-white/5 pb-1">
+              <span class="uppercase text-gold font-bold">Open Jobs (1)</span>
+              <span>Careers</span>
+            </div>
+            <a href="#" class="block p-3 rounded-lg bg-navy-surface/60 hover:bg-navy-surface border border-white/5 hover:border-gold/40 transition group">
+              <div class="flex items-center justify-between text-[10px] font-mono text-emerald-400">
+                <span>Principal AI Architect</span>
+                <span>NYC / Remote</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Lead enterprise agent pod deployments for Fortune 500 banks.</p>
+            </a>
+
+            <!-- AI Bee Assistant Fallback Card -->
+            <div class="p-3.5 rounded-xl bg-gold/10 border border-gold/40 space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-gold text-[18px]">smart_toy</span>
+                <span class="text-xs font-bold text-white">Can&rsquo;t find it? Ask Bee Assistant</span>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-snug">
+                Ask our conversational AI to match your exact tech stack or draft an RFP spec.
+              </p>
+              <button class="w-full py-1.5 rounded-md bg-gold hover:bg-gold-hover text-navy-deep font-bold text-[11px] transition">
+                Start Bee Agent Chat →
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 7: MOBILE HEADER & FULL-SCREEN ACCORDION OVERLAY -->
+    <!-- ========================================================================= -->
+    <section id="section-mobile-system" class="space-y-6 scroll-mt-20">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-navy-subtle/50 pb-4 gap-3">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="spec-badge bg-fuchsia-500/10 text-fuchsia-400 border border-fuchsia-500/30">Component 07</span>
+            <span class="text-xs font-mono text-slate-400">Target: &lt;768px • Mobile Shell & Accordion Panel</span>
+          </div>
+          <h2 class="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
+            Mobile Header & Full-Screen Navigation System
+          </h2>
+          <p class="text-sm text-slate-400 max-w-3xl mt-1">
+            Compact 64px sticky bar, in-place expanding accordion lists for all 7 practices and 10 industries, with persistent bottom sheet action triggers.
+          </p>
+        </div>
+      </div>
+
+      <!-- Mobile Simulation Comparison Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+
+        <!-- Mobile View 1: Collapsed Resting State -->
+        <div class="space-y-3">
+          <div class="text-xs font-mono text-slate-400 flex items-center justify-between px-2">
+            <span class="text-gold font-bold">STATE A: Mobile Sticky Header (Resting)</span>
+            <span>Viewport: 390px x 64px</span>
+          </div>
+
+          <div class="max-w-[400px] mx-auto rounded-3xl overflow-hidden border-2 border-slate-700 bg-navy-deep shadow-2xl">
+            <!-- Simulated Phone Frame Header -->
+            <div class="h-6 bg-[#040911] flex items-center justify-between px-6 text-[11px] font-mono text-slate-400">
+              <span>9:41</span>
+              <div class="flex items-center gap-1.5 text-xs">
+                <span>5G</span>
+                <span class="material-symbols-outlined text-[13px]">battery_full</span>
+              </div>
+            </div>
+
+            <!-- Mobile Header Bar -->
+            <div class="h-16 px-5 flex items-center justify-between border-b border-gold/30 bg-[#0B1F3A]/95">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-gold flex items-center justify-center text-navy-deep font-black shadow-sm">
+                  <span class="material-symbols-outlined text-[20px]">hub</span>
+                </div>
+                <span class="font-bold text-lg text-white">TeamBees<span class="text-gold">.</span></span>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button class="w-9 h-9 rounded-lg bg-white/5 border border-white/10 text-slate-300 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[18px]">search</span>
+                </button>
+                <!-- Hamburger Trigger Button -->
+                <button class="w-9 h-9 rounded-lg bg-gold text-navy-deep font-bold flex items-center justify-center shadow-sm">
+                  <span class="material-symbols-outlined text-[20px]">menu</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Simulated Mobile Hero Content -->
+            <div class="p-6 space-y-4 bg-gradient-to-b from-navy-surface to-navy-deep text-center py-12">
+              <span class="text-[10px] font-mono text-gold uppercase tracking-wider">// Global Engineering Partner</span>
+              <h3 class="text-2xl font-black text-white leading-tight">Talent and technology, from the same partner.</h3>
+              <p class="text-xs text-slate-300">Seven practices. Six regions. One accountable team.</p>
+              <div class="pt-2">
+                <button class="w-full py-3 rounded-xl bg-gold text-navy-deep font-bold text-xs tracking-wider uppercase shadow-lg">
+                  Book a Consultation
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile View 2: Open Full-Screen Accordion Navigation -->
+        <div class="space-y-3">
+          <div class="text-xs font-mono text-slate-400 flex items-center justify-between px-2">
+            <span class="text-emerald-400 font-bold">STATE B: Mobile Full-Screen Overlay (Expanded Accordion)</span>
+            <span>Complete Architecture Flow</span>
+          </div>
+
+          <div class="max-w-[400px] mx-auto rounded-3xl overflow-hidden border-2 border-gold bg-[#071527] shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative flex flex-col h-[740px]">
+            <!-- Status Bar -->
+            <div class="h-6 bg-[#040911] flex items-center justify-between px-6 text-[11px] font-mono text-slate-400">
+              <span>9:41</span>
+              <div class="flex items-center gap-1.5 text-xs">
+                <span>5G</span>
+                <span class="material-symbols-outlined text-[13px]">battery_full</span>
+              </div>
+            </div>
+
+            <!-- Mobile Header in Open State -->
+            <div class="h-16 px-5 flex items-center justify-between border-b border-white/10 bg-[#0B1F3A]">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-gold flex items-center justify-center text-navy-deep font-black">
+                  <span class="material-symbols-outlined text-[20px]">hub</span>
+                </div>
+                <span class="font-bold text-lg text-white">TeamBees<span class="text-gold">.</span></span>
+              </div>
+
+              <!-- Close X Button -->
+              <button class="w-9 h-9 rounded-lg bg-white/10 text-white flex items-center justify-center hover:bg-rose-500/20 transition">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
+
+            <!-- Candidate Mode Toggle Strip -->
+            <div class="px-5 py-3 bg-navy-surface border-b border-white/10 flex items-center justify-between text-xs">
+              <span class="text-slate-300 font-medium flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px] text-gold">badge</span>
+                For Candidates / Job Seekers
+              </span>
+              <div class="w-10 h-5 bg-slate-700 rounded-full p-0.5 cursor-pointer flex items-center">
+                <div class="w-4 h-4 bg-white rounded-full shadow-sm"></div>
+              </div>
+            </div>
+
+            <!-- Scrollable Accordion Navigation Body -->
+            <div class="flex-1 overflow-y-auto p-5 space-y-2.5">
+
+              <!-- ACCORDION ITEM 1: PRACTICES (EXPANDED TO SHOW 7 PRACTICES) -->
+              <div class="rounded-xl border border-gold/40 bg-navy-surface/80 overflow-hidden">
+                <div class="p-3.5 flex items-center justify-between cursor-pointer text-white font-bold text-sm bg-navy-surface">
+                  <span class="flex items-center gap-2 text-gold">
+                    <span class="material-symbols-outlined text-[18px]">category</span>
+                    Practices (7 Specialist Pods)
+                  </span>
+                  <span class="material-symbols-outlined text-[18px] text-gold">expand_less</span>
+                </div>
+                <!-- Expanded Sub-items -->
+                <div class="p-3 pt-1 space-y-2 border-t border-white/10 text-xs">
+                  <a href="#" class="p-2 rounded bg-white/5 flex items-center justify-between text-slate-200 hover:text-gold">
+                    <span>Talent Bees (IT & Staffing)</span>
+                    <span class="text-[10px] font-mono text-slate-400">48h SLA</span>
+                  </a>
+                  <a href="#" class="p-2 rounded bg-white/5 flex items-center justify-between text-slate-200 hover:text-gold">
+                    <span>Digital Bees (Software & Cloud)</span>
+                    <span class="text-[10px] font-mono text-slate-400">DevOps</span>
+                  </a>
+                  <a href="#" class="p-2 rounded bg-[#6B4FA1]/20 border border-[#6B4FA1]/40 flex items-center justify-between text-purple-200 font-semibold">
+                    <span>AI Bees (Agents & LLMs)</span>
+                    <span class="text-[10px] font-mono text-purple-300">CORE</span>
+                  </a>
+                  <a href="#" class="p-2 rounded bg-white/5 flex items-center justify-between text-slate-200 hover:text-gold">
+                    <span>Marketing Bees (Growth)</span>
+                    <span class="text-[10px] font-mono text-slate-400">SEO/PPC</span>
+                  </a>
+                  <a href="#" class="p-2 rounded bg-white/5 flex items-center justify-between text-slate-200 hover:text-gold">
+                    <span>Quality Bees (Testing & QA)</span>
+                    <span class="text-[10px] font-mono text-slate-400">Zero Defect</span>
+                  </a>
+                  <a href="#" class="p-2 rounded bg-white/5 flex items-center justify-between text-slate-200 hover:text-gold">
+                    <span>ServiceNow Bees</span>
+                    <span class="text-[10px] font-mono text-slate-400">ITOM/ITSM</span>
+                  </a>
+                  <a href="#" class="p-2 rounded bg-white/5 flex items-center justify-between text-slate-200 hover:text-gold">
+                    <span>Energy Bees</span>
+                    <span class="text-[10px] font-mono text-slate-400">CTRM</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- ACCORDION ITEM 2: INDUSTRIES (COLLAPSED STATE) -->
+              <div class="rounded-xl border border-white/10 bg-navy-surface/40 overflow-hidden">
+                <div class="p-3.5 flex items-center justify-between cursor-pointer text-slate-200 font-bold text-sm">
+                  <span class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px] text-slate-400">domain</span>
+                    Industries (10 Sectors)
+                  </span>
+                  <span class="material-symbols-outlined text-[18px] text-slate-400">expand_more</span>
+                </div>
+              </div>
+
+              <!-- ACCORDION ITEM 3: LOCATIONS (COLLAPSED STATE) -->
+              <div class="rounded-xl border border-white/10 bg-navy-surface/40 overflow-hidden">
+                <div class="p-3.5 flex items-center justify-between cursor-pointer text-slate-200 font-bold text-sm">
+                  <span class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px] text-slate-400">public</span>
+                    Locations (6 Global Hubs)
+                  </span>
+                  <span class="material-symbols-outlined text-[18px] text-slate-400">expand_more</span>
+                </div>
+              </div>
+
+              <!-- ACCORDION ITEM 4: INSIGHTS (COLLAPSED STATE) -->
+              <div class="rounded-xl border border-white/10 bg-navy-surface/40 overflow-hidden">
+                <div class="p-3.5 flex items-center justify-between cursor-pointer text-slate-200 font-bold text-sm">
+                  <span class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px] text-slate-400">auto_stories</span>
+                    Insights & Case Studies
+                  </span>
+                  <span class="material-symbols-outlined text-[18px] text-slate-400">expand_more</span>
+                </div>
+              </div>
+
+              <!-- DIRECT LINKS -->
+              <div class="pt-2 space-y-2">
+                <a href="#" class="p-3 rounded-xl bg-white/5 flex items-center justify-between text-white font-medium text-sm">
+                  <span>Case Studies Gallery</span>
+                  <span class="material-symbols-outlined text-[16px] text-slate-400">arrow_forward</span>
+                </a>
+                <a href="#" class="p-3 rounded-xl bg-white/5 flex items-center justify-between text-white font-medium text-sm">
+                  <span class="flex items-center gap-2">
+                    Careers
+                    <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-mono">14 Openings</span>
+                  </span>
+                  <span class="material-symbols-outlined text-[16px] text-slate-400">arrow_forward</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Persistent Sticky Bottom Sheet Action Trigger -->
+            <div class="p-4 bg-navy-deep border-t border-gold/40 space-y-2">
+              <button class="w-full py-3.5 rounded-xl bg-gold hover:bg-gold-hover text-navy-deep font-bold text-xs tracking-wider uppercase shadow-[0_4px_16px_rgba(198,150,58,0.3)] flex items-center justify-center gap-2">
+                <span>Book a Consultation</span>
+                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </button>
+              <div class="flex items-center justify-center gap-4 text-[10px] font-mono text-slate-400 pt-1">
+                <span>Direct Dial: +1 (800) BEES-CORP</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- SECTION 8: DESIGN SYSTEM & INTERACTION SPECIFICATION TOKENS -->
+    <!-- ========================================================================= -->
+    <section class="border-t border-navy-subtle/50 pt-10 pb-16 space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="spec-badge bg-gold/10 text-gold border border-gold/30">System Tokens</span>
+          <h3 class="text-xl font-bold text-white mt-1">Design System Engineering & Behavioral Tokens</h3>
+        </div>
+        <span class="text-xs font-mono text-slate-400">TeamBees Corp DS-Spec 2025</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
+        <div class="p-4 rounded-xl bg-navy-deep border border-slate-800 space-y-2">
+          <div class="text-gold font-bold">1. Motion & Durations</div>
+          <p class="text-slate-400 text-[11px] font-sans">
+            Dropdown transition: <code>cubic-bezier(0.16, 1, 0.3, 1)</code> at <code>220ms</code>. Stagger child columns by <code>25ms</code>.
+          </p>
+        </div>
+        <div class="p-4 rounded-xl bg-navy-deep border border-slate-800 space-y-2">
+          <div class="text-gold font-bold">2. Scroll Thresholds</div>
+          <p class="text-slate-400 text-[11px] font-sans">
+            Transparent hero switches to solid <code>#0B1F3A</code> at <code>window.scrollY &gt; 40px</code> with <code>backdrop-filter: blur(16px)</code>.
+          </p>
+        </div>
+        <div class="p-4 rounded-xl bg-navy-deep border border-slate-800 space-y-2">
+          <div class="text-gold font-bold">3. Keyboard Accessibility</div>
+          <p class="text-slate-400 text-[11px] font-sans">
+            Key <code>/</code> or <code>Cmd+K</code> triggers full search modal. <code>Escape</code> dismisses active panels. Tab sequence wraps properly.
+          </p>
+        </div>
+        <div class="p-4 rounded-xl bg-navy-deep border border-slate-800 space-y-2">
+          <div class="text-gold font-bold">4. Z-Index Stratification</div>
+          <p class="text-slate-400 text-[11px] font-sans">
+            Header shell: <code>z-50</code>, Mega-menu panels: <code>z-55</code>, Search modal overlay: <code>z-100</code>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Interactive Demo Script -->
+  <script>
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    function toggleSearchModal(open) {
+      const searchSec = document.getElementById('section-search-modal');
+      if (searchSec) {
+        searchSec.scrollIntoView({ behavior: 'smooth' });
+        const input = searchSec.querySelector('input');
+        if (input && open) {
+          setTimeout(() => input.focus(), 400);
+        }
+      }
+    }
+  </script>
+</body>
+</html>

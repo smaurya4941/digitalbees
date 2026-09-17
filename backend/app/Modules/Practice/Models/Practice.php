@@ -57,6 +57,17 @@ class Practice extends Model
         return $this->morphMany(Faq::class, 'faqable');
     }
 
+    public function industryPages(): HasMany
+    {
+        return $this->hasMany(PracticeIndustryPage::class);
+    }
+
+    public function regionPages(): HasMany
+    {
+        return $this->hasMany(\App\Modules\Region\Models\RegionPracticePage::class);
+    }
+
+
     protected function searchResultType(): string
     {
         return 'practice';

@@ -6,8 +6,11 @@ use App\Modules\Industry\Models\Industry;
 use App\Modules\Page\Models\Page;
 use App\Modules\Page\Models\PageTemplate;
 use App\Modules\Practice\Models\Practice;
+use App\Modules\Practice\Models\PracticeIndustryPage;
 use App\Modules\Region\Models\Region;
+use App\Modules\Region\Models\RegionPracticePage;
 use Illuminate\Database\Seeder;
+
 
 /**
  * Curated Practice x Industry / Region x Practice pages (blueprint §7.2's
@@ -70,6 +73,17 @@ class CombinatorialPageSeeder extends Seeder
         }
 
         $this->seedPage($template, "/industries/{$industrySlug}/{$practiceSlug}", 'industry', $industry->id, 'practice', $practice->id, $content);
+
+        PracticeIndustryPage::updateOrCreate(
+            ['practice_id' => $practice->id, 'industry_id' => $industry->id],
+            [
+                'custom_headline' => $content['title'],
+                'custom_intro' => $content['why_it_matters'],
+                'is_published' => true,
+                'meta_title' => $content['title'],
+                'meta_description' => $content['hero']['description'] ?? null,
+            ]
+        );
     }
 
     /** @param array{title: string, hero: array<string, string>, why_it_matters: string} $content */
@@ -83,7 +97,19 @@ class CombinatorialPageSeeder extends Seeder
         }
 
         $this->seedPage($template, "/regions/{$regionSlug}/{$practiceSlug}", 'region', $region->id, 'practice', $practice->id, $content);
+
+        RegionPracticePage::updateOrCreate(
+            ['region_id' => $region->id, 'practice_id' => $practice->id],
+            [
+                'custom_headline' => $content['title'],
+                'custom_intro' => $content['why_it_matters'],
+                'is_published' => true,
+                'meta_title' => $content['title'],
+                'meta_description' => $content['hero']['description'] ?? null,
+            ]
+        );
     }
+
 
     /** @param array{title: string, hero: array<string, string>, why_it_matters: string} $content */
     private function seedPage(

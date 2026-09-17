@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { CaseStudyTemplate } from '@/templates/CaseStudyTemplate';
+import { StitchCaseStudyTemplate } from '@/templates/StitchCaseStudyTemplate';
 import { getCaseStudies, getCaseStudy } from '@/lib/api/case-studies';
 import { toMetadata } from '@/lib/seo/metadata';
 
@@ -27,5 +27,6 @@ export default async function CaseStudyPage({ params }: Params) {
 
   if (!caseStudy) notFound();
 
-  return <CaseStudyTemplate caseStudy={caseStudy} />;
+  return <StitchCaseStudyTemplate caseStudy={caseStudy} />;
 }
+

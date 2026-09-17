@@ -32,6 +32,17 @@ class Industry extends Model
         'sort_order' => 'integer',
     ];
 
+    public function practicePages(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\App\Modules\Practice\Models\PracticeIndustryPage::class);
+    }
+
+    public function clientLogos(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\App\Modules\Company\Models\ClientLogo::class)->ordered();
+    }
+
+
     protected function searchResultType(): string
     {
         return 'industry';

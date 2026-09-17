@@ -5,4 +5,5 @@ export interface Testimonial {
   author_name: string | null;
   author_title: string | null;
   author_company: string | null;
+  author_location?: string | null;
 }

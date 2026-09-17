@@ -1,6 +1,6 @@
 import os
 
-base_dir = r"d:\Sachin\digitalbees"
+base_dir = r"d:\Sachin\teambees"
 
 domains = [
     "Practice", "Industry", "Region", "Technology", "CaseStudy", 

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { routes } from '@/config/routes';
 import { siteConfig } from '@/config/site';
@@ -71,9 +72,15 @@ export default async function Footer() {
       <Container>
         <div className="grid gap-12 py-section-md md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-1">
-            <span className="text-title-md font-bold tracking-tight text-brand-gold-muted">
-              {siteName}
-            </span>
+            <Link href="/" className="inline-block group" aria-label={`${siteName} Home`}>
+              <Image
+                src="/brand/logo-teambees-white.png"
+                alt={`${siteName} - Building on Trust`}
+                width={160}
+                height={55}
+                className="h-10 w-auto object-contain transition-opacity duration-200 group-hover:opacity-90"
+              />
+            </Link>
             <p className="mt-3 max-w-xs text-body-sm text-neutral-300">
               {tagline}
             </p>
