@@ -3,6 +3,7 @@ import { Inter, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import { siteConfig } from '@/config/site';
 import CustomCursor from '@/components/ui/CustomCursor';
+import MotionProvider from '@/components/providers/MotionProvider';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -53,8 +54,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="flex min-h-full flex-col bg-canvas text-ink">
-        <CustomCursor />
-        {children}
+        <MotionProvider>
+          <CustomCursor />
+          {children}
+        </MotionProvider>
       </body>
     </html>
   );

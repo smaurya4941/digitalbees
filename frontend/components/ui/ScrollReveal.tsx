@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ReactNode } from "react";
 
 interface ScrollRevealProps {
@@ -10,6 +10,13 @@ interface ScrollRevealProps {
 }
 
 export default function ScrollReveal({ children, delay = 0, className = "", yOffset = 35 }: ScrollRevealProps) {
+  const reduceMotion = useReducedMotion();
+
+  // prefers-reduced-motion: render the content in place, no fade or slide.
+  if (reduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       className={className}

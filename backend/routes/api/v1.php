@@ -463,6 +463,7 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
 Route::middleware('throttle:leads')->group(function (): void {
     Route::post('leads', [LeadController::class, 'store'])->name('leads.store');
     Route::post('newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
+    Route::post('careers/parse-resume', [CareerController::class, 'parseResume'])->name('careers.parse-resume');
     Route::post('careers/{career}/apply', [CareerController::class, 'apply'])->name('careers.apply');
     Route::post('chatbot/message', [ChatbotController::class, 'message'])->name('chatbot.message');
 });

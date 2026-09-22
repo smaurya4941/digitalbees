@@ -74,7 +74,7 @@
   --color-canvas-sunken: #f4f4f2;  /* Gray 100 — section alternation, cards */
   --color-ink: #1b1b1b;            /* Ink — body copy on white */
   --color-ink-muted: #4a4a4a;      /* Gray 700 — secondary body, captions */
-  --color-ink-subtle: #6f7889;
+  --color-ink-subtle: #5f6878;
   --color-ink-disabled: #9b9b9b;   /* Gray 400 — disabled + placeholder only */
   --color-ink-inverse: #ffffff;
   --color-hairline: #e0e3ea;

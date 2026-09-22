@@ -54,11 +54,9 @@ class NavigationSeeder extends Seeder
                 ['label' => 'Locations', 'custom_url' => '/locations'],
             ]],
             ['label' => 'Company', 'custom_url' => null, 'children' => [
-                ['label' => 'Our Story', 'custom_url' => '/company/our-story'],
+                ['label' => 'Our Story', 'custom_url' => '/about'],
                 ['label' => 'Leadership', 'custom_url' => '/company/leadership'],
-                ['label' => 'How We Work', 'custom_url' => '/how-we-work'],
                 ['label' => 'Partnerships', 'custom_url' => '/company/partnerships'],
-                ['label' => 'ESG & Community', 'custom_url' => '/company/esg'],
                 ['label' => 'Newsroom', 'custom_url' => '/company/newsroom'],
                 ['label' => 'Careers', 'custom_url' => '/careers'],
             ]],

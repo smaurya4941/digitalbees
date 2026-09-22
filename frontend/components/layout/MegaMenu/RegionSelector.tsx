@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { Globe, ChevronDown } from 'lucide-react';
 
 interface RegionOption {
   label: string;
@@ -40,20 +41,18 @@ export function RegionSelector() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-[#C6963A]/50 transition text-xs font-medium text-white/90 hover:text-white"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.05] border border-white/10 hover:border-[#C6963A]/50 hover:bg-white/[0.08] transition-all text-xs font-medium text-white/90 hover:text-white backdrop-blur-xs"
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-label="Select Region"
       >
-        <span className="material-symbols-outlined text-[16px] text-[#C6963A]">public</span>
+        <Globe className="h-3.5 w-3.5 text-[#C6963A]" />
         <span>{selected.label}</span>
-        <span
-          className={`material-symbols-outlined text-[15px] text-white/50 transition-transform duration-200 ${
+        <ChevronDown
+          className={`h-3 w-3 text-white/50 transition-transform duration-200 ${
             open ? 'rotate-180 text-[#C6963A]' : ''
           }`}
-        >
-          expand_more
-        </span>
+        />
       </button>
 
       {open && (
@@ -80,7 +79,7 @@ export function RegionSelector() {
                   <span>{opt.flag}</span>
                   <span>{opt.label}</span>
                 </span>
-                <span className="text-[10px] font-mono text-white/40">{opt.currency}</span>
+                <span className="text-[10px] font-mono text-white/70">{opt.currency}</span>
               </button>
             ))}
           </div>

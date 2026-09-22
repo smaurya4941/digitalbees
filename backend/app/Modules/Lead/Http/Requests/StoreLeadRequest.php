@@ -32,6 +32,8 @@ class StoreLeadRequest extends FormRequest
             'company' => ['nullable', 'string', 'max:150'],
             'message' => ['nullable', 'string', 'max:5000'],
             'form_type' => ['required', 'in:contact,demo_request,newsletter,chatbot'],
+            // Which contact persona the visitor chose; only used to tailor the confirmation email.
+            'persona' => ['nullable', 'in:hire,delivery,partner,press'],
             'source_path' => ['nullable', 'string', 'max:500'],
             'practice_slug' => ['nullable', 'string', 'max:150'],
             'region_slug' => ['nullable', 'string', 'max:150'],

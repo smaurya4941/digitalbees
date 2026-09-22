@@ -3,16 +3,20 @@
 namespace App\Modules\Lead\Services;
 
 use App\Integrations\Crm\Jobs\SyncLeadToCrm;
+use App\Mail\LeadConfirmationMail;
 use App\Modules\Lead\Http\Requests\StoreLeadRequest;
 use App\Modules\Lead\Models\Lead;
 use App\Modules\Page\Models\Page;
 use App\Modules\Practice\Models\Practice;
 use App\Modules\Region\Models\Region;
+use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 /**
  * Application use-case for capturing a public lead submission (blueprint
  * §28.2's conversion flows all land here, differentiated by `form_type`):
- * persist, score, then hand off to the CRM sync job.
+ * persist, score, hand off to the CRM sync job, then queue the confirmation
+ * email (blueprint §28.3).
  */
 class LeadService
 {
@@ -39,8 +43,27 @@ class LeadService
         $lead->update(['score' => $this->scoring->score($lead)]);
 
         SyncLeadToCrm::dispatch($lead);
+        $this->sendConfirmation($lead, $data['persona'] ?? null);
 
         return $lead;
+    }
+
+    /**
+     * Only forms where the visitor expects a reply get an email; newsletter
+     * and chatbot captures have their own flows. A mail/queue failure must
+     * never lose the lead, so it is reported and swallowed.
+     */
+    private function sendConfirmation(Lead $lead, ?string $persona): void
+    {
+        if (! in_array($lead->form_type, ['contact', 'demo_request'], true)) {
+            return;
+        }
+
+        try {
+            Mail::to($lead->email, $lead->full_name)->queue(new LeadConfirmationMail($lead->loadMissing('practice'), $persona));
+        } catch (Throwable $e) {
+            report($e);
+        }
     }
 
     /**

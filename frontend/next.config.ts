@@ -28,11 +28,10 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      // About split into Company sub-pages (blueprint §26.1) — permanent
-      // redirect so link equity and bookmarks to the old URL still resolve.
+      // About Us canonical path is /about; redirect /about-us permanently
       {
         source: '/about-us',
-        destination: '/company/our-story',
+        destination: '/about',
         permanent: true,
       },
     ];

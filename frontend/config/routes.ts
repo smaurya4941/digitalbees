@@ -6,8 +6,10 @@ export const routes = {
   home: () => '/',
   contact: () => '/contact-us',
 
+  about: () => '/about',
+  aboutLeadership: () => '/about/leadership',
   // Company sub-pages (blueprint §26.1) — `/about-us` 301-redirects to
-  // `companyOurStory()` (see next.config.ts's `redirects()`).
+  // `about()` or `companyOurStory()` (see next.config.ts's `redirects()`).
   companyOurStory: () => '/company/our-story',
   companyLeadership: () => '/company/leadership',
   companyPartnerships: () => '/company/partnerships',
@@ -41,10 +43,22 @@ export const routes = {
 
   careers: () => '/careers',
   career: (slug: string) => `/careers/${slug}`,
+  careerCandidateResources: () => '/careers/candidate-resources',
+  careerDiversity: () => '/careers/diversity',
 
   locations: () => '/locations',
   location: (slug: string) => `/locations/${slug}`,
 
+  services: () => '/services',
+  servicePillar: (pillar: string) => `/services/${pillar}`,
+  serviceCluster: (pillar: string, slug: string) => `/services/${pillar}/${slug}`,
+
+  blog: () => '/blog',
+  blogCategory: (category: string) => `/blog/${category}`,
+
   privacy: () => '/privacy',
   terms: () => '/terms',
+  cookies: () => '/cookies',
+  cookiePolicy: () => '/cookies',
+  sitemap: () => '/sitemap',
 } as const;

@@ -1,0 +1,19 @@
+{
+  "/": {
+    "color-contrast": 22,
+    "target-size": 4
+  },
+  "/about": {
+    "color-contrast": 23
+  },
+  "/careers": {
+    "color-contrast": 24
+  },
+  "/contact-us": {
+    "color-contrast": 10
+  },
+  "/practices": {},
+  "/privacy": {
+    "color-contrast": 1
+  }
+}

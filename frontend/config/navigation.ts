@@ -57,19 +57,19 @@ export const footerNav: NavGroup[] = [
     links: [
       { label: 'Industries', href: routes.industries() },
       { label: 'Technologies', href: routes.technologies() },
+      { label: 'Staff Augmentation', href: routes.servicePillar('staff-augmentation') },
       { label: 'Regions', href: routes.regions() },
       { label: 'Case Studies', href: routes.caseStudies() },
+      { label: 'Blog', href: routes.blog() },
       { label: 'Locations', href: routes.locations() },
     ],
   },
   {
     label: 'Company',
     links: [
-      { label: 'Our Story', href: routes.companyOurStory() },
+      { label: 'Our Story', href: routes.about() },
       { label: 'Leadership', href: routes.companyLeadership() },
-      { label: 'How We Work', href: '/how-we-work' },
       { label: 'Partnerships', href: routes.companyPartnerships() },
-      { label: 'ESG & Community', href: routes.companyEsg() },
       { label: 'Newsroom', href: routes.companyNewsroom() },
       { label: 'Careers', href: routes.careers() },
     ],

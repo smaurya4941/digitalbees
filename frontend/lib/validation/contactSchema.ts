@@ -18,3 +18,8 @@ export const contactSchema = z.object({
 });
 
 export type ContactFormValues = z.infer<typeof contactSchema>;
+
+/** Press enquiries must name the outlet — the form labels the field as required. */
+export const pressContactSchema = contactSchema.extend({
+  company: z.string().trim().min(1, 'Enter the publication or outlet.').max(150),
+});

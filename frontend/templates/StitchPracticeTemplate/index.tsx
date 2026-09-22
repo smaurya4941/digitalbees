@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import type { PracticeDetail } from "@/types/practice";
 import { routes } from "@/config/routes";
 import { SeoJsonLd } from "@/components/seo/JsonLd";
@@ -15,6 +15,7 @@ import { PracticeCaseStudies } from "./components/PracticeCaseStudies";
 import { PracticeRelated } from "./components/PracticeRelated";
 import { PracticeFaq } from "./components/PracticeFaq";
 import { PracticeCTA } from "./components/PracticeCTA";
+import { CtrmSpecialismGrid } from "@/components/practices/CtrmSpecialismGrid";
 
 interface StitchPracticeTemplateProps {
   practice: PracticeDetail;
@@ -81,6 +82,9 @@ export function StitchPracticeTemplate({ practice }: StitchPracticeTemplateProps
 
             {/* Section 4: Key capabilities (dark navy) */}
             <PracticeCapabilities practice={practice} />
+
+            {/* CTRM & Energy Trading Domain Specialism Grid (Pitch Deck Slide 14) */}
+            {practice.slug === 'energy-bees' && <CtrmSpecialismGrid />}
 
             {/* Section 5: Delivery framework / process */}
             <PracticeProcess practice={practice} />

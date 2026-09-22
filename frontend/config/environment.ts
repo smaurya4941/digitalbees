@@ -34,6 +34,15 @@ const clientSchema = z.object({
    */
   NEXT_PUBLIC_ADMIN_SESSION_COOKIE: z.string().default('teambees-session'),
   NEXT_PUBLIC_GA_ID: z.string().optional(),
+  /**
+   * Public booking page (Calendly / Cal.com) embedded after a consultation
+   * request (blueprint §28.2). Unset or blank = the scheduler step is skipped
+   * and the visitor sees the standard confirmation only.
+   */
+  NEXT_PUBLIC_SCHEDULER_URL: z.preprocess(
+    (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
+    z.string().url().optional(),
+  ),
 });
 
 function parse<T extends z.ZodTypeAny>(schema: T, source: Record<string, unknown>): z.infer<T> {
@@ -52,6 +61,7 @@ export const clientEnv = parse(clientSchema, {
   NEXT_PUBLIC_API_ORIGIN: process.env.NEXT_PUBLIC_API_ORIGIN,
   NEXT_PUBLIC_ADMIN_SESSION_COOKIE: process.env.NEXT_PUBLIC_ADMIN_SESSION_COOKIE,
   NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID,
+  NEXT_PUBLIC_SCHEDULER_URL: process.env.NEXT_PUBLIC_SCHEDULER_URL,
 });
 
 /**

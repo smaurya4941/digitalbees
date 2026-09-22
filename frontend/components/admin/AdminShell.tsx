@@ -34,6 +34,7 @@ import {
 import { cn } from '@/lib/utils/cn';
 import { siteConfig } from '@/config/site';
 import { useAuth } from './providers';
+import SkipLink from '@/components/ui/SkipLink';
 import type { Permission } from '@/lib/admin/types';
 
 type NavItem = {
@@ -169,6 +170,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-dvh bg-canvas-sunken">
+      <SkipLink />
       {/* Desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 hidden w-64 lg:block">
         <SidebarContent />
@@ -258,7 +260,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
+        <main id="main" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
       </div>
     </div>
   );

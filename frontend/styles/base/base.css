@@ -3,6 +3,20 @@
    Reference: docs/design/accessibility.md
    ========================================================================== */
 
+/* Blueprint §19.2 — every focusable element shows a 2px gold-deep outline.
+   Deliberately outside @layer so it beats `outline-none` utilities scattered
+   through older components; this is the one rule that guarantees the focus
+   indicator is never removed. <main> is excluded: it is only focused
+   programmatically by the skip link. */
+:focus-visible:not(main) {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+main:focus {
+  outline: none;
+}
+
 @layer base {
   * {
     border-color: var(--color-hairline);

@@ -15,6 +15,8 @@ class LocationSeeder extends Seeder
     public function run(): void
     {
         $locations = [
+            ['india', 'Bangalore', 'India', 'Outer Ring Road, Bellandur, Bangalore', 12.9352, 77.6946],
+            ['singapore', 'Singapore', 'Singapore', 'Marina Bay Financial Centre, Singapore', 1.2789, 103.8536],
             ['usa', 'New York', 'United States', 'New York, NY', 40.7128, -74.0060],
             ['usa', 'Austin', 'United States', 'Austin, TX', 30.2672, -97.7431],
             ['uk', 'London', 'United Kingdom', 'London', 51.5072, -0.1276],

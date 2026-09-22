@@ -12,6 +12,7 @@
         "laravel/scout": "^11.7",
         "laravel/tinker": "^2.10.1",
         "meilisearch/meilisearch-php": "^1.17",
+        "smalot/pdfparser": "^2.12",
         "spatie/laravel-permission": "^6.25"
     },
     "require-dev": {

@@ -1,5 +1,6 @@
 import NavBar, { NavLink } from '@/components/layout/NavBar';
 import Footer from '@/components/layout/Footer';
+import SkipLink from '@/components/ui/SkipLink';
 import { CandidateModeProvider } from '@/lib/context/CandidateModeContext';
 import { getPublicNavigation, PublicNavItem } from '@/lib/api/navigation';
 import { getSettings } from '@/lib/api/settings';
@@ -43,8 +44,9 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
 
   return (
     <CandidateModeProvider>
+      <SkipLink />
       <NavBar navItems={navItems} contactPhone={contactPhone} />
-      <main id="main" className="flex-1">
+      <main id="main" tabIndex={-1} className="flex-1">
         {children}
       </main>
       <Footer />

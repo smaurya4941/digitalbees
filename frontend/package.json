@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test",
+    "test:a11y": "playwright test e2e/a11y.spec.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -28,6 +31,7 @@
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.1",

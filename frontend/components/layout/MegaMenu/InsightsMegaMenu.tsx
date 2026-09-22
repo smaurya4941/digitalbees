@@ -77,7 +77,7 @@ export function InsightsMegaMenu({ onClose }: Props) {
                   <div className="text-[11px] text-white/50">Weekly architectural deep dives</div>
                 </div>
               </div>
-              <span className="material-symbols-outlined text-[16px] text-white/40 group-hover:text-[#C6963A] group-hover:translate-x-1 transition-transform">
+              <span className="material-symbols-outlined text-[16px] text-white/70 group-hover:text-[#C6963A] group-hover:translate-x-1 transition-transform">
                 chevron_right
               </span>
             </Link>
@@ -98,7 +98,7 @@ export function InsightsMegaMenu({ onClose }: Props) {
                   <div className="text-[11px] text-white/50">Enterprise migration blueprints</div>
                 </div>
               </div>
-              <span className="material-symbols-outlined text-[16px] text-white/40 group-hover:text-[#C6963A] group-hover:translate-x-1 transition-transform">
+              <span className="material-symbols-outlined text-[16px] text-white/70 group-hover:text-[#C6963A] group-hover:translate-x-1 transition-transform">
                 chevron_right
               </span>
             </Link>
@@ -119,7 +119,7 @@ export function InsightsMegaMenu({ onClose }: Props) {
                   <div className="text-[11px] text-white/50">Live Q&amp;A with Principal Architects</div>
                 </div>
               </div>
-              <span className="material-symbols-outlined text-[16px] text-white/40 group-hover:text-[#C6963A] group-hover:translate-x-1 transition-transform">
+              <span className="material-symbols-outlined text-[16px] text-white/70 group-hover:text-[#C6963A] group-hover:translate-x-1 transition-transform">
                 chevron_right
               </span>
             </Link>
@@ -140,7 +140,7 @@ export function InsightsMegaMenu({ onClose }: Props) {
                   <div className="text-[11px] text-white/50">2026 AI Engineering ROI Index</div>
                 </div>
               </div>
-              <span className="material-symbols-outlined text-[16px] text-white/40 group-hover:text-[#C6963A] group-hover:translate-x-1 transition-transform">
+              <span className="material-symbols-outlined text-[16px] text-white/70 group-hover:text-[#C6963A] group-hover:translate-x-1 transition-transform">
                 chevron_right
               </span>
             </Link>

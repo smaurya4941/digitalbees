@@ -88,7 +88,7 @@ export default function ServicesDeployment() {
               <button className="bg-black text-white px-8 py-3.5 rounded-full font-bold text-sm hover:bg-black/80 transition-colors">
                 See Our Deployment Process
               </button>
-              <button className="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center hover:bg-black/80 transition-colors">
+              <button type="button" aria-label="Learn more about our deployment process" className="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center hover:bg-black/80 transition-colors">
                 <ArrowUpRight size={20} strokeWidth={2.5} />
               </button>
             </div>

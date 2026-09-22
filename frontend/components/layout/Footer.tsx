@@ -60,6 +60,21 @@ export default async function Footer() {
     }
   }
 
+  // Ensure Company section displays only 5 core items (Our Story, Leadership, Partnerships, Newsroom, ESG & Community)
+  const companyGroupIndex = footerGroups.findIndex((g) => g.label === 'Company');
+  if (companyGroupIndex >= 0 && footerGroups[companyGroupIndex].children) {
+    const preferredOrder = ['Our Story', 'Leadership', 'Partnerships', 'Newsroom', 'ESG & Community', 'Careers'];
+    const currentChildren = footerGroups[companyGroupIndex].children || [];
+    const curated = currentChildren
+      .filter((c) => preferredOrder.includes(c.label))
+      .sort((a, b) => preferredOrder.indexOf(a.label) - preferredOrder.indexOf(b.label));
+
+    footerGroups[companyGroupIndex] = {
+      ...footerGroups[companyGroupIndex],
+      children: curated.length >= 4 ? curated.slice(0, 5) : currentChildren.slice(0, 5),
+    };
+  }
+
   // CMS settings are authoritative; `siteConfig` is the build-time fallback.
   const siteName = settings['site.name'] || siteConfig.name;
   const legalName = settings['site.legal_name'] || siteConfig.legalName;
@@ -134,6 +149,12 @@ export default async function Footer() {
             </Link>
             <Link href={routes.terms()} className="hover:text-ink-inverse">
               Terms
+            </Link>
+            <Link href={routes.cookies()} className="hover:text-ink-inverse">
+              Cookies
+            </Link>
+            <Link href={routes.sitemap()} className="hover:text-ink-inverse">
+              Sitemap
             </Link>
           </p>
         </div>

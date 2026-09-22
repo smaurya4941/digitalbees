@@ -1,8 +1,13 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 export default function Template({ children }: { children: React.ReactNode }) {
+  const reduceMotion = useReducedMotion();
+
+  // prefers-reduced-motion: skip the route transition entirely.
+  if (reduceMotion) return <>{children}</>;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}

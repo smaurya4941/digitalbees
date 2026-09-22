@@ -6,12 +6,33 @@ const REGION_META: Record<
   string,
   { icon: string; city: string; tag: string; compliance: string; description: string }
 > = {
+  india: {
+    icon: "hub",
+    city: "India (Bangalore & Hyderabad Delivery Hubs)",
+    tag: "OFFSHORE DELIVERY CENTRE",
+    compliance: "ISO 27001, SOC2 Type II, 24x7 Follow-The-Sun Delivery",
+    description: "Core offshore engineering centers, enterprise QA automation pods, and high-velocity talent delivery at scale.",
+  },
   usa: {
     icon: "location_on",
     city: "United States (Austin & New York)",
     tag: "NORTH AMERICA HQ",
     compliance: "SOC2 Type II, FINRA & HIPAA Compliant Delivery",
     description: "Enterprise client engagement, executive delivery leadership, and high-throughput financial architectures.",
+  },
+  singapore: {
+    icon: "account_balance",
+    city: "Singapore (APAC Operations)",
+    tag: "APAC REGIONAL HUB",
+    compliance: "MAS Technology Risk Management & Regional Banking Gateway",
+    description: "Asia-Pacific client coordination, commodity trading desk support, and fintech platform operations.",
+  },
+  uae: {
+    icon: "location_city",
+    city: "UAE (Dubai Hub)",
+    tag: "MIDDLE EAST HUB",
+    compliance: "DIFC / ADGM Data Compliance & Regional Advisory",
+    description: "Regional regulatory compliance, public sector digital programs, and sovereign cloud architectures.",
   },
   uk: {
     icon: "apartment",
@@ -41,39 +62,50 @@ const REGION_META: Record<
     compliance: "APRA CPS 234 Cybersecurity & Cloud Operations",
     description: "Cloud engineering, commodity trading integrations, and 24x7 follow-the-sun managed platform operations.",
   },
-  uae: {
-    icon: "location_city",
-    city: "UAE (Dubai Hub)",
-    tag: "MIDDLE EAST HUB",
-    compliance: "DIFC / ADGM Data Compliance & Regional Advisory",
-    description: "Regional regulatory compliance, public sector digital programs, and sovereign cloud architectures.",
-  },
 };
 
-const DEFAULT_SLUGS = ["usa", "uk", "europe", "canada", "australia", "uae"];
+const DEFAULT_SLUGS = ["india", "usa", "singapore", "uae", "uk", "europe", "canada", "australia"];
+
+interface GlobalPresenceProps {
+  eyebrow?: string;
+  title?: string;
+  subtitle?: string;
+  limit?: number;
+}
 
 /**
  * Global presence — Section 9.
- * 6-region card row with 1-line compliance notes, individual region links, and Locations hub CTA.
+ * 8-market card grid highlighting the 4 core delivery hubs (India ODC, USA, Singapore, UAE)
+ * alongside European, Canadian, and ANZ regional engineering nodes.
  */
-export default async function GlobalPresence() {
+export default async function GlobalPresence({
+  eyebrow = "GLOBAL FOOTPRINT \u00B7 OFFSHORE TO NEARSHORE",
+  title = "Distributed delivery hubs across global enterprise markets.",
+  subtitle,
+  limit = 8,
+}: GlobalPresenceProps = {}) {
   const liveRegions = await getRegions().catch(() => []);
   const slugs = liveRegions.length > 0 ? liveRegions.map((r) => r.slug) : DEFAULT_SLUGS;
 
-  const displayRegions = slugs
+  // Make sure DEFAULT_SLUGS order is preserved and all exist
+  const sortedSlugs = Array.from(new Set([...DEFAULT_SLUGS, ...slugs]));
+
+  const displayRegions = sortedSlugs
     .map((slug) => ({
       slug,
-      name: liveRegions.find((r) => r.slug === slug)?.name ?? slug.toUpperCase(),
-      meta: REGION_META[slug] ?? {
-        icon: "hub",
-        city: slug.toUpperCase(),
-        tag: "GLOBAL REGION",
-        compliance: "Enterprise ISO & Data Compliant",
-        description: "Specialized engineering pods and client delivery assurance.",
-      },
+      name:
+        liveRegions.find((r) => r.slug === slug)?.name ||
+        slug.toUpperCase().replace('USA', 'USA').replace('UK', 'UK').replace('UAE', 'UAE'),
       href: routes.region(slug),
+      meta: REGION_META[slug] || {
+        icon: "public",
+        city: slug.toUpperCase(),
+        tag: "DELIVERY NODE",
+        compliance: "SOC2 & ISO 27001 Aligned",
+        description: "Specialized engineering and delivery leadership.",
+      },
     }))
-    .slice(0, 6);
+    .slice(0, limit);
 
   return (
     <section className="py-16 md:py-24 bg-white border-b border-[#e7e8ee]" id="locations">
@@ -82,11 +114,16 @@ export default async function GlobalPresence() {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
           <div className="max-w-2xl">
             <span className="text-[12px] font-bold text-[#C6963A] tracking-wider uppercase mb-2 block">
-              Global Delivery Network
+              {eyebrow}
             </span>
             <h2 className="text-[24px] leading-[32px] md:text-[32px] md:leading-[40px] font-bold text-[#0B1F3A]">
-              Distributed delivery hubs across six global regions.
+              {title}
             </h2>
+            {subtitle && (
+              <p className="mt-2 text-[15px] text-[#44474d] leading-relaxed">
+                {subtitle}
+              </p>
+            )}
           </div>
           <Link
             href="/locations"
@@ -99,8 +136,8 @@ export default async function GlobalPresence() {
           </Link>
         </div>
 
-        {/* 6-region card grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* 8-region card grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {displayRegions.map((region) => (
             <Link
               key={region.slug}

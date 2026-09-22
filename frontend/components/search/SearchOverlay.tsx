@@ -150,6 +150,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
           <input
             ref={inputRef}
             type="search"
+            aria-label="Search TeamBees"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search practices, industries, case studies, jobs…"
@@ -162,6 +163,17 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
               RETURN ↵
             </span>
           )}
+        </div>
+
+        {/* Announces result counts to screen readers as the list changes (WCAG 4.1.3). */}
+        <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+          {loading
+            ? 'Searching…'
+            : query.trim().length >= 2 && hits
+              ? hits.length === 0
+                ? `No results found for ${query}.`
+                : `${hits.length} ${hits.length === 1 ? 'result' : 'results'} found.`
+              : ''}
         </div>
 
         {/* Popular query chips */}

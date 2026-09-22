@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, Variants } from 'framer-motion';
+import { motion, useReducedMotion, Variants } from 'framer-motion';
 import { ReactNode } from 'react';
 
 const containerVariants: Variants = {
@@ -33,6 +33,13 @@ interface StaggerContainerProps {
 }
 
 export function StaggerContainer({ children, className = '', delay = 0 }: StaggerContainerProps) {
+  const reduceMotion = useReducedMotion();
+
+  // prefers-reduced-motion: no staggered fade/slide; content is simply present.
+  if (reduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   const delayedContainerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -63,6 +70,12 @@ interface StaggerItemProps {
 }
 
 export function StaggerItem({ children, className = '' }: StaggerItemProps) {
+  const reduceMotion = useReducedMotion();
+
+  if (reduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div variants={itemVariants} className={className}>
       {children}

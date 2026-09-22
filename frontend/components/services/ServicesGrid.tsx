@@ -42,7 +42,7 @@ export default async function ServicesGrid() {
               </p>
               <Link 
                 href={`/practices/${practice.slug}`}
-                className="text-[#FACC15] font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all"
+                className="text-warning-strong font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all"
               >
                 Read More <ArrowRight size={16} strokeWidth={2.5} />
               </Link>

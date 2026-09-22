@@ -1,4 +1,5 @@
 import { getTestimonials } from "@/lib/api/testimonials";
+import { ClientLogoSvg } from "@/components/brand/ClientLogoSvgs";
 
 /**
  * Testimonial section — Section 10.
@@ -6,7 +7,7 @@ import { getTestimonials } from "@/lib/api/testimonials";
  */
 const clients = [
   "Stryker", "BT", "Tata", "Vocera", "QuestLabs",
-  "WillWare", "Ananta Systems", "Menhood", "Resmera Solutions", "Squire Technologies",
+  "WillWare", "Ananta Systems", "Menhood", "Resmera Solutions", "Squire Technologies", "Ananttam",
 ];
 
 export default async function TestimonialSection() {
@@ -57,14 +58,17 @@ export default async function TestimonialSection() {
           <span className="text-[12px] font-bold text-center text-[#44474d]/80 uppercase tracking-widest block mb-8">
             Trusted by Engineering Leaders at
           </span>
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 opacity-70">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 md:gap-8 items-center justify-items-center">
             {clients.map((client) => (
-              <span
+              <div
                 key={client}
-                className="text-[20px] font-bold tracking-tight text-[#0B1F3A]/80 hover:text-[#C6963A] transition-colors"
+                className="flex items-center justify-center p-3 rounded-lg border border-transparent hover:border-[#e7e8ee] hover:bg-white hover:shadow-sm transition-all duration-200 w-full max-w-[170px] h-14"
               >
-                {client}
-              </span>
+                <ClientLogoSvg
+                  name={client}
+                  className="max-h-7 md:max-h-8 max-w-[130px] w-auto opacity-75 hover:opacity-100 transition-opacity text-[#0B1F3A]"
+                />
+              </div>
             ))}
           </div>
         </div>

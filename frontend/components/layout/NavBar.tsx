@@ -5,6 +5,22 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useCandidateMode } from '@/lib/context/CandidateModeContext';
+import {
+  ChevronDown,
+  Search,
+  ArrowRight,
+  Menu,
+  X,
+  UserCheck,
+  Layers,
+  Building2,
+  Globe,
+  Briefcase,
+  ChevronRight,
+  Sparkles,
+  Mail,
+} from 'lucide-react';
+import { LinkedinIcon, TwitterIcon, InstagramIcon } from '@/components/ui/SocialIcons';
 import { PracticesMegaMenu } from './MegaMenu/PracticesMegaMenu';
 import { IndustriesMegaMenu } from './MegaMenu/IndustriesMegaMenu';
 import { LocationsMegaMenu } from './MegaMenu/LocationsMegaMenu';
@@ -71,7 +87,20 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [searchOpen]);
 
-  // Hover-intent handler with 200ms delay
+  // Click outside to close active dropdown menu
+  useEffect(() => {
+    if (!activeMenu) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('header')) {
+        setActiveMenu(null);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [activeMenu]);
+
+  // Hover-intent handler with 180ms delay
   const handleMouseEnter = useCallback((menu: ActiveMenu) => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
@@ -101,22 +130,51 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
     setActiveMenu(null);
   }, []);
 
-  // Whether header can be transparent at top of page (homepage & dark heroes)
-  const isDarkHeroPage = pathname === '/' || pathname.startsWith('/practices');
-  const isSolid = scrolled || activeMenu !== null || !isDarkHeroPage;
-
   return (
     <>
       <header
-        className={`fixed left-0 right-0 top-0 z-[150] transition-colors duration-200 ${
-          isSolid
-            ? 'bg-[#0B1F3A]/96 backdrop-blur-md border-b border-[#C6963A]/40 shadow-2xl'
-            : 'bg-transparent border-b border-white/10'
+        className={`fixed left-0 right-0 top-0 z-[150] transition-all duration-200 bg-[#EAF2FB]/95 backdrop-blur-xl border-b border-[#CBDFF2] ${
+          scrolled ? 'shadow-md shadow-[#0B1F3A]/5' : 'shadow-xs'
         }`}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 h-[72px] flex items-center justify-between">
-          {/* Left: Brand Logo */}
+        {/* Subtle gold top hairline accent */}
+        <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#C6963A]/40 to-transparent pointer-events-none" />
+
+        {/* Tier 1 Topbar (thin strip, Navy): info@teambeescorp.com + region indicator + social icons */}
+        <div className="bg-[#0B1F3A] text-white/80 border-b border-white/10 hidden md:block">
+          <div className="max-w-[1440px] mx-auto px-4 md:px-8 h-8 flex items-center justify-between text-[11.5px] font-medium">
+            <div className="flex items-center gap-6">
+              <a
+                href="mailto:info@teambeescorp.com"
+                className="flex items-center gap-1.5 text-white/80 hover:text-[#C6963A] transition"
+              >
+                <Mail className="h-3 w-3 text-[#C6963A]" />
+                <span>info@teambeescorp.com</span>
+              </a>
+              <span className="text-white/20">|</span>
+              <span className="flex items-center gap-1.5 text-white/70">
+                <Globe className="h-3 w-3 text-[#C6963A]" />
+                <span>Delivering from India · USA · Singapore · UAE</span>
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-white/70 text-[10px] uppercase font-mono tracking-wider">Follow Us:</span>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[#C6963A] transition" aria-label="LinkedIn">
+                <LinkedinIcon className="h-3 w-3" />
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[#C6963A] transition" aria-label="Twitter">
+                <TwitterIcon className="h-3 w-3" />
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[#C6963A] transition" aria-label="Instagram">
+                <InstagramIcon className="h-3 w-3" />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 h-[72px] flex items-center justify-between gap-4">
+          {/* 1. Left: Brand Logo (Dark version for light blue background) */}
           <Link
             href="/"
             onClick={closeMegaMenu}
@@ -124,7 +182,7 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
             aria-label="TeamBees Home"
           >
             <Image
-              src="/brand/logo-teambees-white.png"
+              src="/brand/logo-teambees.png"
               alt="TeamBees - Building on Trust"
               width={160}
               height={55}
@@ -133,165 +191,156 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
             />
           </Link>
 
-          {/* Center-Left: Desktop Primary Navigation */}
+          {/* 2. Center: Desktop Primary Navigation */}
           <nav
             aria-label="Primary Navigation"
-            className="hidden xl:flex items-center gap-1 text-[13.5px] font-medium tracking-wide h-[72px]"
+            className="hidden lg:flex items-center gap-1.5 xl:gap-2 text-[13.5px] font-semibold h-[72px]"
           >
-            {/* Practices */}
+            {/* Practices (Services) */}
             <div
-              className="h-full flex items-center"
+              className="relative h-full flex items-center"
               onMouseEnter={() => handleMouseEnter('practices')}
+              onMouseLeave={handleMouseLeave}
             >
               <button
                 type="button"
                 onClick={() => setActiveMenu(activeMenu === 'practices' ? null : 'practices')}
-                className={`px-3.5 py-2 rounded-md transition flex items-center gap-1 group ${
+                className={`px-3 py-2 rounded-xl transition flex items-center gap-1.5 group ${
                   activeMenu === 'practices' || pathname.startsWith('/practices')
-                    ? 'text-[#C6963A] bg-white/5 font-semibold'
-                    : 'text-white/90 hover:text-[#C6963A] hover:bg-white/5'
+                    ? 'text-[#C6963A] bg-white/90 shadow-xs'
+                    : 'text-[#0B1F3A] hover:text-[#C6963A] hover:bg-white/70'
                 }`}
                 aria-expanded={activeMenu === 'practices'}
                 aria-haspopup="true"
               >
-                <span>Practices</span>
-                <span
-                  className={`material-symbols-outlined text-[16px] transition-transform duration-200 ${
-                    activeMenu === 'practices' ? 'rotate-180 text-[#C6963A]' : 'text-white/50 group-hover:text-[#C6963A]'
+                <span>Practices (Services)</span>
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                    activeMenu === 'practices' ? 'rotate-180 text-[#C6963A]' : 'text-[#0B1F3A]/60 group-hover:text-[#C6963A]'
                   }`}
-                >
-                  expand_more
-                </span>
+                />
               </button>
+
+              {activeMenu === 'practices' && (
+                <div
+                  className="absolute top-[60px] left-0 pt-2 z-50 animate-in fade-in-50 zoom-in-95 duration-150"
+                  onMouseEnter={() => {
+                    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+                  }}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <PracticesMegaMenu onClose={closeMegaMenu} />
+                </div>
+              )}
             </div>
 
             {/* Industries */}
             <div
-              className="h-full flex items-center"
+              className="relative h-full flex items-center"
               onMouseEnter={() => handleMouseEnter('industries')}
+              onMouseLeave={handleMouseLeave}
             >
               <button
                 type="button"
                 onClick={() => setActiveMenu(activeMenu === 'industries' ? null : 'industries')}
-                className={`px-3.5 py-2 rounded-md transition flex items-center gap-1 group ${
+                className={`px-3 py-2 rounded-xl transition flex items-center gap-1.5 group ${
                   activeMenu === 'industries' || pathname.startsWith('/industries')
-                    ? 'text-[#C6963A] bg-white/5 font-semibold'
-                    : 'text-white/90 hover:text-[#C6963A] hover:bg-white/5'
+                    ? 'text-[#C6963A] bg-white/90 shadow-xs'
+                    : 'text-[#0B1F3A] hover:text-[#C6963A] hover:bg-white/70'
                 }`}
                 aria-expanded={activeMenu === 'industries'}
                 aria-haspopup="true"
               >
                 <span>Industries</span>
-                <span
-                  className={`material-symbols-outlined text-[16px] transition-transform duration-200 ${
-                    activeMenu === 'industries' ? 'rotate-180 text-[#C6963A]' : 'text-white/50 group-hover:text-[#C6963A]'
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                    activeMenu === 'industries' ? 'rotate-180 text-[#C6963A]' : 'text-[#0B1F3A]/60 group-hover:text-[#C6963A]'
                   }`}
-                >
-                  expand_more
-                </span>
+                />
               </button>
+
+              {activeMenu === 'industries' && (
+                <div
+                  className="absolute top-[60px] left-0 pt-2 z-50 animate-in fade-in-50 zoom-in-95 duration-150"
+                  onMouseEnter={() => {
+                    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+                  }}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <IndustriesMegaMenu onClose={closeMegaMenu} />
+                </div>
+              )}
             </div>
 
             {/* Locations */}
             <div
-              className="h-full flex items-center"
+              className="relative h-full flex items-center"
               onMouseEnter={() => handleMouseEnter('locations')}
+              onMouseLeave={handleMouseLeave}
             >
               <button
                 type="button"
                 onClick={() => setActiveMenu(activeMenu === 'locations' ? null : 'locations')}
-                className={`px-3.5 py-2 rounded-md transition flex items-center gap-1 group ${
+                className={`px-3 py-2 rounded-xl transition flex items-center gap-1.5 group ${
                   activeMenu === 'locations' || pathname.startsWith('/locations')
-                    ? 'text-[#C6963A] bg-white/5 font-semibold'
-                    : 'text-white/90 hover:text-[#C6963A] hover:bg-white/5'
+                    ? 'text-[#C6963A] bg-white/90 shadow-xs'
+                    : 'text-[#0B1F3A] hover:text-[#C6963A] hover:bg-white/70'
                 }`}
                 aria-expanded={activeMenu === 'locations'}
                 aria-haspopup="true"
               >
                 <span>Locations</span>
-                <span
-                  className={`material-symbols-outlined text-[16px] transition-transform duration-200 ${
-                    activeMenu === 'locations' ? 'rotate-180 text-[#C6963A]' : 'text-white/50 group-hover:text-[#C6963A]'
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                    activeMenu === 'locations' ? 'rotate-180 text-[#C6963A]' : 'text-[#0B1F3A]/60 group-hover:text-[#C6963A]'
                   }`}
-                >
-                  expand_more
-                </span>
+                />
               </button>
-            </div>
 
-            {/* Insights */}
-            <div
-              className="h-full flex items-center"
-              onMouseEnter={() => handleMouseEnter('insights')}
-            >
-              <button
-                type="button"
-                onClick={() => setActiveMenu(activeMenu === 'insights' ? null : 'insights')}
-                className={`px-3.5 py-2 rounded-md transition flex items-center gap-1 group ${
-                  activeMenu === 'insights' || pathname.startsWith('/insights') || pathname.startsWith('/resources')
-                    ? 'text-[#C6963A] bg-white/5 font-semibold'
-                    : 'text-white/90 hover:text-[#C6963A] hover:bg-white/5'
-                }`}
-                aria-expanded={activeMenu === 'insights'}
-                aria-haspopup="true"
-              >
-                <span>Insights</span>
-                <span
-                  className={`material-symbols-outlined text-[16px] transition-transform duration-200 ${
-                    activeMenu === 'insights' ? 'rotate-180 text-[#C6963A]' : 'text-white/50 group-hover:text-[#C6963A]'
-                  }`}
+              {activeMenu === 'locations' && (
+                <div
+                  className="absolute top-[60px] left-0 pt-2 z-50 animate-in fade-in-50 zoom-in-95 duration-150"
+                  onMouseEnter={() => {
+                    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+                  }}
+                  onMouseLeave={handleMouseLeave}
                 >
-                  expand_more
-                </span>
-              </button>
+                  <LocationsMegaMenu onClose={closeMegaMenu} />
+                </div>
+              )}
             </div>
-
-            {/* Case Studies (Direct Link per §2.5) */}
-            <Link
-              href="/case-studies"
-              onClick={closeMegaMenu}
-              className={`px-3.5 py-2 rounded-md transition ${
-                pathname.startsWith('/case-studies')
-                  ? 'text-[#C6963A] font-semibold'
-                  : 'text-white/90 hover:text-[#C6963A] hover:bg-white/5'
-              }`}
-            >
-              Case Studies
-            </Link>
 
             {/* Careers */}
             <div
-              className="h-full flex items-center relative"
+              className="relative h-full flex items-center"
               onMouseEnter={() => handleMouseEnter('careers')}
+              onMouseLeave={handleMouseLeave}
             >
               <button
                 type="button"
                 onClick={() => setActiveMenu(activeMenu === 'careers' ? null : 'careers')}
-                className={`px-3.5 py-2 rounded-md transition flex items-center gap-1.5 group ${
+                className={`px-3 py-2 rounded-xl transition flex items-center gap-1.5 group ${
                   activeMenu === 'careers' || pathname.startsWith('/careers')
-                    ? 'text-[#C6963A] bg-white/5 font-semibold'
-                    : 'text-white/90 hover:text-[#C6963A] hover:bg-white/5'
+                    ? 'text-[#C6963A] bg-white/90 shadow-xs'
+                    : 'text-[#0B1F3A] hover:text-[#C6963A] hover:bg-white/70'
                 }`}
                 aria-expanded={activeMenu === 'careers'}
                 aria-haspopup="true"
               >
                 <span>Careers</span>
-                <span className="px-1.5 py-0.5 text-[9px] font-mono font-semibold bg-emerald-500/20 text-emerald-300 rounded border border-emerald-500/30">
+                <span className="px-1.5 py-0.5 text-[9.5px] font-semibold bg-[#C6963A]/15 text-[#7A5606] rounded-full border border-[#C6963A]/30 tracking-tight">
                   Hiring
                 </span>
-                <span
-                  className={`material-symbols-outlined text-[16px] transition-transform duration-200 ${
-                    activeMenu === 'careers' ? 'rotate-180 text-[#C6963A]' : 'text-white/50 group-hover:text-[#C6963A]'
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                    activeMenu === 'careers' ? 'rotate-180 text-[#C6963A]' : 'text-[#0B1F3A]/60 group-hover:text-[#C6963A]'
                   }`}
-                >
-                  expand_more
-                </span>
+                />
               </button>
 
-              {/* Careers Dropdown Popover */}
               {activeMenu === 'careers' && (
                 <div
-                  className="absolute top-[72px] right-0 z-50 pt-2 animate-in fade-in slide-in-from-top-2 duration-150"
+                  className="absolute top-[60px] left-0 pt-2 z-50 animate-in fade-in-50 zoom-in-95 duration-150"
                   onMouseEnter={() => {
                     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
                   }}
@@ -303,138 +352,57 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
             </div>
           </nav>
 
-          {/* Right: Desktop Utility Cluster */}
-          <div className="hidden lg:flex items-center gap-3.5">
-            {/* Search Trigger Button */}
+          {/* 3 & 4. Right: Search Box & Book Consultation Button */}
+          <div className="hidden sm:flex items-center gap-3.5">
+            {/* Search Box */}
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-white/80 hover:text-[#C6963A] hover:bg-white/10 transition border border-white/10"
-              title="Quick Search (Press /)"
+              className="flex items-center justify-between gap-3 px-3.5 py-2 rounded-xl bg-white/95 hover:bg-white border border-[#CBDFF2] hover:border-[#0B1F3A]/30 text-xs text-[#0B1F3A] shadow-xs hover:shadow transition-all w-44 md:w-52 lg:w-60 xl:w-64 group"
+              title="Search site (Press / or ⌘K)"
               aria-label="Search site"
             >
-              <span className="material-symbols-outlined text-[18px]">search</span>
+              <div className="flex items-center gap-2 text-neutral-500 group-hover:text-[#0B1F3A]">
+                <Search className="h-3.5 w-3.5 text-[#C6963A]" />
+                <span className="text-xs font-normal truncate">Search practices, skills...</span>
+              </div>
+              <kbd className="hidden sm:inline-block text-[10px] font-mono text-neutral-600 bg-neutral-100 px-1.5 py-0.5 rounded border border-neutral-200">
+                ⌘K
+              </kbd>
             </button>
 
-            {/* Region Selector */}
-            <RegionSelector />
-
-            {/* For Candidates Toggle Switch (§3.3) */}
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[#071527]/60 border border-white/10 text-xs">
-              <span
-                className={`text-[11px] font-mono uppercase transition ${
-                  isCandidateMode ? 'text-[#C6963A] font-bold' : 'text-white/60'
-                }`}
-              >
-                Candidates
-              </span>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={isCandidateMode}
-                aria-label="Toggle Candidate Mode"
-                onClick={toggleCandidateMode}
-                className={`w-9 h-5 rounded-full p-0.5 transition-colors duration-200 flex items-center ${
-                  isCandidateMode ? 'bg-[#C6963A] justify-end' : 'bg-slate-700 justify-start'
-                }`}
-              >
-                <span
-                  className={`w-4 h-4 rounded-full transition-transform shadow-sm flex items-center justify-center text-[9px] font-bold ${
-                    isCandidateMode ? 'bg-[#071527] text-[#C6963A]' : 'bg-white text-slate-700'
-                  }`}
-                >
-                  {isCandidateMode ? '✓' : ''}
-                </span>
-              </button>
-            </div>
-
-            {/* Primary CTA Button (§3.4) */}
+            {/* Book Consultation Button */}
             <Link
-              href={isCandidateMode ? '/careers' : '/contact-us'}
+              href="/contact-us"
               onClick={closeMegaMenu}
-              className={`px-5 py-2.5 rounded-lg font-bold text-xs tracking-wider uppercase transition shadow-md flex items-center gap-1.5 hover:-translate-y-0.5 duration-150 ${
-                isCandidateMode
-                  ? 'bg-[#132B4F] text-white border border-[#C6963A]/60 hover:bg-[#071527]'
-                  : 'bg-[#C6963A] hover:bg-[#9C7326] text-[#071527]'
-              }`}
+              className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#D8A74A] to-[#C6963A] px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-[#0B1F3A] shadow-md shadow-[#C6963A]/25 transition-all duration-150 hover:-translate-y-0.5 hover:from-[#E5B556] hover:to-[#D5A036] hover:shadow-lg hover:shadow-[#C6963A]/35 shrink-0"
             >
-              <span>{isCandidateMode ? 'View Open Roles' : 'Book a Consultation'}</span>
-              <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+              <span>Book Consultation</span>
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
 
           {/* Mobile Right Bar: Search + Hamburger */}
-          <div className="flex items-center gap-2 xl:hidden">
+          <div className="flex items-center gap-2 md:hidden">
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
               aria-label="Search"
-              className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 text-white/80 flex items-center justify-center"
+              className="w-9 h-9 rounded-xl bg-white/80 border border-[#CBDFF2] text-[#0B1F3A] flex items-center justify-center hover:bg-white transition-colors"
             >
-              <span className="material-symbols-outlined text-[18px]">search</span>
+              <Search className="h-4 w-4 text-[#C6963A]" />
             </button>
             <button
               type="button"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileOpen}
-              className="w-9 h-9 rounded-lg bg-[#C6963A] text-[#071527] font-bold flex items-center justify-center shadow-sm"
+              className="w-9 h-9 rounded-xl bg-gradient-to-r from-[#D8A74A] to-[#C6963A] text-[#0B1F3A] font-bold flex items-center justify-center shadow-sm"
             >
-              <span className="material-symbols-outlined text-[20px]">
-                {mobileOpen ? 'close' : 'menu'}
-              </span>
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
-
-        {/* Full-Width Desktop Mega-Menu Panels */}
-        {activeMenu === 'practices' && (
-          <div
-            className="w-full animate-in fade-in slide-in-from-top-2 duration-200"
-            onMouseEnter={() => {
-              if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
-            }}
-            onMouseLeave={handleMouseLeave}
-          >
-            <PracticesMegaMenu onClose={closeMegaMenu} />
-          </div>
-        )}
-
-        {activeMenu === 'industries' && (
-          <div
-            className="w-full animate-in fade-in slide-in-from-top-2 duration-200"
-            onMouseEnter={() => {
-              if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
-            }}
-            onMouseLeave={handleMouseLeave}
-          >
-            <IndustriesMegaMenu onClose={closeMegaMenu} />
-          </div>
-        )}
-
-        {activeMenu === 'locations' && (
-          <div
-            className="w-full animate-in fade-in slide-in-from-top-2 duration-200"
-            onMouseEnter={() => {
-              if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
-            }}
-            onMouseLeave={handleMouseLeave}
-          >
-            <LocationsMegaMenu onClose={closeMegaMenu} />
-          </div>
-        )}
-
-        {activeMenu === 'insights' && (
-          <div
-            className="w-full animate-in fade-in slide-in-from-top-2 duration-200"
-            onMouseEnter={() => {
-              if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
-            }}
-            onMouseLeave={handleMouseLeave}
-          >
-            <InsightsMegaMenu onClose={closeMegaMenu} />
-          </div>
-        )}
       </header>
 
       {/* Full-Screen Search Overlay */}
@@ -449,8 +417,8 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
         >
           {/* Candidate Mode Toggle Strip at Top */}
           <div className="px-6 py-3 bg-[#0B1F3A] border-b border-white/10 flex items-center justify-between text-xs">
-            <span className="text-white/80 font-medium flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[16px] text-[#C6963A]">badge</span>
+            <span className="text-white/80 font-medium flex items-center gap-2">
+              <UserCheck className="h-4 w-4 text-[#C6963A]" />
               For Candidates / Job Seekers
             </span>
             <button
@@ -477,17 +445,15 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                 }
                 className="w-full p-3.5 flex items-center justify-between text-left font-bold text-sm"
               >
-                <span className="flex items-center gap-2 text-[#C6963A]">
-                  <span className="material-symbols-outlined text-[18px]">category</span>
+                <span className="flex items-center gap-2.5 text-[#C6963A]">
+                  <Layers className="h-4 w-4" />
                   Practices (7 Specialist Pods)
                 </span>
-                <span
-                  className={`material-symbols-outlined text-[18px] text-[#C6963A] transition-transform ${
+                <ChevronDown
+                  className={`h-4 w-4 text-[#C6963A] transition-transform duration-200 ${
                     mobileAccordion === 'practices' ? 'rotate-180' : ''
                   }`}
-                >
-                  expand_more
-                </span>
+                />
               </button>
 
               {mobileAccordion === 'practices' && (
@@ -498,7 +464,7 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                     className="p-2 rounded bg-white/5 flex items-center justify-between text-white/90 hover:text-[#C6963A]"
                   >
                     <span>Talent Bees (IT &amp; Staffing)</span>
-                    <span className="text-[10px] font-mono text-white/40">48h SLA</span>
+                    <span className="text-[10px] font-mono text-white/70">48h SLA</span>
                   </Link>
                   <Link
                     href="/practices/digital-bees"
@@ -506,7 +472,7 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                     className="p-2 rounded bg-white/5 flex items-center justify-between text-white/90 hover:text-[#C6963A]"
                   >
                     <span>Digital Bees (Software &amp; Cloud)</span>
-                    <span className="text-[10px] font-mono text-white/40">DevOps</span>
+                    <span className="text-[10px] font-mono text-white/70">DevOps</span>
                   </Link>
                   <Link
                     href="/practices/ai-bees"
@@ -522,7 +488,7 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                     className="p-2 rounded bg-white/5 flex items-center justify-between text-white/90 hover:text-[#C6963A]"
                   >
                     <span>Marketing Bees (Growth)</span>
-                    <span className="text-[10px] font-mono text-white/40">SEO/PPC</span>
+                    <span className="text-[10px] font-mono text-white/70">SEO/PPC</span>
                   </Link>
                   <Link
                     href="/practices/quality-bees"
@@ -530,7 +496,7 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                     className="p-2 rounded bg-white/5 flex items-center justify-between text-white/90 hover:text-[#C6963A]"
                   >
                     <span>Quality Bees (Testing &amp; QA)</span>
-                    <span className="text-[10px] font-mono text-white/40">Zero Defect</span>
+                    <span className="text-[10px] font-mono text-white/70">Zero Defect</span>
                   </Link>
                   <Link
                     href="/practices/servicenow-bees"
@@ -538,7 +504,7 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                     className="p-2 rounded bg-white/5 flex items-center justify-between text-white/90 hover:text-[#C6963A]"
                   >
                     <span>ServiceNow Bees</span>
-                    <span className="text-[10px] font-mono text-white/40">ITSM/ITOM</span>
+                    <span className="text-[10px] font-mono text-white/70">ITSM/ITOM</span>
                   </Link>
                   <Link
                     href="/practices/energy-bees"
@@ -546,7 +512,7 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                     className="p-2 rounded bg-white/5 flex items-center justify-between text-white/90 hover:text-[#C6963A]"
                   >
                     <span>Energy Bees</span>
-                    <span className="text-[10px] font-mono text-white/40">CTRM</span>
+                    <span className="text-[10px] font-mono text-white/70">CTRM</span>
                   </Link>
                 </div>
               )}
@@ -561,17 +527,15 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                 }
                 className="w-full p-3.5 flex items-center justify-between text-left font-bold text-sm"
               >
-                <span className="flex items-center gap-2 text-[#C6963A]">
-                  <span className="material-symbols-outlined text-[18px]">domain</span>
+                <span className="flex items-center gap-2.5 text-[#C6963A]">
+                  <Building2 className="h-4 w-4" />
                   Industries (10 Sectors)
                 </span>
-                <span
-                  className={`material-symbols-outlined text-[18px] text-[#C6963A] transition-transform ${
+                <ChevronDown
+                  className={`h-4 w-4 text-[#C6963A] transition-transform duration-200 ${
                     mobileAccordion === 'industries' ? 'rotate-180' : ''
                   }`}
-                >
-                  expand_more
-                </span>
+                />
               </button>
 
               {mobileAccordion === 'industries' && (
@@ -659,17 +623,15 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                 }
                 className="w-full p-3.5 flex items-center justify-between text-left font-bold text-sm"
               >
-                <span className="flex items-center gap-2 text-[#C6963A]">
-                  <span className="material-symbols-outlined text-[18px]">public</span>
-                  Locations (6 Hubs)
+                <span className="flex items-center gap-2.5 text-[#C6963A]">
+                  <Globe className="h-4 w-4" />
+                  Locations (6 Global Hubs)
                 </span>
-                <span
-                  className={`material-symbols-outlined text-[18px] text-[#C6963A] transition-transform ${
+                <ChevronDown
+                  className={`h-4 w-4 text-[#C6963A] transition-transform duration-200 ${
                     mobileAccordion === 'locations' ? 'rotate-180' : ''
                   }`}
-                >
-                  expand_more
-                </span>
+                />
               </button>
 
               {mobileAccordion === 'locations' && (
@@ -680,7 +642,7 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                     className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
                   >
                     <span>🇺🇸 United States (New York, SF)</span>
-                    <span className="text-[10px] font-mono text-white/40">W2/C2C</span>
+                    <span className="text-[10px] font-mono text-white/70">W2/C2C</span>
                   </Link>
                   <Link
                     href="/locations"
@@ -688,7 +650,7 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                     className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
                   >
                     <span>🇮🇳 India (Bangalore, Noida)</span>
-                    <span className="text-[10px] font-mono text-white/40">Delivery Lab</span>
+                    <span className="text-[10px] font-mono text-white/70">Delivery Lab</span>
                   </Link>
                   <Link
                     href="/locations"
@@ -696,7 +658,7 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                     className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
                   >
                     <span>🇸🇬 Singapore (Marina Bay)</span>
-                    <span className="text-[10px] font-mono text-white/40">APAC HQ</span>
+                    <span className="text-[10px] font-mono text-white/70">APAC HQ</span>
                   </Link>
                   <Link
                     href="/locations"
@@ -704,7 +666,7 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                     className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
                   >
                     <span>🇦🇪 UAE (Dubai DIFC)</span>
-                    <span className="text-[10px] font-mono text-white/40">MENA Hub</span>
+                    <span className="text-[10px] font-mono text-white/70">MENA Hub</span>
                   </Link>
                   <Link
                     href="/locations"
@@ -712,7 +674,7 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                     className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
                   >
                     <span>🇬🇧 United Kingdom (London)</span>
-                    <span className="text-[10px] font-mono text-white/40">IR35 Safe</span>
+                    <span className="text-[10px] font-mono text-white/70">IR35 Safe</span>
                   </Link>
                   <Link
                     href="/locations"
@@ -720,55 +682,97 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                     className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
                   >
                     <span>🇦🇺 Australia (Sydney)</span>
-                    <span className="text-[10px] font-mono text-white/40">APRA CPS 234</span>
+                    <span className="text-[10px] font-mono text-white/70">APRA CPS 234</span>
+                  </Link>
+                  <Link
+                    href="/locations"
+                    onClick={() => setMobileOpen(false)}
+                    className="mt-2 block p-2 rounded bg-[#C6963A]/10 text-center font-bold text-[#C6963A] border border-[#C6963A]/20 hover:bg-[#C6963A]/20"
+                  >
+                    View All Locations &amp; Compliance →
                   </Link>
                 </div>
               )}
             </div>
 
-            {/* Direct Links */}
-            <div className="space-y-1.5 pt-2">
-              <Link
-                href="/case-studies"
-                onClick={() => setMobileOpen(false)}
-                className="p-3 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-between text-sm font-semibold text-white hover:text-[#C6963A]"
+            {/* Careers Accordion */}
+            <div className="rounded-xl border border-white/10 bg-[#0B1F3A]/70 overflow-hidden">
+              <button
+                type="button"
+                onClick={() =>
+                  setMobileAccordion(mobileAccordion === 'careers' ? null : 'careers')
+                }
+                className="w-full p-3.5 flex items-center justify-between text-left font-bold text-sm"
               >
-                <span>Case Studies</span>
-                <span className="material-symbols-outlined text-[16px] text-white/40">chevron_right</span>
-              </Link>
-              <Link
-                href="/insights"
-                onClick={() => setMobileOpen(false)}
-                className="p-3 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-between text-sm font-semibold text-white hover:text-[#C6963A]"
-              >
-                <span>Insights &amp; Publications</span>
-                <span className="material-symbols-outlined text-[16px] text-white/40">chevron_right</span>
-              </Link>
-              <Link
-                href="/careers"
-                onClick={() => setMobileOpen(false)}
-                className="p-3 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-between text-sm font-semibold text-white hover:text-[#C6963A]"
-              >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5 text-[#C6963A]">
+                  <Briefcase className="h-4 w-4" />
                   <span>Careers</span>
-                  <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 rounded">
-                    Hiring
+                  <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold bg-[#C6963A]/20 text-[#D8A74A] rounded-full border border-[#C6963A]/30">
+                    24 Roles
                   </span>
                 </div>
-                <span className="material-symbols-outlined text-[16px] text-white/40">chevron_right</span>
-              </Link>
+                <ChevronDown
+                  className={`h-4 w-4 text-[#C6963A] transition-transform duration-200 ${
+                    mobileAccordion === 'careers' ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+
+              {mobileAccordion === 'careers' && (
+                <div className="p-3 pt-1 space-y-1.5 border-t border-white/10 text-xs">
+                  <Link
+                    href="/careers"
+                    onClick={() => setMobileOpen(false)}
+                    className="p-2 rounded bg-white/5 flex items-center justify-between text-white/90 hover:text-[#C6963A]"
+                  >
+                    <span>Open Roles &amp; Opportunities</span>
+                    <span className="text-[10px] font-mono text-emerald-400">Hiring</span>
+                  </Link>
+                  <Link
+                    href="/careers"
+                    onClick={() => setMobileOpen(false)}
+                    className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
+                  >
+                    <span>Life at TeamBees &amp; Culture</span>
+                    <ChevronRight className="h-3.5 w-3.5 text-white/40" />
+                  </Link>
+                  <Link
+                    href="/careers"
+                    onClick={() => setMobileOpen(false)}
+                    className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
+                  >
+                    <span>AI Upskilling &amp; Benefits</span>
+                    <Sparkles className="h-3.5 w-3.5 text-[#C6963A]" />
+                  </Link>
+                  <Link
+                    href="/contact-us"
+                    onClick={() => setMobileOpen(false)}
+                    className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
+                  >
+                    <span>Join Talent Network (Fast-Track)</span>
+                    <ChevronRight className="h-3.5 w-3.5 text-white/40" />
+                  </Link>
+                  <Link
+                    href="/careers"
+                    onClick={() => setMobileOpen(false)}
+                    className="mt-2 block p-2 rounded bg-[#C6963A]/10 text-center font-bold text-[#C6963A] border border-[#C6963A]/20 hover:bg-[#C6963A]/20"
+                  >
+                    Explore Careers Hub →
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Persistent Bottom Sheet CTA Bar (§5) */}
+          {/* Persistent Bottom Sheet CTA Bar */}
           <div className="p-4 bg-[#0B1F3A] border-t border-white/10 shrink-0">
             <Link
               href={isCandidateMode ? '/careers' : '/contact-us'}
               onClick={() => setMobileOpen(false)}
-              className="w-full py-3 rounded-xl bg-[#C6963A] text-[#071527] font-bold text-xs tracking-wider uppercase shadow-lg flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#D8A74A] to-[#C6963A] text-[#0B1F3A] font-extrabold text-xs tracking-wider uppercase shadow-lg flex items-center justify-center gap-2"
             >
               <span>{isCandidateMode ? 'View Open Roles' : 'Book a Consultation'}</span>
-              <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -776,3 +780,4 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
     </>
   );
 }
+

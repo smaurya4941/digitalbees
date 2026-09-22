@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Modules\Career\Http\Requests\ApplyToJobRequest;
+use App\Modules\Career\Http\Requests\ParseResumeRequest;
 use App\Modules\Career\Http\Resources\JobPostingPublicResource;
 use App\Modules\Career\Services\CareerService;
+use App\Modules\Career\Services\ResumeParser;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -15,7 +17,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class CareerController extends ApiController
 {
-    public function __construct(private readonly CareerService $careers) {}
+    public function __construct(
+        private readonly CareerService $careers,
+        private readonly ResumeParser $resumeParser,
+    ) {}
 
     public function index(): JsonResponse
     {
@@ -37,5 +42,15 @@ class CareerController extends ApiController
         $this->careers->apply($career, $request->validated());
 
         return ApiResponse::accepted(['status' => 'received']);
+    }
+
+    /**
+     * Advisory pre-fill for the application form: extracts name / email /
+     * phone from an uploaded resume. Nothing is stored; an unreadable file
+     * simply returns an empty object.
+     */
+    public function parseResume(ParseResumeRequest $request): JsonResponse
+    {
+        return ApiResponse::item((object) $this->resumeParser->parse($request->file('resume')));
     }
 }

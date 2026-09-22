@@ -3,6 +3,7 @@
 namespace App\Modules\Career\Services;
 
 use App\Jobs\NotifyFrontendRevalidate;
+use App\Mail\JobApplicationConfirmationMail;
 use App\Modules\Career\Enums\JobStatus;
 use App\Modules\Career\Models\JobApplication;
 use App\Modules\Career\Models\JobPosting;
@@ -11,8 +12,10 @@ use App\Modules\Media\Services\MediaService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 final class CareerService
 {
@@ -87,7 +90,7 @@ final class CareerService
         $resume = $data['resume'] ?? null;
         $resumeMediaId = $resume instanceof UploadedFile ? $this->media->upload($resume)->id : null;
 
-        return JobApplication::create([
+        $application = JobApplication::create([
             'job_id' => $job->id,
             'full_name' => $data['full_name'],
             'email' => $data['email'],
@@ -96,6 +99,16 @@ final class CareerService
             'resume_media_id' => $resumeMediaId,
             'status' => 'submitted',
         ]);
+
+        // A mail/queue failure must never lose the application.
+        try {
+            Mail::to($application->email, $application->full_name)
+                ->queue(new JobApplicationConfirmationMail($application->setRelation('job', $job)));
+        } catch (Throwable $e) {
+            report($e);
+        }
+
+        return $application;
     }
 
     /** @param  array<string, mixed>  $attributes */
