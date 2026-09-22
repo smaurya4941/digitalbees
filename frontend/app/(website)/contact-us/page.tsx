@@ -4,6 +4,7 @@ import { siteConfig } from '@/config/site';
 import ContactHero from '@/components/contact/ContactHero';
 import ContactPageClient from '@/components/contact/ContactPageClient';
 import OfficeLocations from '@/components/contact/OfficeLocations';
+import { getPractices } from '@/lib/api/practices';
 
 export const metadata: Metadata = {
   title: `Contact Us | Persona-Routed Enterprise Inquiries | ${siteConfig.name}`,
@@ -12,7 +13,10 @@ export const metadata: Metadata = {
   alternates: { canonical: `${siteConfig.url}/contact-us` },
 };
 
-export default function ContactUsPage() {
+export default async function ContactUsPage() {
+  const practices = await getPractices();
+  const practiceOptions = practices.map((p) => ({ slug: p.slug, name: p.name, tagline: p.tagline }));
+
   return (
     <main className="min-h-screen bg-[#F8F9FF]">
       {/* 1. Hero & Trust Bar */}
@@ -26,7 +30,7 @@ export default function ContactUsPage() {
           </div>
         }
       >
-        <ContactPageClient />
+        <ContactPageClient practices={practiceOptions} />
       </Suspense>
 
       {/* 4. Global Delivery Hubs & Office Locations */}

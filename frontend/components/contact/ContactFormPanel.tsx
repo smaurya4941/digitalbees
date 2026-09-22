@@ -18,21 +18,19 @@ import type { PersonaKey } from './PersonaRouter';
 import PracticeLeadDispatch from './PracticeLeadDispatch';
 import ConsultationScheduler from './ConsultationScheduler';
 
+/** One selectable practice — the published practices, managed in the admin. */
+export interface PracticeOption {
+  slug: string;
+  name: string;
+  tagline: string | null;
+}
+
 interface ContactFormPanelProps {
   activePersona: PersonaKey;
   initialPractice?: string;
   initialRegion?: string;
+  practices?: PracticeOption[];
 }
-
-const PRACTICES = [
-  { slug: 'ai-bees', label: 'AI Bees (LLMs & Agentic Ops)' },
-  { slug: 'servicenow-bees', label: 'ServiceNow Bees (ITOM, ITSM, SPM)' },
-  { slug: 'energy-bees', label: 'Energy Bees (CTRM, Commodities & Risk)' },
-  { slug: 'quality-bees', label: 'Quality Bees (QA, SDET & Reliability)' },
-  { slug: 'talent-bees', label: 'Talent Bees (Dedicated Pods & Staff Aug)' },
-  { slug: 'digital-bees', label: 'Digital Bees (Cloud & Modernization)' },
-  { slug: 'marketing-bees', label: 'Marketing Bees (MarTech & Omnichannel)' },
-];
 
 const REGIONAL_NODES = [
   { slug: 'india', label: 'Gurugram Center of Excellence (ODC) · UTC+5:30' },
@@ -73,9 +71,14 @@ const SUBMIT_LABEL: Record<FormPersona, string> = {
 
 export default function ContactFormPanel({
   activePersona,
-  initialPractice = 'ai-bees',
+  initialPractice: requestedPractice = 'ai-bees',
   initialRegion = 'india',
+  practices = [],
 }: ContactFormPanelProps) {
+  // A ?practice= slug that isn't (or is no longer) published falls back to the first live practice.
+  const initialPractice = practices.some((p) => p.slug === requestedPractice)
+    ? requestedPractice
+    : (practices[0]?.slug ?? '');
   const [timeline, setTimeline] = useState<string>('immediate');
   const [requestNda, setRequestNda] = useState<boolean>(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -325,11 +328,11 @@ export default function ContactFormPanel({
                 />
               </div>
 
-              {(activePersona === 'hire' || activePersona === 'delivery') && (
+              {(activePersona === 'hire' || activePersona === 'delivery') && practices.length > 0 && (
                 <FloatingSelect {...register('practiceSlug')} label="Accountable practice domain" required>
-                  {PRACTICES.map((p) => (
+                  {practices.map((p) => (
                     <option key={p.slug} value={p.slug}>
-                      {p.label}
+                      {p.tagline ? `${p.name} (${p.tagline})` : p.name}
                     </option>
                   ))}
                 </FloatingSelect>
@@ -431,7 +434,11 @@ export default function ContactFormPanel({
 
       {/* Right Column: Dynamic Dispatch Telemetry (5 cols) */}
       <div className="lg:col-span-5">
-        <PracticeLeadDispatch practiceSlug={selectedPractice} regionSlug={selectedRegion} />
+        <PracticeLeadDispatch
+          practiceSlug={selectedPractice}
+          practiceName={practices.find((p) => p.slug === selectedPractice)?.name}
+          regionSlug={selectedRegion}
+        />
       </div>
     </div>
   );

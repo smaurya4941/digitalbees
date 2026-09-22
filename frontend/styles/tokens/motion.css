@@ -9,6 +9,20 @@
   --ease-emphasized: cubic-bezier(0.2, 0, 0, 1.2);
   --ease-enter: cubic-bezier(0, 0, 0, 1);
   --ease-exit: cubic-bezier(0.3, 0, 1, 1);
+
+  /* Ticker strips render their item group 4×; shifting by one group (-25%)
+     loops seamlessly. Reduced-motion users get a static strip (base.css). */
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-spin-slow: spin-slow 12s linear infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-25%); }
+  }
+
+  @keyframes spin-slow {
+    to { transform: rotate(360deg); }
+  }
 }
 
 :root {

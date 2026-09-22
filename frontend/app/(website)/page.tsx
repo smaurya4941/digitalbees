@@ -1,5 +1,7 @@
 import ReniusHero from '@/components/home/renius/ReniusHero';
+import ReniusPersonaFork from '@/components/home/renius/ReniusPersonaFork';
 import ReniusPracticesCarousel from '@/components/home/renius/ReniusPracticesCarousel';
+import ReniusIndustryStrip from '@/components/home/renius/ReniusIndustryStrip';
 import ReniusWhoWeAre from '@/components/home/renius/ReniusWhoWeAre';
 import ReniusProofValidation from '@/components/home/renius/ReniusProofValidation';
 import ReniusCaseStudySlider from '@/components/home/renius/ReniusCaseStudySlider';
@@ -10,6 +12,8 @@ import ReniusTrustStrip from '@/components/home/renius/ReniusTrustStrip';
 import ReniusWhyChooseUs from '@/components/home/renius/ReniusWhyChooseUs';
 import ReniusClientMarquee from '@/components/home/renius/ReniusClientMarquee';
 import ReniusInsightsPreview from '@/components/home/renius/ReniusInsightsPreview';
+import { getPractices } from '@/lib/api/practices';
+import { getIndustries } from '@/lib/api/industries';
 
 export const metadata = {
   title: 'TeamBees — Global Talent & Capability Partner',
@@ -17,43 +21,54 @@ export const metadata = {
     'Seven specialist practices. Six global regions. One accountable team that can staff it, build it, test it, and run it.',
 };
 
-export default function Home() {
+export default async function Home() {
+  // Admin-managed practices and industries; a new/unpublished entry shows up
+  // here via ISR tag revalidation. Fetched in parallel — neither depends on
+  // the other.
+  const [practices, industries] = await Promise.all([getPractices(), getIndustries()]);
+
   return (
     <>
-      {/* 2. Hero — rotating value-prop cards + 1st trust-badge ticker */}
+      {/* 1. Hero — rotating value-prop cards + 1st trust-badge ticker */}
       <ReniusHero />
 
-      {/* 3. "What We Offer" — Practices carousel + 2nd trust-badge ticker */}
-      <ReniusPracticesCarousel />
+      {/* 2. Persona fork — "I'm hiring" / "I'm building" / "I'm a candidate" */}
+      <ReniusPersonaFork />
 
-      {/* 4. "Who We Are" — split content with stat counters */}
+      {/* 3. "What We Offer" — Practices carousel + 2nd trust-badge ticker */}
+      <ReniusPracticesCarousel practices={practices} />
+
+      {/* 4. "Where We Deliver" — industry strip */}
+      <ReniusIndustryStrip industries={industries} />
+
+      {/* 5. "Who We Are" — split content with stat counters */}
       <ReniusWhoWeAre />
 
-      {/* 5. Proof / social-validation strip + quote carousel */}
+      {/* 6. Proof / social-validation strip + quote carousel */}
       <ReniusProofValidation />
 
-      {/* 6. "Our Case Studies" — numbered slider */}
+      {/* 7. "Our Case Studies" — numbered slider */}
       <ReniusCaseStudySlider />
 
-      {/* 7. Features grid — Governed AI capabilities */}
+      {/* 8. Features grid — Governed AI capabilities */}
       <ReniusCapabilitiesGrid />
 
-      {/* 8. CTA band — shaped dark band with circular button device */}
+      {/* 9. CTA band — shaped dark band with circular button device */}
       <ReniusCtaBand />
 
-      {/* 9. Milestones strip — Four years, four phases of growth */}
+      {/* 10. Milestones strip — Four years, four phases of growth */}
       <ReniusMilestonesStrip />
 
-      {/* 10. Trust-strip ticker (repeat) */}
+      {/* 11. Trust-strip ticker (repeat) */}
       <ReniusTrustStrip />
 
-      {/* 11. "Why Choose Us" — split content with 4-item list & leadership card */}
+      {/* 12. "Why Choose Us" — split content with 4-item list & leadership card */}
       <ReniusWhyChooseUs />
 
-      {/* 12. Client logo marquee */}
+      {/* 13. Client logo marquee */}
       <ReniusClientMarquee />
 
-      {/* 13. Insights preview */}
+      {/* 14. Insights preview */}
       <ReniusInsightsPreview />
     </>
   );

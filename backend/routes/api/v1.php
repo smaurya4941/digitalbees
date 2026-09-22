@@ -133,6 +133,13 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::get('admin/practices', [PracticeAdminController::class, 'index'])
         ->middleware('permission:content.update|content.publish')
         ->name('admin.practices.index');
+    // Static segments first so they never match as a {slug}.
+    Route::get('admin/practices/trash', [PracticeAdminController::class, 'trash'])
+        ->middleware('permission:content.delete')
+        ->name('admin.practices.trash');
+    Route::get('admin/practices/relation-options', [PracticeAdminController::class, 'relationOptions'])
+        ->middleware('permission:content.update|content.create')
+        ->name('admin.practices.relation-options');
     Route::get('admin/practices/{slug}', [PracticeAdminController::class, 'show'])
         ->middleware('permission:content.update|content.publish')
         ->name('admin.practices.show');
@@ -145,6 +152,9 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
     Route::delete('practices/{slug}', [PracticeAdminController::class, 'destroy'])
         ->middleware('permission:content.delete')
         ->name('practices.destroy');
+    Route::post('practices/{slug}/restore', [PracticeAdminController::class, 'restore'])
+        ->middleware('permission:content.delete')
+        ->name('practices.restore');
 
     // Industry CRUD
     Route::get('admin/industries', [IndustryAdminController::class, 'index'])

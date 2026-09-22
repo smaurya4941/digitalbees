@@ -32,6 +32,9 @@ export default async function ServicesGrid() {
                   alt={practice.name}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  // Admin uploads are served from the API's own storage host,
+                  // which isn't in next.config's remotePatterns.
+                  unoptimized={!image.startsWith('https://images.unsplash.com/')}
                 />
               </div>
               <h4 className="text-[22px] font-bold text-ink mb-4 leading-tight transition-colors group-hover:text-[#FACC15]">

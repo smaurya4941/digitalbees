@@ -25,6 +25,10 @@ class SubServiceAdminResource extends JsonResource
                 ? $this->status->value
                 : $this->status,
             'sort_order' => $this->sort_order,
+            'seo' => $this->whenLoaded('seo', fn () => [
+                'meta_title' => $this->seo?->meta_title,
+                'meta_description' => $this->seo?->meta_description,
+            ]),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

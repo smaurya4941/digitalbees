@@ -44,6 +44,10 @@ export default async function Footer() {
   // rather than the CMS menu's or static fallback's fixed list, so a
   // new/archived practice is reflected without a menu edit — same reasoning
   // as the header's Services dropdown.
+  // `getPractices()` only returns [] when nothing is published (an outage
+  // yields the static fallback instead), so an empty list drops the group
+  // rather than leaving stale hardcoded links behind.
+  const practicesIndex = footerGroups.findIndex((g) => g.label === 'Practices');
   if (practices.length > 0) {
     const practicesGroup: PublicNavItem = {
       id: -999,
@@ -52,12 +56,13 @@ export default async function Footer() {
       icon: null,
       children: practices.map((p) => ({ id: p.id, label: p.name, url: p.href, icon: null, children: [] })),
     };
-    const existingIndex = footerGroups.findIndex((g) => g.label === 'Practices');
-    if (existingIndex >= 0) {
-      footerGroups[existingIndex] = practicesGroup;
+    if (practicesIndex >= 0) {
+      footerGroups[practicesIndex] = practicesGroup;
     } else {
       footerGroups.push(practicesGroup);
     }
+  } else if (practicesIndex >= 0) {
+    footerGroups.splice(practicesIndex, 1);
   }
 
   // Ensure Company section displays only 5 core items (Our Story, Leadership, Partnerships, Newsroom, ESG & Community)

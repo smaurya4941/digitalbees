@@ -95,4 +95,24 @@ final class EloquentPracticeRepository implements PracticeRepository
     {
         $practice->delete();
     }
+
+    public function allTrashed(): Collection
+    {
+        return Practice::onlyTrashed()
+            ->withCount('subServices')
+            ->orderByDesc('deleted_at')
+            ->get();
+    }
+
+    public function findTrashedBySlug(string $slug): ?Practice
+    {
+        return Practice::onlyTrashed()->where('slug', $slug)->first();
+    }
+
+    public function restore(Practice $practice): Practice
+    {
+        $practice->restore();
+
+        return $practice->refresh();
+    }
 }

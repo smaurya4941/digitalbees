@@ -3,7 +3,10 @@
 namespace Tests\Feature\API;
 
 use App\Models\User;
+use App\Modules\Industry\Models\Industry;
 use App\Modules\Practice\Models\Practice;
+use App\Modules\Region\Models\Region;
+use App\Modules\Technology\Models\Technology;
 use App\Support\Enums\ContentStatus;
 use Database\Seeders\IndustrySeeder;
 use Database\Seeders\PracticeSeeder;
@@ -211,5 +214,84 @@ class PracticeAdminTest extends TestCase
             ->assertOk();
 
         $this->getJson('/api/v1/industries/healthcare')->assertNotFound();
+    }
+
+    public function test_relations_round_trip_and_drive_the_public_detail(): void
+    {
+        $admin = $this->user('admin');
+        $industry = Industry::query()->where('slug', 'healthcare')->firstOrFail();
+        $technology = Technology::query()->create(['name' => 'LangGraph', 'slug' => 'langgraph', 'status' => 'published']);
+        $region = Region::query()->create(['name' => 'India', 'slug' => 'india', 'status' => 'published']);
+
+        $this->actingAs($admin)->getJson('/api/v1/admin/practices/relation-options')
+            ->assertOk()
+            ->assertJsonFragment(['slug' => 'langgraph'])
+            ->assertJsonFragment(['slug' => 'india']);
+
+        $this->actingAs($admin)->putJson('/api/v1/practices/ai-bees', [
+            'industry_ids' => [$industry->id],
+            'technology_ids' => [$technology->id],
+            'region_ids' => [$region->id],
+        ])->assertOk()
+            ->assertJsonPath('data.industry_ids', [$industry->id])
+            ->assertJsonPath('data.technology_ids', [$technology->id])
+            ->assertJsonPath('data.region_ids', [$region->id]);
+
+        $this->getJson('/api/v1/practices/ai-bees')
+            ->assertOk()
+            ->assertJsonFragment(['slug' => 'langgraph'])
+            ->assertJsonFragment(['slug' => 'india']);
+
+        // An empty list clears that edge type only.
+        $this->actingAs($admin)->putJson('/api/v1/practices/ai-bees', ['technology_ids' => []])
+            ->assertOk()
+            ->assertJsonPath('data.technology_ids', [])
+            ->assertJsonPath('data.region_ids', [$region->id]);
+
+        $this->actingAs($admin)->putJson('/api/v1/practices/ai-bees', ['industry_ids' => [999999]])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['industry_ids.0']);
+    }
+
+    public function test_deleted_practice_is_hidden_listed_in_trash_and_restorable(): void
+    {
+        $admin = $this->user('admin');
+
+        $this->actingAs($admin)->deleteJson('/api/v1/practices/ai-bees')->assertOk();
+        $this->getJson('/api/v1/practices/ai-bees')->assertNotFound();
+
+        $this->actingAs($admin)->getJson('/api/v1/admin/practices/trash')
+            ->assertOk()
+            ->assertJsonPath('data.0.slug', 'ai-bees');
+
+        $this->actingAs($this->user('staff'))->postJson('/api/v1/practices/ai-bees/restore')->assertForbidden();
+
+        $this->actingAs($admin)->postJson('/api/v1/practices/ai-bees/restore')
+            ->assertOk()
+            ->assertJsonPath('data.slug', 'ai-bees');
+
+        $this->getJson('/api/v1/practices/ai-bees')->assertOk();
+        $this->actingAs($admin)->getJson('/api/v1/admin/practices/trash')->assertOk()->assertJsonCount(0, 'data');
+        $this->actingAs($admin)->postJson('/api/v1/practices/ai-bees/restore')->assertNotFound();
+    }
+
+    public function test_sub_service_seo_is_saved_and_returned(): void
+    {
+        $admin = $this->user('admin');
+
+        $this->actingAs($admin)->putJson('/api/v1/practices/ai-bees', [
+            'sub_services' => [[
+                'name' => 'Agent Ops',
+                'slug' => 'agent-ops',
+                'status' => 'published',
+                'seo' => ['meta_title' => 'Agent Ops | TeamBees', 'meta_description' => 'Run agents in production.'],
+            ]],
+        ])->assertOk()
+            ->assertJsonPath('data.sub_services.0.slug', 'agent-ops')
+            ->assertJsonPath('data.sub_services.0.seo.meta_title', 'Agent Ops | TeamBees');
+
+        $this->getJson('/api/v1/practices/ai-bees/sub-services/agent-ops')
+            ->assertOk()
+            ->assertJsonPath('data.seo.meta_title', 'Agent Ops | TeamBees');
     }
 }

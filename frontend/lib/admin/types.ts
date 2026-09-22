@@ -55,8 +55,15 @@ export interface AdminSubService {
   whats_included: WhatsIncludedItem[] | null;
   status: ContentStatus;
   sort_order: number;
+  seo?: SubServiceSeo | null;
   created_at: string | null;
   updated_at: string | null;
+}
+
+/** The per-sub-service SEO pair edited inline in the practice form. */
+export interface SubServiceSeo {
+  meta_title: string | null;
+  meta_description: string | null;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -119,9 +126,31 @@ export interface AdminPractice {
   status: ContentStatus;
   sub_services_count?: number;
   sub_services?: AdminSubService[];
+  /** Content-graph edges — present on the single-practice (editor) payload. */
+  industry_ids?: number[];
+  technology_ids?: number[];
+  region_ids?: number[];
   href: string;
   created_at: string | null;
   updated_at: string | null;
+}
+
+/** A soft-deleted practice in the admin trash. */
+export type TrashedPractice = AdminPractice & { deleted_at: string | null };
+
+/** One selectable industry / technology / region in the practice relation pickers. */
+export interface RelationOption {
+  id: number;
+  name: string;
+  slug: string;
+  status: ContentStatus;
+  hint: string | null;
+}
+
+export interface PracticeRelationOptions {
+  industries: RelationOption[];
+  technologies: RelationOption[];
+  regions: RelationOption[];
 }
 
 export interface PracticeInput {
@@ -150,7 +179,11 @@ export interface PracticeInput {
     whats_included?: WhatsIncludedItem[];
     status?: ContentStatus;
     sort_order?: number;
+    seo?: SubServiceSeo;
   }>;
+  industry_ids?: number[];
+  technology_ids?: number[];
+  region_ids?: number[];
 }
 
 /* -------------------------------------------------------------------------- */

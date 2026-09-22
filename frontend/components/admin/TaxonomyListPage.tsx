@@ -40,6 +40,7 @@ export function TaxonomyListPage<T extends TaxonomyRow>({
   minWidth = 720,
   extraQuery,
   toolbarExtra,
+  belowHeading,
 }: {
   title: string;
   description: string;
@@ -56,6 +57,8 @@ export function TaxonomyListPage<T extends TaxonomyRow>({
   extraQuery?: Record<string, string | undefined>;
   /** Extra controls rendered in the toolbar (e.g. a type <Select/>). */
   toolbarExtra?: ReactNode;
+  /** Rendered between the heading and the toolbar (e.g. view tabs). */
+  belowHeading?: ReactNode;
 }) {
   const { can } = useAuth();
   const toast = useToast();
@@ -183,6 +186,8 @@ export function TaxonomyListPage<T extends TaxonomyRow>({
           ) : undefined
         }
       />
+
+      {belowHeading}
 
       <ListToolbar
         q={q}

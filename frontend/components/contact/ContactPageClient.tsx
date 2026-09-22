@@ -5,17 +5,21 @@ import { useSearchParams } from 'next/navigation';
 import PersonaRouter, { type PersonaKey } from './PersonaRouter';
 import ContactFormPanel from './ContactFormPanel';
 import ExistingClientShortcut from './ExistingClientShortcut';
+import type { PracticeOption } from './ContactFormPanel';
 
 interface ContactPageClientProps {
   defaultPersona?: PersonaKey;
   defaultPractice?: string;
   defaultRegion?: string;
+  /** Live, published practices for the "accountable practice" select. */
+  practices?: PracticeOption[];
 }
 
 export default function ContactPageClient({
   defaultPersona = 'hire',
   defaultPractice = 'ai-bees',
   defaultRegion = 'india',
+  practices = [],
 }: ContactPageClientProps) {
   const searchParams = useSearchParams();
   const [activePersona, setActivePersona] = useState<PersonaKey>(defaultPersona);
@@ -52,6 +56,7 @@ export default function ContactPageClient({
           activePersona={activePersona}
           initialPractice={practiceParam}
           initialRegion={regionParam}
+          practices={practices}
         />
 
         {/* Step 3: Existing Client Shortcut (visually distinct, high-contrast) */}

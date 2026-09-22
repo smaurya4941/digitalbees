@@ -36,4 +36,11 @@ interface PracticeRepository
     public function update(Practice $practice, array $attributes): Practice;
 
     public function delete(Practice $practice): void;
+
+    /** @return Collection<int, Practice> Soft-deleted practices, most recently deleted first. */
+    public function allTrashed(): Collection;
+
+    public function findTrashedBySlug(string $slug): ?Practice;
+
+    public function restore(Practice $practice): Practice;
 }

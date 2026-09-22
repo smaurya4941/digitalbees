@@ -47,7 +47,7 @@ class StorePracticeRequest extends FormRequest
             'sub_services' => ['sometimes', 'array'],
             'sub_services.*.id' => ['nullable', 'integer'],
             'sub_services.*.name' => ['required', 'string', 'max:150'],
-            'sub_services.*.slug' => ['nullable', 'string', 'max:150', 'alpha_dash'],
+            'sub_services.*.slug' => ['nullable', 'string', 'max:150', 'alpha_dash', 'distinct'],
             'sub_services.*.summary' => ['nullable', 'string'],
             'sub_services.*.body' => ['nullable', 'string'],
             'sub_services.*.whats_included' => ['nullable', 'array'],
@@ -55,6 +55,16 @@ class StorePracticeRequest extends FormRequest
             'sub_services.*.whats_included.*.description' => ['nullable', 'string'],
             'sub_services.*.status' => ['nullable', Rule::in(ContentStatus::values())],
             'sub_services.*.sort_order' => ['nullable', 'integer', 'min:0'],
+            'sub_services.*.seo' => ['nullable', 'array'],
+            'sub_services.*.seo.meta_title' => ['nullable', 'string', 'max:70'],
+            'sub_services.*.seo.meta_description' => ['nullable', 'string', 'max:200'],
+            // Content-graph edges (see PracticeService::RELATIONS) — ordered id lists.
+            'industry_ids' => ['sometimes', 'array'],
+            'industry_ids.*' => ['integer', 'distinct', Rule::exists('industries', 'id')->whereNull('deleted_at')],
+            'technology_ids' => ['sometimes', 'array'],
+            'technology_ids.*' => ['integer', 'distinct', Rule::exists('technologies', 'id')],
+            'region_ids' => ['sometimes', 'array'],
+            'region_ids.*' => ['integer', 'distinct', Rule::exists('regions', 'id')],
         ];
     }
 

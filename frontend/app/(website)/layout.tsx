@@ -45,7 +45,7 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
   return (
     <CandidateModeProvider>
       <SkipLink />
-      <NavBar navItems={navItems} contactPhone={contactPhone} />
+      <NavBar navItems={navItems} contactPhone={contactPhone} practices={practices} />
       <main id="main" tabIndex={-1} className="flex-1">
         {children}
       </main>

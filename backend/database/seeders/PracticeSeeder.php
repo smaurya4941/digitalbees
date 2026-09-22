@@ -74,7 +74,7 @@ class PracticeSeeder extends Seeder
                 'tagline' => 'Hire the specialists you need, on your timeline.',
                 'summary' => 'IT and non-IT staffing, executive search, contract staffing, staff augmentation, and RPO across six global regions.',
                 'icon' => 'users',
-                'color_token' => 'brand-gold',
+                'color_token' => 'practice-talent',
                 'key_stats' => [
                     ['value' => '2 business days', 'label' => 'Typical shortlist turnaround'],
                     ['value' => '50+', 'label' => 'TA and domain experts'],
@@ -157,7 +157,7 @@ class PracticeSeeder extends Seeder
                 'tagline' => 'Engineering that ships.',
                 'summary' => 'Software development, digital transformation, cloud, DevOps, product engineering, UI/UX, and data engineering, delivered by teams that integrate into how you already work.',
                 'icon' => 'layers',
-                'color_token' => 'brand-navy',
+                'color_token' => 'practice-digital',
                 'key_stats' => [
                     ['value' => 'React · Node · Python · Java · .NET', 'label' => 'Core toolchain'],
                     ['value' => 'AWS · Azure · GCP', 'label' => 'Cloud platforms'],
@@ -249,7 +249,7 @@ class PracticeSeeder extends Seeder
                 'tagline' => 'From AI strategy to production, faster.',
                 'summary' => 'AI agents, generative AI, LLM development, automation, consulting, and integration — built by teams who ship AI into real production systems, not just prototypes.',
                 'icon' => 'sparkles',
-                'color_token' => 'brand-gold',
+                'color_token' => 'practice-ai',
                 'key_stats' => [
                     ['value' => '2021', 'label' => 'Established'],
                     ['value' => '30+', 'label' => 'Workflows automated'],
@@ -441,7 +441,7 @@ class PracticeSeeder extends Seeder
                 'tagline' => 'Marketing execution, on demand.',
                 'summary' => 'Staff-augmented marketing teams and full-service delivery across SEO, PPC, content, design, video, automation, HubSpot, and LinkedIn.',
                 'icon' => 'megaphone',
-                'color_token' => 'brand-navy',
+                'color_token' => 'practice-marketing',
                 'key_stats' => [
                     ['value' => '9', 'label' => 'Marketing disciplines staffed'],
                     ['value' => 'HubSpot', 'label' => 'Certified admin & implementation'],
@@ -563,7 +563,7 @@ class PracticeSeeder extends Seeder
                 'tagline' => 'Ship with confidence.',
                 'summary' => 'Manual, automation, performance, security, and AI testing that catches what matters before your customers do.',
                 'icon' => 'shield-check',
-                'color_token' => 'brand-navy',
+                'color_token' => 'practice-quality',
                 'key_stats' => [
                     ['value' => 'Selenium · Cypress · Playwright', 'label' => 'Automation frameworks'],
                     ['value' => 'JMeter · LoadRunner · K6', 'label' => 'Performance tooling'],
@@ -635,7 +635,7 @@ class PracticeSeeder extends Seeder
                 'tagline' => 'Certified ServiceNow delivery, end to end.',
                 'summary' => 'Consulting, development, implementation, support, and staffing across the ServiceNow platform.',
                 'icon' => 'workflow',
-                'color_token' => 'brand-gold',
+                'color_token' => 'practice-servicenow',
                 'key_stats' => [
                     ['value' => 'Certified talent', 'label' => 'ServiceNow-certified resources'],
                     ['value' => '5–7 days', 'label' => 'Resource turnaround'],
@@ -762,7 +762,7 @@ class PracticeSeeder extends Seeder
                 'tagline' => 'Specialist consulting for energy trading platforms.',
                 'summary' => 'Deep, named expertise in Endur, Allegro, RightAngle, and TriplePoint, plus energy trading consulting from people who know the platforms and the market.',
                 'icon' => 'zap',
-                'color_token' => 'brand-gold',
+                'color_token' => 'practice-energy',
                 'key_stats' => [
                     ['value' => 'Endur / Findur', 'label' => 'Primary ETRM/CTRM platform'],
                     ['value' => 'FO · MO · BO', 'label' => 'Front, middle & back office coverage'],

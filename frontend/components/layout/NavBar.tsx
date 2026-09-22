@@ -28,6 +28,8 @@ import { InsightsMegaMenu } from './MegaMenu/InsightsMegaMenu';
 import { CareersMegaMenu } from './MegaMenu/CareersMegaMenu';
 import { RegionSelector } from './MegaMenu/RegionSelector';
 import { SearchOverlay } from '@/components/search/SearchOverlay';
+import { PracticeIcon } from '@/components/ui/PracticeIcon';
+import type { PracticeSummary } from '@/types/practice';
 
 export type NavLink = {
   label: string;
@@ -38,11 +40,13 @@ export type NavLink = {
 export interface NavBarProps {
   navItems?: NavLink[];
   contactPhone?: string;
+  /** Live, published practices (admin-managed) for the mega-menu and mobile menu. */
+  practices?: PracticeSummary[];
 }
 
 type ActiveMenu = 'practices' | 'industries' | 'locations' | 'insights' | 'careers' | null;
 
-export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
+export default function NavBar({ navItems, contactPhone, practices = [] }: NavBarProps = {}) {
   const pathname = usePathname();
   const { isCandidateMode, toggleCandidateMode } = useCandidateMode();
 
@@ -229,7 +233,7 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
                   }}
                   onMouseLeave={handleMouseLeave}
                 >
-                  <PracticesMegaMenu onClose={closeMegaMenu} />
+                  <PracticesMegaMenu practices={practices} onClose={closeMegaMenu} />
                 </div>
               )}
             </div>
@@ -447,7 +451,7 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
               >
                 <span className="flex items-center gap-2.5 text-[#C6963A]">
                   <Layers className="h-4 w-4" />
-                  Practices (7 Specialist Pods)
+                  Practices{practices.length > 0 ? ` (${practices.length} Specialist Pods)` : ''}
                 </span>
                 <ChevronDown
                   className={`h-4 w-4 text-[#C6963A] transition-transform duration-200 ${
@@ -458,61 +462,33 @@ export default function NavBar({ navItems, contactPhone }: NavBarProps = {}) {
 
               {mobileAccordion === 'practices' && (
                 <div className="p-3 pt-1 space-y-1.5 border-t border-white/10 text-xs">
+                  {practices.map((p) => {
+                    return (
+                      <Link
+                        key={p.slug}
+                        href={p.href}
+                        onClick={() => setMobileOpen(false)}
+                        className="p-2 rounded bg-white/5 flex items-center gap-2.5 text-white/90 hover:text-[#C6963A]"
+                      >
+                        <span
+                          className="grid size-6 shrink-0 place-items-center rounded-md bg-white/10 text-[#C6963A]"
+                        >
+                          <PracticeIcon name={p.icon} className="h-3.5 w-3.5" />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate font-semibold">{p.name}</span>
+                          {p.tagline && <span className="block truncate text-[10px] text-white/60">{p.tagline}</span>}
+                        </span>
+                      </Link>
+                    );
+                  })}
                   <Link
-                    href="/practices/talent-bees"
+                    href="/practices"
                     onClick={() => setMobileOpen(false)}
-                    className="p-2 rounded bg-white/5 flex items-center justify-between text-white/90 hover:text-[#C6963A]"
+                    className="p-2 rounded border border-dashed border-white/20 flex items-center justify-between text-[#C6963A] font-semibold"
                   >
-                    <span>Talent Bees (IT &amp; Staffing)</span>
-                    <span className="text-[10px] font-mono text-white/70">48h SLA</span>
-                  </Link>
-                  <Link
-                    href="/practices/digital-bees"
-                    onClick={() => setMobileOpen(false)}
-                    className="p-2 rounded bg-white/5 flex items-center justify-between text-white/90 hover:text-[#C6963A]"
-                  >
-                    <span>Digital Bees (Software &amp; Cloud)</span>
-                    <span className="text-[10px] font-mono text-white/70">DevOps</span>
-                  </Link>
-                  <Link
-                    href="/practices/ai-bees"
-                    onClick={() => setMobileOpen(false)}
-                    className="p-2 rounded bg-[#6B4FA1]/20 border border-[#6B4FA1]/40 flex items-center justify-between text-purple-200 font-semibold"
-                  >
-                    <span>AI Bees (Agents &amp; Swarms)</span>
-                    <span className="text-[10px] font-mono text-purple-300">CORE</span>
-                  </Link>
-                  <Link
-                    href="/practices/marketing-bees"
-                    onClick={() => setMobileOpen(false)}
-                    className="p-2 rounded bg-white/5 flex items-center justify-between text-white/90 hover:text-[#C6963A]"
-                  >
-                    <span>Marketing Bees (Growth)</span>
-                    <span className="text-[10px] font-mono text-white/70">SEO/PPC</span>
-                  </Link>
-                  <Link
-                    href="/practices/quality-bees"
-                    onClick={() => setMobileOpen(false)}
-                    className="p-2 rounded bg-white/5 flex items-center justify-between text-white/90 hover:text-[#C6963A]"
-                  >
-                    <span>Quality Bees (Testing &amp; QA)</span>
-                    <span className="text-[10px] font-mono text-white/70">Zero Defect</span>
-                  </Link>
-                  <Link
-                    href="/practices/servicenow-bees"
-                    onClick={() => setMobileOpen(false)}
-                    className="p-2 rounded bg-white/5 flex items-center justify-between text-white/90 hover:text-[#C6963A]"
-                  >
-                    <span>ServiceNow Bees</span>
-                    <span className="text-[10px] font-mono text-white/70">ITSM/ITOM</span>
-                  </Link>
-                  <Link
-                    href="/practices/energy-bees"
-                    onClick={() => setMobileOpen(false)}
-                    className="p-2 rounded bg-white/5 flex items-center justify-between text-white/90 hover:text-[#C6963A]"
-                  >
-                    <span>Energy Bees</span>
-                    <span className="text-[10px] font-mono text-white/70">CTRM</span>
+                    <span>View all practices</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 </div>
               )}

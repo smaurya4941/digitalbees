@@ -4,6 +4,8 @@ import { ShieldCheck, Clock, CheckCircle2, Zap, FileText } from 'lucide-react';
 
 interface PracticeLeadDispatchProps {
   practiceSlug?: string;
+  /** Live practice name — used when the practice has no named lead below (e.g. one added in the admin). */
+  practiceName?: string;
   regionSlug?: string;
 }
 
@@ -84,8 +86,11 @@ const DEFAULT_DISPATCH: DispatchLeadInfo = {
   typicalTurnaround: 'Under 4 hours',
 };
 
-export default function PracticeLeadDispatch({ practiceSlug, regionSlug }: PracticeLeadDispatchProps) {
-  const lead = practiceSlug && DISPATCH_LEADS[practiceSlug] ? DISPATCH_LEADS[practiceSlug] : DEFAULT_DISPATCH;
+export default function PracticeLeadDispatch({ practiceSlug, practiceName, regionSlug }: PracticeLeadDispatchProps) {
+  const lead =
+    practiceSlug && DISPATCH_LEADS[practiceSlug]
+      ? { ...DISPATCH_LEADS[practiceSlug], practiceName: practiceName ?? DISPATCH_LEADS[practiceSlug].practiceName }
+      : { ...DEFAULT_DISPATCH, practiceName: practiceName ?? DEFAULT_DISPATCH.practiceName };
 
   const getRegionLabel = (slug?: string) => {
     switch (slug) {
