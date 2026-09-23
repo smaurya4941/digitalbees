@@ -7,6 +7,7 @@ import { getRegions } from '@/lib/api/regions';
 import { getTechnologies } from '@/lib/api/technologies';
 import { getCaseStudies } from '@/lib/api/case-studies';
 import { getInsights, getResources } from '@/lib/api/resources';
+import { getBlogCategories } from '@/lib/api/blog';
 import { getCareers } from '@/lib/api/careers';
 import { getLocations } from '@/lib/api/locations';
 import { getPages } from '@/lib/api/pages';
@@ -64,6 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     locations,
     industryPracticePages,
     regionPracticePages,
+    blogCategories,
   ] = await Promise.all([
     getPractices().catch(() => []),
     getIndustries().catch(() => []),
@@ -76,6 +78,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getLocations().catch(() => []),
     getPages('industry-practice').catch(() => []),
     getPages('region-practice').catch(() => []),
+    getBlogCategories().catch(() => []),
   ]);
 
   // Sub-service slugs aren't on the practice summary — fetch each practice's
@@ -93,7 +96,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...technologies.map((t) => ({ url: `${base}${routes.technology(t.slug)}` })),
     ...caseStudies.map((c) => ({ url: `${base}${routes.caseStudy(c.slug)}` })),
     ...insights.items.map((i) => ({ url: `${base}${routes.insight(i.slug)}` })),
-    ...resources.items.map((r) => ({ url: `${base}${routes.resource(r.slug)}` })),
+    ...blogCategories
+      .filter((c) => (c.post_count ?? 0) > 0)
+      .map((c) => ({ url: `${base}${routes.blogCategory(c.slug)}` })),
+    // Blog posts are listed once, under /blog (the resources feed includes them too).
+    ...resources.items
+      .filter((r) => r.resource_type !== 'blog')
+      .map((r) => ({ url: `${base}${routes.resource(r.slug)}` })),
     ...careers.map((c) => ({ url: `${base}${routes.career(c.slug)}` })),
     ...locations.map((l) => ({ url: `${base}${routes.location(l.slug)}` })),
     // Curated combinatorial pages only — never generated speculatively.

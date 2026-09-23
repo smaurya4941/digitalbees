@@ -18,7 +18,7 @@ const ARTICLES: ArticleItem[] = [
     readTime: '5 min read',
     title: 'Deploying Multi-Agent Systems in Regulated Financial Environments',
     excerpt: 'Cryptographic ledger state verification and deterministic human-in-the-loop audit trails.',
-    href: '/insights',
+    href: '/blog',
   },
   {
     tag: 'ServiceNow',
@@ -27,7 +27,7 @@ const ARTICLES: ArticleItem[] = [
     readTime: '7 min read',
     title: 'Moving 70%+ Custom Fields to OOTB: A CMDB Overhaul Case Study',
     excerpt: 'How enterprise architects pruned 8 years of technical debt in Washington DC release.',
-    href: '/insights',
+    href: '/blog',
   },
   {
     tag: 'Workforce Strategy',
@@ -36,7 +36,7 @@ const ARTICLES: ArticleItem[] = [
     readTime: '4 min read',
     title: 'Why Modern Enterprise Teams Combine Headcount with Delivery Pods',
     excerpt: 'The strategic difference between pure staff-aug and accountable technical squads.',
-    href: '/insights',
+    href: '/blog',
   },
 ];
 
@@ -62,7 +62,7 @@ export function InsightsMegaMenu({ onClose }: Props) {
 
           <div className="space-y-2">
             <Link
-              href="/insights"
+              href="/blog"
               onClick={onClose}
               className="p-3 rounded-lg bg-white/[0.02] hover:bg-white/5 border border-white/5 hover:border-[#C6963A]/40 flex items-center justify-between group transition"
             >
@@ -154,7 +154,7 @@ export function InsightsMegaMenu({ onClose }: Props) {
               Latest Architecture Publications
             </span>
             <Link
-              href="/insights"
+              href="/blog"
               onClick={onClose}
               className="text-xs font-bold text-[#C6963A] hover:underline flex items-center gap-1"
             >

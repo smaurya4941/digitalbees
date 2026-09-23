@@ -44,7 +44,7 @@ export function PracticeSubNav({ items, practiceName }: Props) {
 
   return (
     <aside className="hidden lg:block w-[220px] shrink-0">
-      <div className="sticky top-[88px] flex flex-col gap-1">
+      <div className="sticky top-[128px] flex flex-col gap-1">
         <p className="text-[11px] font-bold text-[#44474d] tracking-widest uppercase mb-3 pl-4">
           {practiceName}
         </p>

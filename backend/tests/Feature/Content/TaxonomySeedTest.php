@@ -97,7 +97,7 @@ class TaxonomySeedTest extends TestCase
         $rendered = [
             '/',
             '/practices', '/industries', '/technologies', '/regions',
-            '/case-studies', '/insights', '/resources', '/careers', '/locations',
+            '/case-studies', '/blog', '/resources', '/careers', '/locations',
             '/how-we-work', '/contact-us', '/privacy', '/terms',
             // Company sub-pages (blueprint §26.1) — `/about-us` 301-redirects
             // to `/company/our-story` and is no longer linked from nav.

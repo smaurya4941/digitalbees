@@ -38,8 +38,9 @@ export const routes = {
   resources: () => '/resources',
   resource: (slug: string) => `/resources/${slug}`,
 
-  insights: () => '/insights',
-  insight: (slug: string) => `/insights/${slug}`,
+  /** Legacy name for the blog hub — /insights/* permanently redirects to /blog/*. */
+  insights: () => '/blog',
+  insight: (slug: string) => `/blog/${slug}`,
 
   careers: () => '/careers',
   career: (slug: string) => `/careers/${slug}`,
@@ -54,7 +55,9 @@ export const routes = {
   serviceCluster: (pillar: string, slug: string) => `/services/${pillar}/${slug}`,
 
   blog: () => '/blog',
-  blogCategory: (category: string) => `/blog/${category}`,
+  blogPost: (slug: string) => `/blog/${slug}`,
+  blogCategory: (category: string) => `/blog/category/${category}`,
+  blogTag: (tag: string) => `/blog?tag=${encodeURIComponent(tag)}`,
 
   privacy: () => '/privacy',
   terms: () => '/terms',

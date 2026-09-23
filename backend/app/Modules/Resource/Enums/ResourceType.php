@@ -3,7 +3,7 @@
 namespace App\Modules\Resource\Enums;
 
 /**
- * The kind of resource. `blog` entries are surfaced publicly as "Insights";
+ * The kind of resource. `blog` entries are the public blog (/blog);
  * everything else lives under "Resources".
  */
 enum ResourceType: string
@@ -23,7 +23,7 @@ enum ResourceType: string
     public function label(): string
     {
         return match ($this) {
-            self::Blog => 'Blog / Insight',
+            self::Blog => 'Blog post',
             default => ucfirst($this->value),
         };
     }

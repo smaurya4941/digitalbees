@@ -41,7 +41,7 @@ test.describe('contact form', () => {
   test('validates on blur, announces errors, and enables submit only when valid', async ({ page }) => {
     await page.goto('/contact-us');
 
-    const submit = page.getByRole('button', { name: /Request Talent Bench Overview/ });
+    const submit = page.getByRole('button', { name: /Send message/ });
     await expect(submit).toBeDisabled();
 
     const name = page.getByLabel(/Full name/);
@@ -50,7 +50,7 @@ test.describe('contact form', () => {
     await expect(page.getByRole('alert').filter({ hasText: 'Enter your name.' })).toBeVisible();
 
     await name.fill('Jamie Rivera');
-    await page.getByLabel(/Enterprise work email/).fill('jamie@example.com');
+    await page.getByLabel(/Work email/).fill('jamie@example.com');
     await expect(submit).toBeEnabled();
   });
 });

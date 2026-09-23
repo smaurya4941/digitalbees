@@ -3,16 +3,16 @@
 import { use } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { getResource, resourceQueryKeys } from '@/lib/admin/resources';
 import { AdminApiError } from '@/lib/admin/http';
-import { ResourceForm } from '@/components/admin/ResourceForm';
+import { BlogPostForm } from '@/components/admin/BlogPostForm';
 import { SeoPanel } from '@/components/admin/SeoPanel';
 import { RevisionHistory } from '@/components/admin/RevisionHistory';
 import { WorkflowBar } from '@/components/admin/WorkflowBar';
 import { EmptyState, PageHeading, Spinner } from '@/components/admin/ui';
 
-export default function EditResourcePage({ params }: { params: Promise<{ slug: string }> }) {
+export default function EditBlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
 
   const { data, isLoading, error } = useQuery({
@@ -33,11 +33,11 @@ export default function EditResourcePage({ params }: { params: Promise<{ slug: s
     return (
       <div className="pt-12">
         <EmptyState
-          title="Resource not found"
+          title="Post not found"
           description={`Nothing matches “${slug}”.`}
           action={
-            <Link href="/admin/resources" className="text-sm font-medium text-brand-navy hover:underline">
-              Back to resources
+            <Link href="/admin/blog" className="text-sm font-medium text-brand-navy hover:underline">
+              Back to the blog
             </Link>
           }
         />
@@ -49,15 +49,27 @@ export default function EditResourcePage({ params }: { params: Promise<{ slug: s
     <div className="space-y-6">
       <div>
         <Link
-          href="/admin/resources"
+          href="/admin/blog"
           className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink"
         >
-          <ArrowLeft className="size-4" /> Resources
+          <ArrowLeft className="size-4" /> Blog
         </Link>
-        <PageHeading title={data.title} description={`/${data.resource_type === 'blog' ? 'insights' : 'resources'}/${data.slug}`} />
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <PageHeading title={data.title} description={data.public_url} />
+          {data.status === 'published' && (
+            <a
+              href={data.public_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm font-medium text-ink hover:bg-neutral-50"
+            >
+              <ExternalLink className="size-4" /> View live
+            </a>
+          )}
+        </div>
       </div>
       <WorkflowBar type="resources" slug={data.slug} />
-      <ResourceForm resource={data} />
+      <BlogPostForm post={data} />
       <SeoPanel type="resources" slug={data.slug} />
       <RevisionHistory type="resources" slug={data.slug} />
     </div>

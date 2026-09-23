@@ -28,7 +28,13 @@ class NotifyFrontendRevalidate implements ShouldQueue
      * @param  list<string>  $tags
      * @param  list<string>  $paths
      */
-    public function __construct(public array $tags, public array $paths = []) {}
+    public function __construct(public array $tags, public array $paths = [])
+    {
+        // Run inline on save rather than on the default (database) queue:
+        // production runs no queue worker, so queued jobs never fired and
+        // edits only surfaced after the frontend's 1-hour ISR backstop.
+        $this->onConnection('sync');
+    }
 
     public function handle(): void
     {
@@ -44,12 +50,22 @@ class NotifyFrontendRevalidate implements ShouldQueue
             return;
         }
 
-        Http::timeout((int) config('frontend.revalidate.timeout', 5))
-            ->withHeaders(['x-revalidate-secret' => $secret])
-            ->post($url, [
-                'tags' => array_values(array_unique($this->tags)),
-                'paths' => array_values(array_unique($this->paths)),
-            ])
-            ->throw();
+        // Running inline means a frontend hiccup must not fail the admin save
+        // (the content is already committed) — log it and let ISR catch up.
+        try {
+            Http::timeout((int) config('frontend.revalidate.timeout', 5))
+                ->withHeaders(['x-revalidate-secret' => $secret])
+                ->post($url, [
+                    'tags' => array_values(array_unique($this->tags)),
+                    'paths' => array_values(array_unique($this->paths)),
+                ])
+                ->throw();
+        } catch (\Throwable $e) {
+            Log::warning('NotifyFrontendRevalidate failed', [
+                'tags' => $this->tags,
+                'paths' => $this->paths,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }

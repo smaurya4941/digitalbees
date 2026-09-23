@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\Admin\PageAdminController;
 use App\Http\Controllers\Api\V1\Admin\PracticeAdminController;
 use App\Http\Controllers\Api\V1\Admin\RedirectAdminController;
 use App\Http\Controllers\Api\V1\Admin\RegionAdminController;
+use App\Http\Controllers\Api\V1\Admin\BlogCategoryAdminController;
 use App\Http\Controllers\Api\V1\Admin\ResourceAdminController;
 use App\Http\Controllers\Api\V1\Admin\RevalidationController;
 use App\Http\Controllers\Api\V1\Admin\RevisionController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\Api\V1\CaseStudyController;
 use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\ChatbotController;
 use App\Http\Controllers\Api\V1\IndustryController;
+use App\Http\Controllers\Api\V1\BlogController;
 use App\Http\Controllers\Api\V1\InsightController;
 use App\Http\Controllers\Api\V1\InvitationController;
 use App\Http\Controllers\Api\V1\LeadController;
@@ -93,6 +95,11 @@ Route::get('resources/{resource}', [ResourceController::class, 'show'])->name('r
 
 Route::get('insights', [InsightController::class, 'index'])->name('insights.index');
 Route::get('insights/{insight}', [InsightController::class, 'show'])->name('insights.show');
+
+// Blog (resources with resource_type=blog) — filterable feed, detail, categories.
+Route::get('blog/posts', [BlogController::class, 'index'])->name('blog.posts.index');
+Route::get('blog/posts/{slug}', [BlogController::class, 'show'])->name('blog.posts.show');
+Route::get('blog/categories', [BlogController::class, 'categories'])->name('blog.categories.index');
 
 Route::get('careers', [CareerController::class, 'index'])->name('careers.index');
 Route::get('careers/{career}', [CareerController::class, 'show'])->name('careers.show');
@@ -266,7 +273,25 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
         ->middleware('permission:content.delete')
         ->name('faqs.destroy');
 
-    // Resource / Insight CRUD (one table; resource_type=blog is "Insights")
+    // Blog posts + other resources (one table; admin "Blog" = resource_type=blog)
+    Route::post('admin/blog/preview', [ResourceAdminController::class, 'preview'])
+        ->middleware('permission:content.create|content.update')
+        ->name('admin.blog.preview');
+    Route::get('admin/blog-categories', [BlogCategoryAdminController::class, 'index'])
+        ->middleware('permission:content.update|content.publish')
+        ->name('admin.blog-categories.index');
+    Route::post('blog-categories', [BlogCategoryAdminController::class, 'store'])
+        ->middleware('permission:content.create')
+        ->name('blog-categories.store');
+    Route::match(['put', 'patch'], 'blog-categories/{id}', [BlogCategoryAdminController::class, 'update'])
+        ->whereNumber('id')
+        ->middleware('permission:content.update')
+        ->name('blog-categories.update');
+    Route::delete('blog-categories/{id}', [BlogCategoryAdminController::class, 'destroy'])
+        ->whereNumber('id')
+        ->middleware('permission:content.delete')
+        ->name('blog-categories.destroy');
+
     Route::get('admin/resources', [ResourceAdminController::class, 'index'])
         ->middleware('permission:content.update|content.publish')
         ->name('admin.resources.index');

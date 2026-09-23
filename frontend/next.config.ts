@@ -34,6 +34,12 @@ const nextConfig: NextConfig = {
         destination: '/about',
         permanent: true,
       },
+      // The blog moved from /insights to /blog.
+      { source: '/insights', destination: '/blog', permanent: true },
+      { source: '/insights/:slug', destination: '/blog/:slug', permanent: true },
+      // Admin "Resources" was renamed to "Blog".
+      { source: '/admin/resources', destination: '/admin/blog', permanent: true },
+      { source: '/admin/resources/:path*', destination: '/admin/blog/:path*', permanent: true },
     ];
   },
   typedRoutes: false,

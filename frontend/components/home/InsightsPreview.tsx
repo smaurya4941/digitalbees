@@ -18,7 +18,7 @@ const STATIC_INSIGHTS: StaticInsight[] = [
     tagBg: "#6B4FA1",
     readTime: "5 min read",
     title: "Deploying Multi-Agent Systems in Regulated Financial Environments",
-    href: "/insights",
+    href: "/blog",
     summary: "Technical patterns for ledger state verification, consensus protocols, and auditability in live trading environments.",
   },
   {
@@ -27,7 +27,7 @@ const STATIC_INSIGHTS: StaticInsight[] = [
     tagBg: "#2E6B4F",
     readTime: "7 min read",
     title: "Moving 70%+ Custom Fields to OOTB: A CMDB Overhaul Case Study",
-    href: "/insights",
+    href: "/blog",
     summary: "How enterprise architects pruned 8 years of technical debt and restored native ServiceNow Washington release agility.",
   },
   {
@@ -36,7 +36,7 @@ const STATIC_INSIGHTS: StaticInsight[] = [
     tagBg: "#0B1F3A",
     readTime: "4 min read",
     title: "Why the Best Enterprise Engineering Teams Combine Headcount with Delivery Capability",
-    href: "/insights",
+    href: "/blog",
     summary: "The strategic difference between pure staff-aug and accountable technical pods in modern software delivery.",
   },
 ];
@@ -63,7 +63,7 @@ export default async function InsightsPreview() {
             </h2>
           </div>
           <Link
-            href="/insights"
+            href="/blog"
             className="inline-flex items-center gap-1.5 text-[#0B1F3A] text-[15px] font-bold hover:text-[#C6963A] transition-colors mt-4 md:mt-0"
           >
             <span>View All Insights</span>

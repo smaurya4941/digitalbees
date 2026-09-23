@@ -6,7 +6,7 @@ type ResourceCardProps = {
 };
 
 const TYPE_LABEL: Record<string, string> = {
-  blog: 'Insight',
+  blog: 'Blog',
   guide: 'Guide',
   webinar: 'Webinar',
   research: 'Research',
@@ -31,7 +31,7 @@ export function ResourceCard({ resource }: ResourceCardProps) {
   return (
     <Card href={resource.href} ariaLabel={resource.title} interactive>
       <CardBody>
-        <CardEyebrow>{TYPE_LABEL[resource.resource_type] ?? 'Insight'}</CardEyebrow>
+        <CardEyebrow>{TYPE_LABEL[resource.resource_type] ?? 'Blog'}</CardEyebrow>
         <CardTitle>{resource.title}</CardTitle>
         {resource.excerpt && <CardDescription>{resource.excerpt}</CardDescription>}
         {meta && <p className="text-body-sm text-ink-subtle">{meta}</p>}

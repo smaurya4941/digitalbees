@@ -32,7 +32,7 @@ function formatDate(iso?: string): string | null {
 }
 
 /**
- * Shared article template for `/insights/{slug}` and `/resources/{slug}` —
+ * Shared article template for `/resources/{slug}` (and formerly insights) and `/resources/{slug}` —
  * one table, one template, two hubs (IA §1). Emits `Article` JSON-LD, which
  * blueprint §6.3 requires on every insight.
  */

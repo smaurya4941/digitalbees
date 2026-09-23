@@ -28,7 +28,7 @@ final class DashboardService
         'regions' => [Region::class, 'Regions'],
         'technologies' => [Technology::class, 'Technologies'],
         'case-studies' => [CaseStudy::class, 'Case studies'],
-        'resources' => [Resource::class, 'Resources & insights'],
+        'resources' => [Resource::class, 'Blog posts & resources'],
         'locations' => [Location::class, 'Offices'],
         'pages' => [Page::class, 'Pages'],
     ];

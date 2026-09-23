@@ -23,6 +23,7 @@ return [
         'social' => 'Social',
         'seo' => 'SEO',
         'features' => 'Features',
+        'blog' => 'Blog',
     ],
 
     'fields' => [
@@ -65,6 +66,21 @@ return [
         'feature.chatbot_enabled' => [
             'type' => 'boolean', 'label' => 'Bee Assistant chatbot', 'group' => 'features', 'public' => true,
             'rules' => ['boolean'],
+        ],
+        'blog.title' => [
+            'type' => 'string', 'label' => 'Blog page title', 'group' => 'blog', 'public' => true,
+            'default' => 'The TeamBees Blog',
+            'rules' => ['nullable', 'string', 'max:120'],
+        ],
+        'blog.description' => [
+            'type' => 'string', 'label' => 'Blog page intro', 'group' => 'blog', 'public' => true,
+            'default' => 'Field notes on engineering, AI, talent and delivery from our practice leads.',
+            'rules' => ['nullable', 'string', 'max:300'],
+        ],
+        'blog.posts_per_page' => [
+            'type' => 'integer', 'label' => 'Posts per page', 'group' => 'blog', 'public' => true,
+            'default' => 9,
+            'rules' => ['nullable', 'integer', 'min:3', 'max:48'],
         ],
     ],
 

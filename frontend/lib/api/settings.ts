@@ -11,6 +11,9 @@ export interface SiteSettings {
   'seo.default_robots'?: string;
   'seo.title_suffix'?: string;
   'feature.chatbot_enabled'?: boolean;
+  'blog.title'?: string;
+  'blog.description'?: string;
+  'blog.posts_per_page'?: number;
   [key: string]: unknown;
 }
 

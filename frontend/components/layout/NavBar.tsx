@@ -354,6 +354,20 @@ export default function NavBar({ navItems, contactPhone, practices = [] }: NavBa
                 </div>
               )}
             </div>
+
+            {/* Blog */}
+            <Link
+              href="/blog"
+              onMouseEnter={closeMegaMenu}
+              className={`px-3 py-2 rounded-xl transition ${
+                pathname.startsWith('/blog')
+                  ? 'text-[#C6963A] bg-white/90 shadow-xs'
+                  : 'text-[#0B1F3A] hover:text-[#C6963A] hover:bg-white/70'
+              }`}
+              aria-current={pathname.startsWith('/blog') ? 'page' : undefined}
+            >
+              Blog
+            </Link>
           </nav>
 
           {/* 3 & 4. Right: Search Box & Book Consultation Button */}
@@ -738,6 +752,16 @@ export default function NavBar({ navItems, contactPhone, practices = [] }: NavBa
                 </div>
               )}
             </div>
+
+            {/* Blog */}
+            <Link
+              href="/blog"
+              onClick={() => setMobileOpen(false)}
+              className="rounded-xl border border-white/10 bg-[#0B1F3A]/70 p-3.5 flex items-center justify-between font-bold text-sm text-[#C6963A]"
+            >
+              <span>Blog</span>
+              <ChevronRight className="h-4 w-4 text-white/40" />
+            </Link>
           </div>
 
           {/* Persistent Bottom Sheet CTA Bar */}

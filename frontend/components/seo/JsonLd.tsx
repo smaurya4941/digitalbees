@@ -14,7 +14,10 @@ export function JsonLd({ data }: JsonLdProps) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(graph.length === 1 ? graph[0] : graph) }}
+      // Escape `<` so CMS text containing `</script>` cannot break out of the tag.
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(graph.length === 1 ? graph[0] : graph).replace(/</g, '\\u003c'),
+      }}
     />
   );
 }

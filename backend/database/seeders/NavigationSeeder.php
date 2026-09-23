@@ -29,7 +29,7 @@ class NavigationSeeder extends Seeder
             ['label' => 'Technologies', 'custom_url' => '/technologies'],
             ['label' => 'Regions', 'custom_url' => '/regions'],
             ['label' => 'Case Studies', 'custom_url' => '/case-studies'],
-            ['label' => 'Insights', 'custom_url' => '/insights'],
+            ['label' => 'Blog', 'custom_url' => '/blog'],
             ['label' => 'Careers', 'custom_url' => '/careers'],
             ['label' => 'Company', 'custom_url' => '/company/our-story'],
         ]);

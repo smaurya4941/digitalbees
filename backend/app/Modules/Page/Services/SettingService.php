@@ -112,6 +112,10 @@ final class SettingService
 
     private function default(array $field): mixed
     {
+        if (array_key_exists('default', $field)) {
+            return $field['default'];
+        }
+
         return match ($field['type']) {
             'boolean' => false,
             'integer' => 0,

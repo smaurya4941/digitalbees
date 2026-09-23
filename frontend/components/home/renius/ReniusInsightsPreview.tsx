@@ -8,7 +8,7 @@ const INSIGHTS = [
     date: 'Sep 2026',
     title: 'Engineering Multi-Agent AI Swarms for Deterministic Ledger Audits',
     excerpt: 'How production evaluation suites and strict guardrails transform LLMs into enterprise-safe transaction engines.',
-    href: '/insights',
+    href: '/blog',
   },
   {
     category: 'Talent & GCCs',
@@ -16,7 +16,7 @@ const INSIGHTS = [
     date: 'Aug 2026',
     title: 'Transitioning from Fragmented Staffing to Autonomous Pod Topologies',
     excerpt: 'Why GCCs in India and UAE are replacing traditional headcount models with accountable 48h SLA specialist squads.',
-    href: '/insights',
+    href: '/blog',
   },
   {
     category: 'Enterprise SaaS',
@@ -24,7 +24,7 @@ const INSIGHTS = [
     date: 'Jul 2026',
     title: 'OOTB-First Architecture: Eliminating Technical Debt in ServiceNow Rollouts',
     excerpt: 'A blueprint for rapid CMDB cleanup, CSDM alignment, and automated workflow health monitoring.',
-    href: '/insights',
+    href: '/blog',
   },
 ];
 
@@ -51,7 +51,7 @@ export default function ReniusInsightsPreview() {
           </div>
 
           <Link
-            href="/insights"
+            href="/blog"
             className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-[#0B1F3A] font-bold text-xs uppercase tracking-wider border border-[#CBDFF2] shadow-xs transition-all shrink-0"
           >
             <span>All Publications</span>

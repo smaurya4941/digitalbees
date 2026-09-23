@@ -5,16 +5,16 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/components/admin/providers';
-import { ResourceForm } from '@/components/admin/ResourceForm';
+import { BlogPostForm } from '@/components/admin/BlogPostForm';
 import { PageHeading, Spinner } from '@/components/admin/ui';
 
-export default function NewResourcePage() {
+export default function NewBlogPostPage() {
   const router = useRouter();
   const { can, status } = useAuth();
 
   useEffect(() => {
     if (status === 'authenticated' && !can('content.create')) {
-      router.replace('/admin/resources');
+      router.replace('/admin/blog');
     }
   }, [status, can, router]);
 
@@ -26,14 +26,14 @@ export default function NewResourcePage() {
     <div className="space-y-6">
       <div>
         <Link
-          href="/admin/resources"
+          href="/admin/blog"
           className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink"
         >
-          <ArrowLeft className="size-4" /> Resources
+          <ArrowLeft className="size-4" /> Blog
         </Link>
-        <PageHeading title="New resource" description="Starts as a draft until you publish it." />
+        <PageHeading title="New post" description="Starts as a draft until you publish it." />
       </div>
-      <ResourceForm />
+      <BlogPostForm />
     </div>
   );
 }

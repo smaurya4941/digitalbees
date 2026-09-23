@@ -43,11 +43,11 @@ const NAV_ITEMS = [
  */
 export function StitchPracticeTemplate({ practice }: StitchPracticeTemplateProps) {
   return (
-    <div className="bg-[#FDFDFD] text-[#0B1F3A] antialiased w-full">
+    <div className="stitch-practice bg-[#FDFDFD] text-[#0B1F3A] antialiased w-full">
       <SeoJsonLd seo={practice.seo} />
 
-      {/* ---- Breadcrumbs ---- */}
-      <div className="w-full bg-[#0B1F3A] border-b border-[#C6963A]/20">
+      {/* ---- Breadcrumbs (top padding clears the fixed NavBar: 72px, +32px top bar on md+) ---- */}
+      <div className="w-full bg-[#0B1F3A] border-b border-[#C6963A]/20 pt-[72px] md:pt-[104px]">
         <div className="max-w-[1280px] mx-auto px-4 md:px-16 py-3">
           <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-white/60">
             <Link href={routes.home()} className="hover:text-[#C6963A] transition-colors">

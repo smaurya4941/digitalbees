@@ -22,13 +22,19 @@ class UpdateResourceRequest extends FormRequest
             'title' => ['sometimes', 'required', 'string', 'max:255'],
             'slug' => [
                 'sometimes', 'required', 'string', 'max:255', 'alpha_dash',
+                Rule::notIn(StoreResourceRequest::RESERVED_SLUGS),
                 Rule::unique('resources', 'slug')->ignore($slug, 'slug'),
             ],
             'resource_type' => ['sometimes', Rule::in(ResourceType::values())],
-            'excerpt' => ['nullable', 'string', 'max:1000'],
-            'body' => ['nullable', 'string'],
-            'reading_time_minutes' => ['nullable', 'integer', 'min:0', 'max:600'],
             'status' => ['sometimes', Rule::in(ContentStatus::values())],
+            ...StoreResourceRequest::contentRules(),
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('tags')) {
+            $this->merge(StoreResourceRequest::normalizeTags($this->input('tags')));
+        }
     }
 }

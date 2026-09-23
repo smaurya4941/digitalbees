@@ -18,8 +18,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
- * Back-office CRUD for resources / insights (the same table; `resource_type`
- * `blog` is "Insights"). Route middleware enforces the `content.*` permissions;
+ * Back-office CRUD for resources — the admin "Blog" section edits the
+ * `resource_type = blog` rows (served publicly at /blog). Route middleware enforces the `content.*` permissions;
  * publishing additionally needs `content.publish`.
  */
 class ResourceAdminController extends ApiController
@@ -32,7 +32,9 @@ class ResourceAdminController extends ApiController
     public function index(Request $request): JsonResponse
     {
         $paginator = AdminListQuery::for($request, Resource::class, ['title', 'slug'], ['updated_at', 'title', 'published_at'])
+            ->with('category')
             ->when($request->filled('type'), fn ($q) => $q->where('resource_type', $request->string('type')))
+            ->when($request->filled('category'), fn ($q) => $q->where('blog_category_id', $request->integer('category')))
             ->paginate(AdminListQuery::perPage($request))
             ->withQueryString();
 
@@ -70,9 +72,25 @@ class ResourceAdminController extends ApiController
         }
 
         $resource = $this->resources->update($resource, $data);
-        $this->recordSlugRedirect('/resources', $slug, $resource->slug);
+        $this->recordSlugRedirect($resource->isBlogPost() ? '/blog' : '/resources', $slug, $resource->slug);
 
         return ApiResponse::item(new ResourceAdminResource($resource));
+    }
+
+    /**
+     * Renders a body exactly as the public post page will (Markdown + sanitiser)
+     * so the editor's Preview tab never drifts from production output.
+     */
+    public function preview(Request $request): JsonResponse
+    {
+        $validated = $request->validate(['body' => ['nullable', 'string', 'max:200000']]);
+        $rendered = $this->resources->renderBody($validated['body'] ?? '');
+
+        return ApiResponse::item([
+            'html' => $rendered['html'],
+            'toc' => $rendered['toc'],
+            'reading_time_minutes' => Resource::estimateReadingTime($validated['body'] ?? null),
+        ]);
     }
 
     public function destroy(string $slug): JsonResponse

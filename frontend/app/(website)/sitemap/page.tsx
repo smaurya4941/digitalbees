@@ -309,7 +309,7 @@ export default async function SitemapPage() {
                     <h3 className="font-bold text-sm text-ink group-hover:text-brand-gold transition-colors line-clamp-2">
                       {item.title}
                     </h3>
-                    <span className="mt-3 block font-mono text-[11px] text-ink-subtle">/insights/{item.slug}</span>
+                    <span className="mt-3 block font-mono text-[11px] text-ink-subtle">/blog/{item.slug}</span>
                   </Link>
                 ))}
               </div>

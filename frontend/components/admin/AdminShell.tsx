@@ -55,7 +55,7 @@ const primaryNav: NavItem[] = [
   { label: 'Case Studies', href: '/admin/case-studies', icon: FileText },
   { label: 'Testimonials', href: '/admin/testimonials', icon: Quote },
   { label: 'FAQs', href: '/admin/faqs', icon: HelpCircle },
-  { label: 'Resources', href: '/admin/resources', icon: BookOpen },
+  { label: 'Blog', href: '/admin/blog', icon: BookOpen },
   { label: 'Careers', href: '/admin/careers', icon: Briefcase },
   { label: 'Offices', href: '/admin/locations', icon: MapPin },
   { label: 'Pages', href: '/admin/pages', icon: FileText },
