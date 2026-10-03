@@ -3,32 +3,13 @@
 import { useState } from "react";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import type { Faq } from "@/types/practice";
 
-export default function ServicesFAQ() {
+/** General FAQs from the admin (GET /faqs). Renders nothing when none are published. */
+export default function ServicesFAQ({ faqs }: { faqs: Faq[] }) {
   const [activeIndex, setActiveIndex] = useState<number | null>(0);
 
-  const faqs = [
-    {
-      question: "How is your model different from hiring traditional freelancers?",
-      answer: "Freelancers often pose risks regarding consistency, quality, and sudden availability drops. We provide fully dedicated, pre-trained professionals who work exclusively for your brand under strict accountability, backed by a managed ecosystem."
-    },
-    {
-      question: "What is your replacement policy if a resource doesn't fit?",
-      answer: "We offer a swift replacement guarantee. If a resource isn't the right fit for your team, we'll provide a fully-trained replacement within days, ensuring minimal disruption to your workflow."
-    },
-    {
-      question: "How do you ensure your talent stays updated with changing digital tools?",
-      answer: "Our professionals undergo continuous upskilling and certification through our internal AI ecosystem, ensuring they remain at the cutting edge of industry tools and best practices."
-    },
-    {
-      question: "Is this model truly cost-effective compared to traditional hiring?",
-      answer: "Yes. By eliminating local recruitment fees, HR overhead, benefits, and office space costs, our clients typically save up to 40% while maintaining the exact same output quality and dedication."
-    },
-    {
-      question: "How do you handle data security and intellectual property (IP) protection?",
-      answer: "Security is built into our core. All our professionals sign strict NDAs, operate on secure, monitored networks, and follow enterprise-grade data protection protocols to ensure your IP remains completely secure."
-    }
-  ];
+  if (faqs.length === 0) return null;
 
   return (
     <section className="bg-black py-24 px-margin-mobile md:px-margin-desktop">
@@ -56,7 +37,7 @@ export default function ServicesFAQ() {
                 
                 return (
                   <div 
-                    key={index} 
+                    key={faq.id} 
                     className={`rounded-lg overflow-hidden transition-all duration-300 ${isActive ? 'bg-white shadow-md' : 'bg-[#1a1a1a]'}`}
                   >
                     <button

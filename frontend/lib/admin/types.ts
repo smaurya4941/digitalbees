@@ -148,6 +148,8 @@ export interface RelationOption {
 }
 
 export interface PracticeRelationOptions {
+  /** Used by the case-study form's "Practices" picker. */
+  practices: RelationOption[];
   industries: RelationOption[];
   technologies: RelationOption[];
   regions: RelationOption[];

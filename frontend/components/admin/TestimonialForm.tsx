@@ -2,16 +2,26 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft } from 'lucide-react';
 import { createTestimonial, testimonialQueryKeys, updateTestimonial } from '@/lib/admin/testimonials';
 import { AdminApiError } from '@/lib/admin/http';
+import { caseStudyQueryKeys, listCaseStudyOptions } from '@/lib/admin/case-studies';
 import type { AdminTestimonial } from '@/lib/admin/types';
 import { useAuth } from '@/components/admin/providers';
 import { AdminButton, Field, PageHeading, Panel, Select, TextInput, Textarea, useToast } from '@/components/admin/ui';
+
+/**
+ * Where a testimonial can appear. Each value is a `related_type` the public
+ * site actually reads — keep in sync with the getTestimonials() call sites.
+ */
+const PLACEMENTS = [
+  { value: 'home', label: 'Homepage carousel' },
+  { value: 'case_study', label: 'A specific case study' },
+] as const;
 
 const schema = z.object({
   quote: z.string().min(1, 'Quote is required').max(2000),
@@ -19,12 +29,16 @@ const schema = z.object({
   author_title: z.string().max(150).nullable().optional(),
   author_company: z.string().max(150).nullable().optional(),
   related_type: z.string().max(100).nullable().optional(),
+  related_id: z.string().nullable().optional(),
   status: z.enum(['draft', 'published']),
   sort_order: z
     .string()
     .nullable()
     .optional()
     .refine((v) => !v || /^\d+$/.test(v), 'Whole numbers only'),
+}).refine((v) => v.related_type !== 'case_study' || Boolean(v.related_id), {
+  message: 'Pick a case study',
+  path: ['related_id'],
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -41,6 +55,7 @@ export function TestimonialForm({ testimonial }: { testimonial?: AdminTestimonia
     register,
     handleSubmit,
     setError,
+    control,
     formState: { errors, isSubmitting, isDirty },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -49,10 +64,23 @@ export function TestimonialForm({ testimonial }: { testimonial?: AdminTestimonia
       author_name: testimonial?.author_name ?? '',
       author_title: testimonial?.author_title ?? '',
       author_company: testimonial?.author_company ?? '',
-      related_type: testimonial?.related_type ?? '',
+      related_type: testimonial?.related_type ?? 'home',
+      related_id: testimonial?.related_id ? String(testimonial.related_id) : '',
       status: testimonial?.status ?? 'draft',
       sort_order: String(testimonial?.sort_order ?? 0),
     },
+  });
+
+  const relatedType = useWatch({ control, name: 'related_type' }) ?? '';
+  const isCaseStudy = relatedType === 'case_study';
+  // A tag saved before placements were fixed stays selectable so editing never silently changes it.
+  const legacyType = relatedType && !PLACEMENTS.some((p) => p.value === relatedType) ? relatedType : null;
+
+  const caseStudies = useQuery({
+    queryKey: [...caseStudyQueryKeys.all, 'options'],
+    queryFn: ({ signal }) => listCaseStudyOptions(signal),
+    enabled: isCaseStudy,
+    staleTime: 60_000,
   });
 
   const mutation = useMutation({
@@ -63,6 +91,7 @@ export function TestimonialForm({ testimonial }: { testimonial?: AdminTestimonia
         author_title: values.author_title || null,
         author_company: values.author_company || null,
         related_type: values.related_type || null,
+        related_id: values.related_type === 'case_study' && values.related_id ? Number(values.related_id) : null,
         status: values.status,
         sort_order: values.sort_order ? Number(values.sort_order) : 0,
       };
@@ -139,17 +168,42 @@ export function TestimonialForm({ testimonial }: { testimonial?: AdminTestimonia
           <h2 className="text-sm font-semibold text-ink">Placement</h2>
           <div className="grid gap-5 sm:grid-cols-2">
             <Field
-              label="Related to"
+              label="Shown on"
               htmlFor="related_type"
               error={errors.related_type?.message}
-              hint="e.g. home, careers, ai-bees — a practice slug or a page tag."
+              hint={legacyType ? `“${legacyType}” is not displayed anywhere on the site — pick a placement.` : undefined}
             >
-              <TextInput id="related_type" {...register('related_type')} />
+              <Select id="related_type" {...register('related_type')}>
+                {PLACEMENTS.map((p) => (
+                  <option key={p.value} value={p.value}>
+                    {p.label}
+                  </option>
+                ))}
+                {legacyType && <option value={legacyType}>{legacyType} (not shown on site)</option>}
+              </Select>
             </Field>
             <Field label="Sort order" htmlFor="sort_order" error={errors.sort_order?.message}>
               <TextInput id="sort_order" type="number" min={0} {...register('sort_order')} />
             </Field>
           </div>
+          {isCaseStudy && (
+            <Field
+              label="Case study"
+              htmlFor="related_id"
+              error={errors.related_id?.message}
+              hint="The quote appears on this case study’s page."
+            >
+              <Select id="related_id" {...register('related_id')}>
+                <option value="">{caseStudies.isLoading ? 'Loading…' : 'Select a case study'}</option>
+                {caseStudies.data?.map((c) => (
+                  <option key={c.id} value={String(c.id)}>
+                    {c.title}
+                    {c.status !== 'published' ? ` (${c.status})` : ''}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+          )}
           <Field
             label="Status"
             htmlFor="status"

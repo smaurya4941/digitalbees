@@ -8,9 +8,11 @@ import { Breadcrumbs } from '@/components/navigation/Breadcrumbs';
 
 interface ServicePillarTemplateProps {
   pillar: ServicePillar;
+  /** Admin-managed `company.shortlist_turnaround`, e.g. "2 business days". */
+  shortlistTurnaround: string;
 }
 
-export function ServicePillarTemplate({ pillar }: ServicePillarTemplateProps) {
+export function ServicePillarTemplate({ pillar, shortlistTurnaround }: ServicePillarTemplateProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   const breadcrumbs = [
@@ -212,7 +214,7 @@ export function ServicePillarTemplate({ pillar }: ServicePillarTemplateProps) {
             Ready to Accelerate Your Engineering Velocity?
           </h2>
           <p className="mt-4 text-base text-slate-300">
-            Tell us about your technical roadmap and team requirements. Receive a curated shortlist within 48 hours.
+            Tell us about your technical roadmap and team requirements. Receive a curated shortlist within {shortlistTurnaround}.
           </p>
           <div className="mt-8 flex justify-center">
             <Link

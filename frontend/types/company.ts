@@ -18,6 +18,14 @@ export interface Partner {
   url: string | null;
 }
 
+/** GET /api/v1/company/client-logos — one row. */
+export interface ClientLogo {
+  id: number;
+  name: string;
+  /** Absolute URL or site-relative path; null → drawn from the SVG set by name. */
+  logo_url: string | null;
+}
+
 /** GET /api/v1/company/our-story — one row. */
 export interface CompanyMilestone {
   id: number;

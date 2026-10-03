@@ -6,6 +6,7 @@ import {
   getServiceClusterPage,
   getServiceClusterPages,
 } from '@/lib/api/services';
+import { getCompanyFacts } from '@/lib/api/settings';
 import { ServiceClusterTemplate } from '@/templates/ServiceClusterTemplate';
 
 type Params = { params: Promise<{ pillar: string; slug: string }> };
@@ -49,12 +50,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function ServiceClusterPageRoute({ params }: Params) {
   const { pillar: pillarSlug, slug } = await params;
-  const [pillar, page] = await Promise.all([
+  const [pillar, page, facts] = await Promise.all([
     getServicePillar(pillarSlug),
     getServiceClusterPage(pillarSlug, slug),
+    getCompanyFacts(),
   ]);
 
   if (!pillar || !page) notFound();
 
-  return <ServiceClusterTemplate page={page} pillarName={pillar.name} />;
+  return <ServiceClusterTemplate page={page} pillarName={pillar.name} shortlistTurnaround={facts.shortlistTurnaround} />;
 }

@@ -12,7 +12,8 @@ import {
   Sparkles,
   Hexagon,
 } from 'lucide-react';
-import { LinkedinIcon, TwitterIcon, InstagramIcon } from '@/components/ui/SocialIcons';
+import { toVideoSource } from '@/lib/utils/video-embed';
+import type { CompanyFacts } from '@/lib/api/settings';
 
 const BANNER_SLIDES = [
   {
@@ -46,16 +47,18 @@ const HERO_CARDS = [
   {
     id: 2,
     title: 'Talent, Validated First',
-    desc: 'Five gates before a specialist reaches you. 2-business-day typical shortlist.',
+    desc: 'Five gates before a specialist reaches you.',
+    // Appends the admin-managed `company.shortlist_turnaround` to `desc`.
+    withShortlist: true,
     href: '/practices/talent-bees',
     linkText: 'Explore Talent Bees',
   },
   {
     id: 3,
-    title: 'Certified ServiceNow & Cloud',
-    desc: 'OOTB-first, CSDM at the core, 5–7 day resource turnaround across 6 global hubs.',
-    href: '/practices/servicenow-bees',
-    linkText: 'Explore Enterprise SaaS',
+    title: 'Engineering That Ships',
+    desc: 'Software, cloud, DevOps, and data teams that integrate into how you already work.',
+    href: '/practices/digital-bees',
+    linkText: 'Explore Digital Bees',
   },
 ];
 
@@ -65,13 +68,51 @@ const TICKER_ITEMS = [
   '24/7 GLOBAL DELIVERY COVERAGE',
   'ZERO-DEFECT ARCHITECTURE',
   'SOC2 TYPE II & ISO 27001 COMPLIANT',
-  '6 REGIONAL DELIVERY HUBS',
 ];
 
-export default function ReniusHero() {
+type ReniusHeroProps = {
+  /** Hrefs of currently-published practices; cards pointing elsewhere are hidden. */
+  practiceHrefs?: string[];
+  /** Admin setting `home.hero_video_url` — YouTube, Vimeo or a direct video file. */
+  videoUrl?: string | null;
+  /** Admin setting `home.hero_video_title`. */
+  videoTitle?: string | null;
+  /** Admin settings `company.*` — shortlist turnaround and delivery markets. */
+  facts: CompanyFacts;
+};
+
+export default function ReniusHero({ practiceHrefs, videoUrl, videoTitle, facts }: ReniusHeroProps) {
+  const video = toVideoSource(videoUrl);
+  const title = videoTitle?.trim() || 'TeamBees Enterprise Pod Architecture';
+  const heroCards = (practiceHrefs
+    ? HERO_CARDS.filter((card) => practiceHrefs.includes(card.href))
+    : HERO_CARDS
+  ).map((card) =>
+    'withShortlist' in card
+      ? { ...card, desc: `${card.desc} Typical shortlist in ${facts.shortlistTurnaround}.` }
+      : card,
+  );
+  const tickerItems = [...TICKER_ITEMS, `${facts.marketsCount} DELIVERY MARKETS`];
+
   const [activeSlide, setActiveSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
+
+  // Links we can't embed (anything but YouTube, Vimeo or a video file) open in a new tab.
+  const openVideo = () => {
+    if (video?.kind === 'link') {
+      window.open(video.src, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    setVideoModalOpen(true);
+  };
+
+  useEffect(() => {
+    if (!videoModalOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setVideoModalOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [videoModalOpen]);
 
   // Auto-scrolling logic (5 seconds per slide)
   const nextSlide = useCallback(() => {
@@ -102,44 +143,8 @@ export default function ReniusHero() {
       </div>
 
       <div className="max-w-[1320px] mx-auto px-6 sm:px-10 md:px-12 lg:px-14 relative z-10">
-        {/* Main Grid: Left Vertical Social Strip + Main Hero Column */}
+        {/* Main Grid */}
         <div className="flex gap-6 lg:gap-10">
-          {/* Left Vertical Social Links (Watermark removed, only clean social icons) */}
-          <div className="hidden xl:flex flex-col items-center pt-8 w-10 shrink-0 select-none">
-            <span className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-widest -rotate-90 origin-center mb-10 whitespace-nowrap">
-              Follow Us:
-            </span>
-            <div className="flex flex-col items-center gap-3.5">
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-[#0B1F3A] text-slate-600 hover:text-white flex items-center justify-center transition-all shadow-xs hover:scale-105"
-                aria-label="LinkedIn"
-              >
-                <LinkedinIcon className="w-4 h-4" />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-[#0B1F3A] text-slate-600 hover:text-white flex items-center justify-center transition-all shadow-xs hover:scale-105"
-                aria-label="Twitter / X"
-              >
-                <TwitterIcon className="w-4 h-4" />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-[#0B1F3A] text-slate-600 hover:text-white flex items-center justify-center transition-all shadow-xs hover:scale-105"
-                aria-label="Instagram"
-              >
-                <InstagramIcon className="w-4 h-4" />
-              </a>
-            </div>
-          </div>
-
           {/* Main Hero Column */}
           <div className="flex-1 min-w-0 pb-12">
             {/* Top Row: Eyebrow + Headline on Left, Rotating Video Badge on Right */}
@@ -152,19 +157,10 @@ export default function ReniusHero() {
                   <span>SEVEN SPECIALIST PRACTICES · SIX GLOBAL REGIONS</span>
                 </div>
 
-                {/* Display H1 with Inline Accent Button */}
-                <h1 className="text-3xl sm:text-5xl lg:text-[62px] font-black text-[#0B1F3A] tracking-tight leading-[1.08]">
+                {/* Display H1 */}
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0B1F3A] tracking-tight leading-[1.12]">
                   Expert <span className="text-[#0B1F3A]">Technology Services</span> For Enterprise &amp; <br />
                   <span className="font-normal text-slate-800">Mission-Critical AI Workflows</span>
-                  <button
-                    type="button"
-                    onClick={() => setVideoModalOpen(true)}
-                    aria-label="View architecture blueprint"
-                    className="inline-flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 ml-3 rounded-full border-2 border-[#E58A1F] text-[#E58A1F] align-middle hover:bg-[#E58A1F] hover:text-white transition cursor-pointer text-xs sm:text-sm font-bold shadow-xs hover:scale-105 transform"
-                    title="Explore Architecture"
-                  >
-                    +
-                  </button>
                 </h1>
               </div>
 
@@ -172,7 +168,7 @@ export default function ReniusHero() {
               <div className="lg:col-span-4 flex items-center justify-start lg:justify-end pb-2">
                 <div
                   className="relative flex items-center justify-center group cursor-pointer"
-                  onClick={() => setVideoModalOpen(true)}
+                  onClick={openVideo}
                 >
                   {/* Rotating Circular Text Ring */}
                   <svg
@@ -198,7 +194,7 @@ export default function ReniusHero() {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setVideoModalOpen(true);
+                      openVideo();
                     }}
                     aria-label="Play Video"
                     className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-[#F5B838] hover:bg-[#E5A828] text-black flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all"
@@ -260,7 +256,7 @@ export default function ReniusHero() {
 
               {/* 3 Glassmorphic Bottom Cards Overlaid Inside the Banner */}
               <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 z-20 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
-                {HERO_CARDS.map((card) => (
+                {heroCards.map((card) => (
                   <div
                     key={card.id}
                     className="p-4 sm:p-5 rounded-2xl bg-[#231A15]/75 hover:bg-[#231A15]/90 backdrop-blur-xl border border-white/15 hover:border-[#E58A1F]/60 transition-all duration-200 group shadow-lg"
@@ -299,7 +295,7 @@ export default function ReniusHero() {
         <div className="flex whitespace-nowrap animate-marquee">
           {[...Array(4)].map((_, groupIndex) => (
             <div key={groupIndex} className="flex items-center shrink-0">
-              {TICKER_ITEMS.map((text, idx) => (
+              {tickerItems.map((text, idx) => (
                 <div key={idx} className="flex items-center mx-6">
                   <span className="font-mono text-xs font-bold tracking-widest uppercase text-white/90">
                     {text}
@@ -328,14 +324,16 @@ export default function ReniusHero() {
           className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
           role="dialog"
           aria-modal="true"
+          aria-label={title}
+          onClick={() => setVideoModalOpen(false)}
         >
-          <div className="relative w-full max-w-3xl bg-[#0B1F3A] text-white rounded-3xl overflow-hidden border border-white/20 shadow-2xl">
+          <div onClick={(e) => e.stopPropagation()} className="relative w-full max-w-3xl bg-[#0B1F3A] text-white rounded-3xl overflow-hidden border border-white/20 shadow-2xl">
             {/* Header */}
             <div className="flex items-center justify-between p-5 border-b border-white/10 bg-[#071527]">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-[#E58A1F]" />
                 <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#E58A1F]">
-                  TeamBees Swarm Architecture Video
+                  {title}
                 </span>
               </div>
               <button
@@ -349,14 +347,27 @@ export default function ReniusHero() {
             </div>
 
             {/* Content Video Player Frame */}
+            {video?.kind === 'iframe' ? (
+              <div className="relative aspect-video bg-black">
+                <iframe
+                  src={video.src}
+                  title={title}
+                  className="absolute inset-0 h-full w-full"
+                  allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            ) : video?.kind === 'file' ? (
+              <video src={video.src} className="block aspect-video w-full bg-black" controls autoPlay playsInline />
+            ) : (
             <div className="relative aspect-video bg-black flex flex-col items-center justify-center p-8 text-center">
               <div className="w-16 h-16 rounded-full bg-[#E58A1F] text-white flex items-center justify-center mb-4 shadow-xl animate-pulse">
                 <Play className="w-7 h-7 fill-white ml-1" />
               </div>
-              <h3 className="text-lg font-bold mb-2">TeamBees Enterprise Pod Architecture</h3>
+              <h3 className="text-lg font-bold mb-2">{title}</h3>
               <p className="text-xs text-slate-300 max-w-md">
                 Seven specialist practices delivering governed AI agents, high-rigor talent bench,
-                and zero-defect enterprise cloud solutions across 6 global hubs.
+                and zero-defect enterprise cloud solutions from {facts.marketsLabel}.
               </p>
               <div className="mt-6 flex gap-3">
                 <Link
@@ -375,6 +386,7 @@ export default function ReniusHero() {
                 </button>
               </div>
             </div>
+            )}
           </div>
         </div>
       )}

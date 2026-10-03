@@ -1,63 +1,56 @@
 import Link from "next/link";
 import { getRegions } from "@/lib/api/regions";
+import { getOffices } from "@/lib/api/locations";
 import { routes } from "@/config/routes";
 
 const REGION_META: Record<
   string,
-  { icon: string; city: string; tag: string; compliance: string; description: string }
+  { icon: string; tag: string; compliance: string; description: string }
 > = {
   india: {
     icon: "hub",
-    city: "India (Bangalore & Hyderabad Delivery Hubs)",
     tag: "OFFSHORE DELIVERY CENTRE",
     compliance: "ISO 27001, SOC2 Type II, 24x7 Follow-The-Sun Delivery",
     description: "Core offshore engineering centers, enterprise QA automation pods, and high-velocity talent delivery at scale.",
   },
   usa: {
     icon: "location_on",
-    city: "United States (Austin & New York)",
-    tag: "NORTH AMERICA HQ",
+    tag: "US OFFICE",
     compliance: "SOC2 Type II, FINRA & HIPAA Compliant Delivery",
     description: "Enterprise client engagement, executive delivery leadership, and high-throughput financial architectures.",
   },
   singapore: {
     icon: "account_balance",
-    city: "Singapore (APAC Operations)",
     tag: "APAC REGIONAL HUB",
     compliance: "MAS Technology Risk Management & Regional Banking Gateway",
     description: "Asia-Pacific client coordination, commodity trading desk support, and fintech platform operations.",
   },
   uae: {
     icon: "location_city",
-    city: "UAE (Dubai Hub)",
     tag: "MIDDLE EAST HUB",
     compliance: "DIFC / ADGM Data Compliance & Regional Advisory",
     description: "Regional regulatory compliance, public sector digital programs, and sovereign cloud architectures.",
   },
   uk: {
     icon: "apartment",
-    city: "United Kingdom (London)",
     tag: "EUROPEAN OPERATIONS",
     compliance: "FCA & UK-GDPR Regulated Financial Architecture",
     description: "Capital markets engineering node, Tier-1 banking pod leadership, and cross-border digital transformation.",
   },
   europe: {
     icon: "public",
-    city: "Europe (Poland Delivery Hub)",
     tag: "EU DELIVERY CENTRE",
     compliance: "EU AI Act & Data Sovereignty Delivery Pods",
     description: "Nearshore engineering, specialized cloud infrastructure, and distributed QA automation centers.",
   },
   canada: {
     icon: "domain",
-    city: "Canada (Toronto)",
     tag: "ENTERPRISE TECH NODE",
     compliance: "PIPEDA Enterprise Cloud & Multi-Region Resiliency",
     description: "Enterprise SaaS modernization, data warehousing, and bilingual technology staffing solutions.",
   },
   australia: {
     icon: "travel_explore",
-    city: "Australia (Sydney)",
     tag: "ANZ REGIONAL NODE",
     compliance: "APRA CPS 234 Cybersecurity & Cloud Operations",
     description: "Cloud engineering, commodity trading integrations, and 24x7 follow-the-sun managed platform operations.",
@@ -84,27 +77,36 @@ export default async function GlobalPresence({
   subtitle,
   limit = 8,
 }: GlobalPresenceProps = {}) {
-  const liveRegions = await getRegions().catch(() => []);
+  const [liveRegions, offices] = await Promise.all([getRegions().catch(() => []), getOffices()]);
   const slugs = liveRegions.length > 0 ? liveRegions.map((r) => r.slug) : DEFAULT_SLUGS;
 
   // Make sure DEFAULT_SLUGS order is preserved and all exist
   const sortedSlugs = Array.from(new Set([...DEFAULT_SLUGS, ...slugs]));
 
   const displayRegions = sortedSlugs
-    .map((slug) => ({
-      slug,
-      name:
-        liveRegions.find((r) => r.slug === slug)?.name ||
-        slug.toUpperCase().replace('USA', 'USA').replace('UK', 'UK').replace('UAE', 'UAE'),
-      href: routes.region(slug),
-      meta: REGION_META[slug] || {
-        icon: "public",
-        city: slug.toUpperCase(),
-        tag: "DELIVERY NODE",
-        compliance: "SOC2 & ISO 27001 Aligned",
-        description: "Specialized engineering and delivery leadership.",
-      },
-    }))
+    .map((slug) => {
+      const name = liveRegions.find((r) => r.slug === slug)?.name || slug.toUpperCase();
+      // Offices are admin-managed `Location` records; a region without one is
+      // served from the delivery markets, and says so rather than naming a city.
+      const regionOffices = offices.filter((o) => o.region?.toLowerCase() === name.toLowerCase());
+
+      return {
+        slug,
+        name,
+        hasOffice: regionOffices.length > 0,
+        offices:
+          regionOffices.length > 0
+            ? regionOffices.map((o) => o.city ?? o.name).join(" · ")
+            : "Remote delivery coverage",
+        href: routes.region(slug),
+        meta: REGION_META[slug] || {
+          icon: "public",
+          tag: "DELIVERY NODE",
+          compliance: "SOC2 & ISO 27001 Aligned",
+          description: "Specialized engineering and delivery leadership.",
+        },
+      };
+    })
     .slice(0, limit);
 
   return (
@@ -155,12 +157,12 @@ export default async function GlobalPresence({
                     </h3>
                   </div>
                   <span className="text-[10px] font-bold text-[#C6963A] bg-[#C6963A]/10 px-2 py-0.5 rounded tracking-wide">
-                    {region.meta.tag}
+                    {region.hasOffice ? region.meta.tag : "REMOTE DELIVERY"}
                   </span>
                 </div>
 
                 <div className="text-[12px] font-semibold text-[#0B1F3A]/70 mb-2">
-                  {region.meta.city}
+                  {region.offices}
                 </div>
 
                 <p className="text-[#44474d] text-[14px] leading-[20px] mb-4">

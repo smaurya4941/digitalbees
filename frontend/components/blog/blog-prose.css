@@ -117,8 +117,14 @@
   padding: 0;
 }
 
+.blog-prose figure {
+  margin: 2em 0;
+}
+
 .blog-prose img {
   border-radius: 14px;
+  display: block;
+  margin-inline: auto;
   height: auto;
   max-width: 100%;
 }

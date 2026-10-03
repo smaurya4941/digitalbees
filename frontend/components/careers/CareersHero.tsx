@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { routes } from '@/config/routes';
+import { getCompanyFacts } from '@/lib/api/settings';
 
-export default function CareersHero() {
+export default async function CareersHero() {
+  const facts = await getCompanyFacts();
+
   return (
     <section className="relative overflow-hidden bg-surface-ivory pt-28 pb-12 md:pt-36 md:pb-16 border-b border-hairline">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -96,7 +99,7 @@ export default function CareersHero() {
                   </p>
                 </div>
                 <div className="flex items-center justify-between text-xs text-gray-300 font-mono pt-2 border-t border-white/10">
-                  <span>4 Global Hubs</span>
+                  <span>{facts.marketsCount} Delivery Markets</span>
                   <span className="text-gray-500">&bull;</span>
                   <span>7 Practices</span>
                   <span className="text-gray-500">&bull;</span>

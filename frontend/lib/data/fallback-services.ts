@@ -3,6 +3,10 @@ import type {
   ServiceClusterPage,
   ServiceClusterCategory,
 } from '@/types/service';
+import { siteConfig } from '@/config/site';
+
+/** e.g. "2 business days" — the same figure quoted everywhere else. */
+const SHORTLIST = siteConfig.company.shortlistTurnaround;
 
 export const FALLBACK_SERVICE_PILLARS: ServicePillar[] = [
   {
@@ -20,7 +24,7 @@ export const FALLBACK_SERVICE_PILLARS: ServicePillar[] = [
       secondaryCta: { text: 'Explore Hiring Models', href: '#categories' },
     },
     stats: [
-      { value: '48 Hours', label: 'Average Shortlist Turnaround' },
+      { value: SHORTLIST, label: 'Typical Shortlist Turnaround' },
       { value: '500+', label: 'Senior Engineers Deployed' },
       { value: '40%', label: 'Average Cost Reduction' },
       { value: '98.6%', label: 'Annual Client Retention' },
@@ -299,7 +303,7 @@ function buildClusterPage(
         'Eliminate long recruiting cycles, recruitment agency markups, and onboarding friction with proven enterprise delivery.',
       points: [
         {
-          title: 'Rapid 48-Hour Shortlisting',
+          title: 'Rapid Shortlisting',
           description:
             'Access pre-vetted engineers matched precisely to your technical stack, timezone, and project cadence.',
           icon: 'timer',
@@ -367,7 +371,7 @@ function buildClusterPage(
         {
           criteria: 'Time to Hire',
           traditional: '60 to 90 days of sourcing, screening, and scheduling',
-          dedicated: 'Pre-vetted shortlist in 48 hours; active in sprints in 5–7 days',
+          dedicated: `Pre-vetted shortlist in ${SHORTLIST}; active in sprints in 5–7 days`,
         },
         {
           criteria: 'Recruiting Overhead',
@@ -399,7 +403,7 @@ function buildClusterPage(
       },
       {
         step: 2,
-        title: 'Curated 48-Hour Shortlist',
+        title: 'Curated Shortlist',
         description: 'Our technical directors review our bench and provide 2–3 thoroughly vetted candidate profiles.',
       },
       {
@@ -454,7 +458,7 @@ function buildClusterPage(
       {
         question: `How quickly can I hire and deploy a ${title}?`,
         answer:
-          'Typically, you will receive a curated shortlist of pre-screened candidates within 48 hours. Once you complete your interview process, engineers can start within 3 to 7 business days.',
+          `Typically, you will receive a curated shortlist of pre-screened candidates within ${SHORTLIST}. Once you complete your interview process, engineers can start within 3 to 7 business days.`,
       },
       {
         question: 'How does TeamBees vet developers before presenting them?',
@@ -485,7 +489,7 @@ function buildClusterPage(
     cta: {
       title: `Ready to Hire ${title}?`,
       subtitle:
-        'Tell us your tech stack and timeline. Receive a curated shortlist of senior engineers within 48 hours.',
+        `Tell us your tech stack and timeline. Receive a curated shortlist of senior engineers within ${SHORTLIST}.`,
       buttonText: `Hire ${title}`,
       buttonHref: '/contact-us',
     },

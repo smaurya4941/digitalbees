@@ -2,15 +2,18 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useForm, useWatch } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft } from 'lucide-react';
 import { createCaseStudy, caseStudyQueryKeys, updateCaseStudy } from '@/lib/admin/case-studies';
+import { getPracticeRelationOptions, practiceQueryKeys } from '@/lib/admin/practices';
 import { AdminApiError } from '@/lib/admin/http';
 import type { AdminCaseStudy } from '@/lib/admin/case-studies';
 import { useAuth } from '@/components/admin/providers';
+import { ObjectListRepeater, StringListRepeater } from '@/components/admin/JsonRepeaters';
+import { RelationPicker } from '@/components/admin/practice/RelationPicker';
 import {
   AdminButton,
   Field,
@@ -33,16 +36,27 @@ const schema = z.object({
   summary: z.string().max(1000).optional(),
   challenge: z.string().max(2000).optional(),
   solution: z.string().max(2000).optional(),
-  impact: z.string().max(2000).optional(),
-  hero_image: z.string().max(255).optional(),
-  sort_order: z
-    .string()
-    .optional()
-    .refine((v) => !v || /^\d+$/.test(v), 'Whole numbers only'),
+  results: z.string().max(2000).optional(),
+  metrics: z.array(z.object({ value: z.string().max(40), label: z.string().max(150) })).max(8),
+  how_it_works: z.array(z.object({ title: z.string().max(150), description: z.string().max(1000) })).max(8),
+  capabilities_used: z.array(z.string().max(100)).max(12),
+  practice_ids: z.array(z.number()),
+  industry_ids: z.array(z.number()),
+  technology_ids: z.array(z.number()),
+  region_ids: z.array(z.number()),
   status: z.enum(['draft', 'published', 'archived']),
 });
 
 type FormValues = z.infer<typeof schema>;
+
+type RelationField = 'practice_ids' | 'industry_ids' | 'technology_ids' | 'region_ids';
+
+const RELATION_FIELDS: Array<[RelationField, string, 'practices' | 'industries' | 'technologies' | 'regions']> = [
+  ['practice_ids', 'Practices', 'practices'],
+  ['industry_ids', 'Industries', 'industries'],
+  ['technology_ids', 'Technologies', 'technologies'],
+  ['region_ids', 'Regions', 'regions'],
+];
 
 function slugify(value: string) {
   return value
@@ -61,6 +75,12 @@ export function CaseStudyForm({ caseStudy }: { caseStudy?: AdminCaseStudy }) {
   const { can } = useAuth();
   const canPublish = can('content.publish');
 
+  const relationOptions = useQuery({
+    queryKey: practiceQueryKeys.relationOptions,
+    queryFn: ({ signal }) => getPracticeRelationOptions(signal),
+    staleTime: 60_000,
+  });
+
   const {
     register,
     handleSubmit,
@@ -77,9 +97,14 @@ export function CaseStudyForm({ caseStudy }: { caseStudy?: AdminCaseStudy }) {
       summary: caseStudy?.summary ?? '',
       challenge: caseStudy?.challenge ?? '',
       solution: caseStudy?.solution ?? '',
-      impact: caseStudy?.impact ?? '',
-      hero_image: caseStudy?.hero_image ?? '',
-      sort_order: String(caseStudy?.sort_order ?? 0),
+      results: caseStudy?.results ?? '',
+      metrics: caseStudy?.metrics ?? [],
+      how_it_works: (caseStudy?.how_it_works ?? []).map((s) => ({ title: s.title, description: s.description ?? '' })),
+      capabilities_used: caseStudy?.capabilities_used ?? [],
+      practice_ids: caseStudy?.practice_ids ?? [],
+      industry_ids: caseStudy?.industry_ids ?? [],
+      technology_ids: caseStudy?.technology_ids ?? [],
+      region_ids: caseStudy?.region_ids ?? [],
       status: caseStudy?.status ?? 'draft',
     },
   });
@@ -97,9 +122,19 @@ export function CaseStudyForm({ caseStudy }: { caseStudy?: AdminCaseStudy }) {
         summary: values.summary || null,
         challenge: values.challenge || null,
         solution: values.solution || null,
-        impact: values.impact || null,
-        hero_image: values.hero_image || null,
-        sort_order: values.sort_order ? Number(values.sort_order) : 0,
+        results: values.results || null,
+        // Half-filled repeater rows are dropped rather than saved blank.
+        metrics: values.metrics
+          .map((m) => ({ value: m.value.trim(), label: m.label.trim() }))
+          .filter((m) => m.value && m.label),
+        how_it_works: values.how_it_works
+          .map((s) => ({ title: s.title.trim(), description: s.description.trim() || null }))
+          .filter((s) => s.title),
+        capabilities_used: values.capabilities_used.map((c) => c.trim()).filter(Boolean),
+        practice_ids: values.practice_ids,
+        industry_ids: values.industry_ids,
+        technology_ids: values.technology_ids,
+        region_ids: values.region_ids,
       };
       return isEdit ? updateCaseStudy(caseStudy!.slug, payload) : createCaseStudy(payload);
     },
@@ -111,7 +146,8 @@ export function CaseStudyForm({ caseStudy }: { caseStudy?: AdminCaseStudy }) {
     onError: (error) => {
       if (error instanceof AdminApiError && error.status === 422) {
         for (const [field, messages] of Object.entries(error.errors)) {
-          setError(field as keyof FormValues, { message: messages[0] });
+          // Nested repeater errors (e.g. `metrics.0.label`) surface on their parent field.
+          setError(field.split('.')[0] as keyof FormValues, { message: messages[0] });
         }
         toast.error('Please fix the highlighted fields.');
       } else if (error instanceof AdminApiError && error.isForbidden) {
@@ -137,7 +173,7 @@ export function CaseStudyForm({ caseStudy }: { caseStudy?: AdminCaseStudy }) {
           title={isEdit ? `Edit ${caseStudy!.title}` : 'New case study'}
           description={
             isEdit
-              ? 'Update the content shown on the case study page.'
+              ? 'Everything here appears on the public case study page. Empty sections are hidden there.'
               : 'Add a new client success story. It starts as a draft until you publish it.'
           }
         />
@@ -171,18 +207,23 @@ export function CaseStudyForm({ caseStudy }: { caseStudy?: AdminCaseStudy }) {
               <TextInput id="slug" invalid={Boolean(errors.slug)} {...register('slug')} />
             </Field>
 
-            <Field label="Client Name" htmlFor="client_name" error={errors.client_name?.message}>
+            <Field
+              label="Client"
+              htmlFor="client_name"
+              error={errors.client_name?.message}
+              hint="Use an anonymized description unless the client approved being named."
+            >
               <TextInput id="client_name" invalid={Boolean(errors.client_name)} {...register('client_name')} />
             </Field>
           </div>
 
-          <Field label="Summary" htmlFor="summary" error={errors.summary?.message} hint="A brief overview of the project and outcome.">
+          <Field label="Summary" htmlFor="summary" error={errors.summary?.message} hint="Shown under the title and on case study cards.">
             <Textarea id="summary" rows={3} {...register('summary')} />
           </Field>
         </Panel>
 
         <Panel className="space-y-5 p-6">
-          <h2 className="text-sm font-semibold text-ink">Content</h2>
+          <h2 className="text-sm font-semibold text-ink">Story</h2>
 
           <Field label="Challenge" htmlFor="challenge" error={errors.challenge?.message} hint="What problem were we solving?">
             <Textarea id="challenge" rows={4} {...register('challenge')} />
@@ -192,37 +233,115 @@ export function CaseStudyForm({ caseStudy }: { caseStudy?: AdminCaseStudy }) {
             <Textarea id="solution" rows={4} {...register('solution')} />
           </Field>
 
-          <Field label="Impact" htmlFor="impact" error={errors.impact?.message} hint="What were the measurable results?">
-            <Textarea id="impact" rows={4} {...register('impact')} />
+          <Field label="Results" htmlFor="results" error={errors.results?.message} hint="What changed for the client?">
+            <Textarea id="results" rows={4} {...register('results')} />
           </Field>
         </Panel>
 
-        <Panel className="space-y-5 p-6">
-          <h2 className="text-sm font-semibold text-ink">Presentation & Metadata</h2>
-          
-          <Field label="Hero Image URL" htmlFor="hero_image" error={errors.hero_image?.message} hint="Path to the cover image">
-            <TextInput id="hero_image" {...register('hero_image')} />
-          </Field>
+        <Panel className="space-y-6 p-6">
+          <h2 className="text-sm font-semibold text-ink">Proof & delivery</h2>
 
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Field label="Sort order" htmlFor="sort_order" error={errors.sort_order?.message}>
-              <TextInput id="sort_order" type="number" min={0} {...register('sort_order')} />
-            </Field>
-            <Field
-              label="Status"
-              htmlFor="status"
-              error={errors.status?.message}
-              hint={canPublish ? undefined : 'Publishing needs the content.publish permission.'}
-            >
-              <Select id="status" {...register('status')}>
-                <option value="draft">Draft</option>
-                <option value="published" disabled={!canPublish}>
-                  Published
-                </option>
-                <option value="archived">Archived</option>
-              </Select>
-            </Field>
+          <Controller
+            control={control}
+            name="metrics"
+            render={({ field }) => (
+              <ObjectListRepeater
+                label="Headline metrics"
+                hint="The first four appear in the bar under the hero; the first also shows on case study cards."
+                items={field.value}
+                onChange={field.onChange}
+                fields={[
+                  { name: 'value', label: 'Value', placeholder: '40%' },
+                  { name: 'label', label: 'Label', placeholder: 'Faster task execution' },
+                ]}
+                newItem={() => ({ value: '', label: '' })}
+                addLabel="Add metric"
+              />
+            )}
+          />
+          {errors.metrics?.message && <p className="text-sm text-danger">{errors.metrics.message}</p>}
+
+          <Controller
+            control={control}
+            name="how_it_works"
+            render={({ field }) => (
+              <ObjectListRepeater
+                label="Delivery steps"
+                hint="Numbered automatically in the order shown."
+                items={field.value}
+                onChange={field.onChange}
+                fields={[
+                  { name: 'title', label: 'Step title', placeholder: 'Assess' },
+                  { name: 'description', label: 'Description', type: 'textarea' },
+                ]}
+                newItem={() => ({ title: '', description: '' })}
+                addLabel="Add step"
+              />
+            )}
+          />
+          {errors.how_it_works?.message && <p className="text-sm text-danger">{errors.how_it_works.message}</p>}
+
+          <Controller
+            control={control}
+            name="capabilities_used"
+            render={({ field }) => (
+              <StringListRepeater
+                label="Capabilities used"
+                hint="Short service names, e.g. “Implementation”, “Support & AMS”."
+                items={field.value}
+                onChange={field.onChange}
+                placeholder="Implementation"
+                addLabel="Add capability"
+              />
+            )}
+          />
+        </Panel>
+
+        <Panel className="space-y-5 p-6">
+          <div>
+            <h2 className="text-sm font-semibold text-ink">Links</h2>
+            <p className="mt-1 text-sm text-ink-muted">
+              Shown on the case study, and the case study appears on each linked practice, industry,
+              technology and region page.
+            </p>
           </div>
+          <div className="grid gap-5 lg:grid-cols-2">
+            {RELATION_FIELDS.map(([name, label, key]) => (
+              <Controller
+                key={name}
+                control={control}
+                name={name}
+                render={({ field }) => (
+                  <RelationPicker
+                    label={label}
+                    options={relationOptions.data?.[key] ?? []}
+                    loading={relationOptions.isLoading}
+                    value={field.value}
+                    onChange={field.onChange}
+                    emptyHint={`No ${label.toLowerCase()} exist yet — add them in the admin first.`}
+                  />
+                )}
+              />
+            ))}
+          </div>
+        </Panel>
+
+        <Panel className="space-y-5 p-6">
+          <h2 className="text-sm font-semibold text-ink">Publishing</h2>
+          <Field
+            label="Status"
+            htmlFor="status"
+            error={errors.status?.message}
+            hint={canPublish ? undefined : 'Publishing needs the content.publish permission.'}
+          >
+            <Select id="status" {...register('status')}>
+              <option value="draft">Draft</option>
+              <option value="published" disabled={!canPublish}>
+                Published
+              </option>
+              <option value="archived">Archived</option>
+            </Select>
+          </Field>
         </Panel>
 
         <div className="flex items-center justify-end gap-3">

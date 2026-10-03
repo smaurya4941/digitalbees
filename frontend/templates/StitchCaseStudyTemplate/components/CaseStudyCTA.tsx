@@ -1,6 +1,4 @@
-'use client';
 
-import React from 'react';
 import Link from 'next/link';
 import { routes } from '@/config/routes';
 
@@ -20,7 +18,7 @@ export function CaseStudyCTA() {
         </h2>
         <p className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed">
           Our principal solution architects partner with your senior engineering and business teams
-          to scope, prototype, and deliver production-grade AI agents in weeks.
+          to scope, staff, and deliver the same kind of outcome for you.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

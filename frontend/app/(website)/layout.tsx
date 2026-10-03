@@ -3,8 +3,10 @@ import Footer from '@/components/layout/Footer';
 import SkipLink from '@/components/ui/SkipLink';
 import { CandidateModeProvider } from '@/lib/context/CandidateModeContext';
 import { getPublicNavigation, PublicNavItem } from '@/lib/api/navigation';
-import { getSettings } from '@/lib/api/settings';
+import { companyFacts, contactEmail, getSettings, socialLinks } from '@/lib/api/settings';
+import { getOffices } from '@/lib/api/locations';
 import { getPractices } from '@/lib/api/practices';
+import { getIndustries } from '@/lib/api/industries';
 import { siteConfig } from '@/config/site';
 import { headerNav } from '@/config/navigation';
 import { routes } from '@/config/routes';
@@ -22,10 +24,12 @@ function mapToNavLinks(items: PublicNavItem[]): NavLink[] {
  * this out of the URL. Legal pages use their own group.
  */
 export default async function WebsiteLayout({ children }: { children: React.ReactNode }) {
-  const [menus, settings, practices] = await Promise.all([
+  const [menus, settings, practices, industries, offices] = await Promise.all([
     getPublicNavigation().catch(() => ({} as Record<string, PublicNavItem[]>)),
     getSettings().catch(() => ({} as import('@/lib/api/settings').SiteSettings)),
     getPractices().catch(() => [] as Awaited<ReturnType<typeof getPractices>>),
+    getIndustries().catch(() => [] as Awaited<ReturnType<typeof getIndustries>>),
+    getOffices(),
   ]);
 
   // The CMS menu is authoritative. If it is empty (backend unreachable, or the
@@ -45,7 +49,16 @@ export default async function WebsiteLayout({ children }: { children: React.Reac
   return (
     <CandidateModeProvider>
       <SkipLink />
-      <NavBar navItems={navItems} contactPhone={contactPhone} practices={practices} />
+      <NavBar
+        navItems={navItems}
+        contactPhone={contactPhone}
+        practices={practices}
+        industries={industries}
+        social={socialLinks(settings)}
+        contactEmail={contactEmail(settings)}
+        markets={companyFacts(settings).markets}
+        offices={offices}
+      />
       <main id="main" tabIndex={-1} className="flex-1">
         {children}
       </main>

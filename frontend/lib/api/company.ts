@@ -1,5 +1,5 @@
 import 'server-only';
-import type { CompanyMilestone, Partner, TeamMember } from '@/types/company';
+import type { ClientLogo, CompanyMilestone, Partner, TeamMember } from '@/types/company';
 import { apiList } from './client';
 import { cacheTags } from './tags';
 import { rethrowUnlessBuild } from './build-fallback';
@@ -21,6 +21,19 @@ export async function getPartnerships(): Promise<Partner[]> {
     return data;
   } catch (error) {
     return rethrowUnlessBuild(error, [] as Partner[]);
+  }
+}
+
+/**
+ * The client logo wall. `null` when the backend is unreachable, so callers can
+ * tell "no logos published" (`[]`) from "couldn't ask" and fall back only then.
+ */
+export async function getClientLogos(): Promise<ClientLogo[] | null> {
+  try {
+    const { data } = await apiList<ClientLogo>('company/client-logos', { tags: [cacheTags.company] });
+    return data;
+  } catch {
+    return null;
   }
 }
 

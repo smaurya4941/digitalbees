@@ -5,6 +5,7 @@ import { Hero } from '@/components/sections/Hero';
 import { ProofBar } from '@/components/sections/ProofBar';
 import { RelatedContent } from '@/components/sections/RelatedContent';
 import { RelatedPractices } from '@/components/sections/RelatedPractices';
+import { CaseStudyGrid } from '@/components/sections/CaseStudyGrid';
 import { CTABand } from '@/components/sections/CTABand';
 import { routes } from '@/config/routes';
 import type { IndustryDetail } from '@/types/industry';
@@ -29,7 +30,7 @@ export function IndustryTemplate({ industry }: IndustryTemplateProps) {
     <>
       <SeoJsonLd seo={industry.seo} />
 
-      <div className="bg-canvas py-4">
+      <div className="bg-canvas pb-4 pt-[88px] md:pt-[120px]">
         <Container>
           <Breadcrumbs items={breadcrumbs} />
         </Container>
@@ -51,6 +52,12 @@ export function IndustryTemplate({ industry }: IndustryTemplateProps) {
         itemEyebrow="Technology"
         tone="sunken"
         columns={4}
+      />
+
+      <CaseStudyGrid
+        caseStudies={industry.case_studies}
+        eyebrow="Proof"
+        title={`${industry.name} results we have delivered`}
       />
 
       <CTABand

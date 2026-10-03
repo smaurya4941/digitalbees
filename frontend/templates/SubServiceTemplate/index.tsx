@@ -40,7 +40,7 @@ export function SubServiceTemplate({ subService }: SubServiceTemplateProps) {
     <>
       <SeoJsonLd seo={subService.seo} />
 
-      <div className="bg-canvas py-4">
+      <div className="bg-canvas pb-4 pt-[88px] md:pt-[120px]">
         <Container>
           <Breadcrumbs items={breadcrumbs} />
         </Container>

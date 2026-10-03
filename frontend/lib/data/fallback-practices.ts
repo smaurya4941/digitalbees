@@ -1,7 +1,11 @@
 import type { PracticeDetail, PracticeSummary } from '@/types/practice';
 import type { SeoBlock } from '@/types/seo';
 import { routes } from '@/config/routes';
+import { siteConfig } from '@/config/site';
 import { FALLBACK_CASE_STUDIES, getFallbackCaseStudySummaries } from './fallback-case-studies';
+
+/** Delivery markets in prose, e.g. "India, USA, Singapore, and UAE". */
+const MARKETS = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' }).format(siteConfig.company.markets);
 
 function makeSeo(title: string, desc: string): SeoBlock {
   return {
@@ -50,7 +54,7 @@ export const FALLBACK_PRACTICE_SUMMARIES: PracticeSummary[] = [
     slug: 'talent-bees',
     name: 'Talent Bees',
     tagline: 'Hire elite engineering pods and specialized talent on your timeline.',
-    summary: 'IT staffing, executive search, contract staffing, staff augmentation, and RPO across 6 regions.',
+    summary: `IT staffing, executive search, contract staffing, staff augmentation, and RPO, delivered from ${MARKETS}.`,
     icon: 'group',
     color_token: '#4A6FA1',
     featured_image: null,
@@ -234,13 +238,13 @@ export const FALLBACK_PRACTICE_DETAILS: Record<string, PracticeDetail> = {
     hero: {
       eyebrow: 'Specialized Engineering Pods',
       title: 'Hire vetted specialists you need, on your timeline.',
-      description: 'IT and specialist staffing, executive search, contract staffing, staff augmentation, and RPO across 6 global regions.',
+      description: `IT and specialist staffing, executive search, contract staffing, staff augmentation, and RPO, delivered from ${MARKETS}.`,
       cta: { label: 'Request Talent Profiles', url: routes.contact() },
     },
     proof_points: [
-      { value: '2 Days', label: 'Shortlist Turnaround' },
-      { value: '50+', label: 'Domain Experts' },
-      { value: '6', label: 'Global Regions' },
+      { value: siteConfig.company.shortlistTurnaround, label: 'Typical Shortlist Turnaround' },
+      { value: siteConfig.company.domainExperts, label: 'Domain Experts' },
+      { value: String(siteConfig.company.markets.length), label: 'Delivery Markets' },
       { value: '5', label: 'Technical Screening Gates' },
     ],
     how_we_work: [
@@ -268,7 +272,7 @@ export const FALLBACK_PRACTICE_DETAILS: Record<string, PracticeDetail> = {
       FALLBACK_PRACTICE_SUMMARIES[1], // Digital Bees
     ],
     faqs: [
-      { id: 1, question: 'How quickly can engineers start?', answer: 'Typical candidate shortlists are delivered within 48 hours, with cutover into client sprints in under a week.' },
+      { id: 1, question: 'How quickly can engineers start?', answer: `Typical candidate shortlists are delivered within ${siteConfig.company.shortlistTurnaround}, with cutover into client sprints in under a week.` },
     ],
     seo: makeSeo('Talent Bees | Engineering Staffing & Specialist Pods', 'Vetted technology talent and delivery pods.'),
   },

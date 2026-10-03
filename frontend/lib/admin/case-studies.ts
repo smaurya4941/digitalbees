@@ -11,7 +11,18 @@ export const caseStudyQueryKeys = {
   detail: (slug: string) => [...KEY, slug] as const,
 };
 
-export type AdminCaseStudy = {
+export type CaseStudyMetricInput = { value: string; label: string };
+export type CaseStudyStepInput = { title: string; description: string | null };
+
+/** Links shown on the public page (and that surface the study on those pages). */
+export type CaseStudyRelationIds = {
+  practice_ids: number[];
+  industry_ids: number[];
+  technology_ids: number[];
+  region_ids: number[];
+};
+
+export type AdminCaseStudy = CaseStudyRelationIds & {
   id: number;
   title: string;
   slug: string;
@@ -19,25 +30,28 @@ export type AdminCaseStudy = {
   summary: string | null;
   challenge: string | null;
   solution: string | null;
-  impact: string | null;
-  hero_image: string | null;
+  results: string | null;
+  metrics: CaseStudyMetricInput[];
+  how_it_works: Array<CaseStudyStepInput & { step?: number }>;
+  capabilities_used: string[];
   status: ContentStatus;
-  sort_order: number;
+  published_at: string | null;
   created_at: string;
   updated_at: string;
 };
 
-export type CaseStudyInput = {
+export type CaseStudyInput = CaseStudyRelationIds & {
   title: string;
   slug: string;
   client_name: string | null;
   summary: string | null;
   challenge: string | null;
   solution: string | null;
-  impact: string | null;
-  hero_image: string | null;
+  results: string | null;
+  metrics: CaseStudyMetricInput[];
+  how_it_works: CaseStudyStepInput[];
+  capabilities_used: string[];
   status?: ContentStatus;
-  sort_order?: number;
 };
 
 export function listCaseStudies(
@@ -53,6 +67,15 @@ export function listCaseStudies(
       sort: filters.sort,
     },
   });
+}
+
+/** Every case study (any status) as picker options — capped at the admin API's 100-row page. */
+export async function listCaseStudyOptions(signal?: AbortSignal): Promise<Array<{ id: number; title: string; status: ContentStatus }>> {
+  const page = await adminApi.getPage<AdminCaseStudy>('admin/case-studies', {
+    signal,
+    query: { per_page: 100, sort: 'title' },
+  });
+  return page.data.map(({ id, title, status }) => ({ id, title, status }));
 }
 
 export function getCaseStudy(slug: string, signal?: AbortSignal): Promise<AdminCaseStudy> {

@@ -41,5 +41,7 @@ export const cacheTags = {
   pages: 'pages',
   page: (path: string) => `page:${path}`,
   testimonials: 'testimonials',
+  /** FaqService::flush() dispatches `faqs` on every FAQ write. */
+  faqs: 'faqs',
   company: 'company',
 } as const;

@@ -23,11 +23,14 @@ export function ImageField({
   onChange,
   error,
   folder = 'practices',
+  label = 'featured image',
 }: {
   value: string;
   onChange: (url: string) => void;
   error?: string;
   folder?: string;
+  /** Lower-case noun used in the empty state and alt text, e.g. "cover image". */
+  label?: string;
 }) {
   const { can } = useAuth();
   const toast = useToast();
@@ -72,7 +75,7 @@ export function ImageField({
       >
         {value ? (
           <>
-            <Image src={value} alt="Featured image preview" fill sizes="600px" className="object-cover" unoptimized />
+            <Image src={value} alt={`${label} preview`} fill sizes="600px" className="object-cover" unoptimized />
             <div className="absolute inset-x-0 bottom-0 flex justify-end gap-2 bg-gradient-to-t from-black/60 to-transparent p-3">
               <button
                 type="button"
@@ -88,7 +91,7 @@ export function ImageField({
             <div className="grid size-11 place-items-center rounded-full bg-white text-ink-subtle shadow-sm">
               <ImageIcon className="size-5" aria-hidden />
             </div>
-            <p className="text-sm font-medium text-ink">No featured image</p>
+            <p className="text-sm font-medium text-ink">No {label}</p>
             <p className="text-xs text-ink-subtle">
               {canUpload ? 'Drop an image here, upload one, or pick from the library.' : 'Pick from the library or paste a URL.'}
             </p>
@@ -130,7 +133,7 @@ export function ImageField({
       {showUrl && (
         <TextInput
           type="url"
-          aria-label="Featured image URL"
+          aria-label={`${label} URL`}
           placeholder="https://images.unsplash.com/…"
           value={value}
           invalid={Boolean(error)}

@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
-export default function ReniusCtaBand() {
+/** `shortlistTurnaround`: the admin-managed `company.shortlist_turnaround`. */
+export default function ReniusCtaBand({ shortlistTurnaround }: { shortlistTurnaround: string }) {
   return (
     <section className="py-20 bg-[#0B1F3A] text-white relative overflow-hidden">
       {/* Subtle Background Lighting Orbs */}
@@ -16,12 +17,12 @@ export default function ReniusCtaBand() {
               <span>HIGH-VELOCITY DELIVERY</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
               Let&apos;s build your capability engine.
             </h2>
 
             <p className="text-base text-slate-300">
-              Partner with TeamBees to accelerate digital innovation. 48-hour shortlist turnaround,
+              Partner with TeamBees to accelerate digital innovation. Validated shortlists in {shortlistTurnaround},
               pre-vetted senior pods, and guaranteed delivery SLAs.
             </p>
           </div>

@@ -29,7 +29,11 @@ import { CareersMegaMenu } from './MegaMenu/CareersMegaMenu';
 import { RegionSelector } from './MegaMenu/RegionSelector';
 import { SearchOverlay } from '@/components/search/SearchOverlay';
 import { PracticeIcon } from '@/components/ui/PracticeIcon';
+import { siteConfig } from '@/config/site';
 import type { PracticeSummary } from '@/types/practice';
+import type { IndustrySummary } from '@/types/industry';
+import type { LocationSummary } from '@/types/location';
+import { flagEmoji } from '@/lib/utils/flag';
 
 export type NavLink = {
   label: string;
@@ -42,11 +46,30 @@ export interface NavBarProps {
   contactPhone?: string;
   /** Live, published practices (admin-managed) for the mega-menu and mobile menu. */
   practices?: PracticeSummary[];
+  /** Live, published industries (admin-managed) for the mega-menu and mobile menu. */
+  industries?: IndustrySummary[];
+  /** Admin-managed profile URLs; an empty one hides its icon. */
+  social?: { linkedin?: string; x?: string; instagram?: string };
+  /** Admin setting `contact.email`. */
+  contactEmail?: string;
+  /** Admin setting `company.markets`, in display order. */
+  markets?: string[];
+  /** Published offices (admin-managed `Location` records). */
+  offices?: LocationSummary[];
 }
 
 type ActiveMenu = 'practices' | 'industries' | 'locations' | 'insights' | 'careers' | null;
 
-export default function NavBar({ navItems, contactPhone, practices = [] }: NavBarProps = {}) {
+export default function NavBar({
+  navItems,
+  contactPhone,
+  practices = [],
+  industries = [],
+  social = siteConfig.social,
+  contactEmail = siteConfig.contact.email,
+  markets = [...siteConfig.company.markets],
+  offices = [...siteConfig.offices],
+}: NavBarProps = {}) {
   const pathname = usePathname();
   const { isCandidateMode, toggleCandidateMode } = useCandidateMode();
 
@@ -145,34 +168,40 @@ export default function NavBar({ navItems, contactPhone, practices = [] }: NavBa
         {/* Subtle gold top hairline accent */}
         <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#C6963A]/40 to-transparent pointer-events-none" />
 
-        {/* Tier 1 Topbar (thin strip, Navy): info@teambeescorp.com + region indicator + social icons */}
+        {/* Tier 1 Topbar (thin strip, Navy): contact email + delivery markets + social icons */}
         <div className="bg-[#0B1F3A] text-white/80 border-b border-white/10 hidden md:block">
           <div className="max-w-[1440px] mx-auto px-4 md:px-8 h-8 flex items-center justify-between text-[11.5px] font-medium">
             <div className="flex items-center gap-6">
               <a
-                href="mailto:info@teambeescorp.com"
+                href={`mailto:${contactEmail}`}
                 className="flex items-center gap-1.5 text-white/80 hover:text-[#C6963A] transition"
               >
                 <Mail className="h-3 w-3 text-[#C6963A]" />
-                <span>info@teambeescorp.com</span>
+                <span>{contactEmail}</span>
               </a>
               <span className="text-white/20">|</span>
               <span className="flex items-center gap-1.5 text-white/70">
                 <Globe className="h-3 w-3 text-[#C6963A]" />
-                <span>Delivering from India · USA · Singapore · UAE</span>
+                <span>Delivering from {markets.join(' · ')}</span>
               </span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-white/70 text-[10px] uppercase font-mono tracking-wider">Follow Us:</span>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[#C6963A] transition" aria-label="LinkedIn">
-                <LinkedinIcon className="h-3 w-3" />
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[#C6963A] transition" aria-label="Twitter">
-                <TwitterIcon className="h-3 w-3" />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[#C6963A] transition" aria-label="Instagram">
-                <InstagramIcon className="h-3 w-3" />
-              </a>
+              {social.linkedin && (
+                <a href={social.linkedin} target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[#C6963A] transition" aria-label="TeamBees on LinkedIn">
+                  <LinkedinIcon className="h-3 w-3" />
+                </a>
+              )}
+              {social.x && (
+                <a href={social.x} target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[#C6963A] transition" aria-label="TeamBees on X">
+                  <TwitterIcon className="h-3 w-3" />
+                </a>
+              )}
+              {social.instagram && (
+                <a href={social.instagram} target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[#C6963A] transition" aria-label="TeamBees on Instagram">
+                  <InstagramIcon className="h-3 w-3" />
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -271,7 +300,7 @@ export default function NavBar({ navItems, contactPhone, practices = [] }: NavBa
                   }}
                   onMouseLeave={handleMouseLeave}
                 >
-                  <IndustriesMegaMenu onClose={closeMegaMenu} />
+                  <IndustriesMegaMenu industries={industries} onClose={closeMegaMenu} />
                 </div>
               )}
             </div>
@@ -309,7 +338,7 @@ export default function NavBar({ navItems, contactPhone, practices = [] }: NavBa
                   }}
                   onMouseLeave={handleMouseLeave}
                 >
-                  <LocationsMegaMenu onClose={closeMegaMenu} />
+                  <LocationsMegaMenu onClose={closeMegaMenu} offices={offices} />
                 </div>
               )}
             </div>
@@ -519,7 +548,7 @@ export default function NavBar({ navItems, contactPhone, practices = [] }: NavBa
               >
                 <span className="flex items-center gap-2.5 text-[#C6963A]">
                   <Building2 className="h-4 w-4" />
-                  Industries (10 Sectors)
+                  Industries{industries.length > 0 ? ` (${industries.length} Sectors)` : ''}
                 </span>
                 <ChevronDown
                   className={`h-4 w-4 text-[#C6963A] transition-transform duration-200 ${
@@ -530,75 +559,22 @@ export default function NavBar({ navItems, contactPhone, practices = [] }: NavBa
 
               {mobileAccordion === 'industries' && (
                 <div className="p-3 pt-1 space-y-1 border-t border-white/10 text-xs">
+                  {industries.map((ind) => (
+                    <Link
+                      key={ind.slug}
+                      href={ind.href}
+                      onClick={() => setMobileOpen(false)}
+                      className="block p-2 rounded hover:bg-white/5 text-white/80"
+                    >
+                      {ind.name}
+                    </Link>
+                  ))}
                   <Link
-                    href="/industries/banking-financial-services"
+                    href="/industries"
                     onClick={() => setMobileOpen(false)}
-                    className="block p-2 rounded hover:bg-white/5 text-white/80"
+                    className="block p-2 rounded hover:bg-white/5 font-bold text-[#C6963A]"
                   >
-                    Banking &amp; Financial Services
-                  </Link>
-                  <Link
-                    href="/industries/healthcare-life-sciences"
-                    onClick={() => setMobileOpen(false)}
-                    className="block p-2 rounded hover:bg-white/5 text-white/80"
-                  >
-                    Healthcare &amp; Life Sciences
-                  </Link>
-                  <Link
-                    href="/industries/energy-utilities"
-                    onClick={() => setMobileOpen(false)}
-                    className="block p-2 rounded hover:bg-white/5 text-white/80"
-                  >
-                    Energy &amp; Utilities
-                  </Link>
-                  <Link
-                    href="/industries/saas-technology"
-                    onClick={() => setMobileOpen(false)}
-                    className="block p-2 rounded hover:bg-white/5 text-white/80"
-                  >
-                    SaaS &amp; Technology
-                  </Link>
-                  <Link
-                    href="/industries/retail-ecommerce"
-                    onClick={() => setMobileOpen(false)}
-                    className="block p-2 rounded hover:bg-white/5 text-white/80"
-                  >
-                    Retail &amp; eCommerce
-                  </Link>
-                  <Link
-                    href="/industries/manufacturing-industrial"
-                    onClick={() => setMobileOpen(false)}
-                    className="block p-2 rounded hover:bg-white/5 text-white/80"
-                  >
-                    Manufacturing &amp; Industrial
-                  </Link>
-                  <Link
-                    href="/industries/public-sector-government"
-                    onClick={() => setMobileOpen(false)}
-                    className="block p-2 rounded hover:bg-white/5 text-white/80"
-                  >
-                    Public Sector &amp; Government
-                  </Link>
-                  <Link
-                    href="/industries/telecom-media"
-                    onClick={() => setMobileOpen(false)}
-                    className="block p-2 rounded hover:bg-white/5 text-white/80"
-                  >
-                    Telecom &amp; Media
-                  </Link>
-                  <Link
-                    href="/industries/logistics-supply-chain"
-                    onClick={() => setMobileOpen(false)}
-                    className="block p-2 rounded hover:bg-white/5 text-white/80"
-                  >
-                    Logistics &amp; Supply Chain
-                  </Link>
-                  <Link
-                    href="/industries/global-system-integrators"
-                    onClick={() => setMobileOpen(false)}
-                    className="block p-2 rounded hover:bg-white/5 text-white/80"
-                  >
-                    Global System Integrators (GSIs)
+                    View all industries
                   </Link>
                 </div>
               )}
@@ -615,7 +591,7 @@ export default function NavBar({ navItems, contactPhone, practices = [] }: NavBa
               >
                 <span className="flex items-center gap-2.5 text-[#C6963A]">
                   <Globe className="h-4 w-4" />
-                  Locations (6 Global Hubs)
+                  Locations ({offices.length} Offices)
                 </span>
                 <ChevronDown
                   className={`h-4 w-4 text-[#C6963A] transition-transform duration-200 ${
@@ -626,60 +602,25 @@ export default function NavBar({ navItems, contactPhone, practices = [] }: NavBa
 
               {mobileAccordion === 'locations' && (
                 <div className="p-3 pt-1 space-y-1.5 border-t border-white/10 text-xs">
-                  <Link
-                    href="/locations"
-                    onClick={() => setMobileOpen(false)}
-                    className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
-                  >
-                    <span>🇺🇸 United States (New York, SF)</span>
-                    <span className="text-[10px] font-mono text-white/70">W2/C2C</span>
-                  </Link>
-                  <Link
-                    href="/locations"
-                    onClick={() => setMobileOpen(false)}
-                    className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
-                  >
-                    <span>🇮🇳 India (Bangalore, Noida)</span>
-                    <span className="text-[10px] font-mono text-white/70">Delivery Lab</span>
-                  </Link>
-                  <Link
-                    href="/locations"
-                    onClick={() => setMobileOpen(false)}
-                    className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
-                  >
-                    <span>🇸🇬 Singapore (Marina Bay)</span>
-                    <span className="text-[10px] font-mono text-white/70">APAC HQ</span>
-                  </Link>
-                  <Link
-                    href="/locations"
-                    onClick={() => setMobileOpen(false)}
-                    className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
-                  >
-                    <span>🇦🇪 UAE (Dubai DIFC)</span>
-                    <span className="text-[10px] font-mono text-white/70">MENA Hub</span>
-                  </Link>
-                  <Link
-                    href="/locations"
-                    onClick={() => setMobileOpen(false)}
-                    className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
-                  >
-                    <span>🇬🇧 United Kingdom (London)</span>
-                    <span className="text-[10px] font-mono text-white/70">IR35 Safe</span>
-                  </Link>
-                  <Link
-                    href="/locations"
-                    onClick={() => setMobileOpen(false)}
-                    className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
-                  >
-                    <span>🇦🇺 Australia (Sydney)</span>
-                    <span className="text-[10px] font-mono text-white/70">APRA CPS 234</span>
-                  </Link>
+                  {offices.map((office) => (
+                    <Link
+                      key={office.slug}
+                      href={office.href}
+                      onClick={() => setMobileOpen(false)}
+                      className="p-2 rounded hover:bg-white/5 flex items-center justify-between text-white/80"
+                    >
+                      <span>
+                        <span aria-hidden>{flagEmoji(office.region_code)}</span>{' '}
+                        {[office.city ?? office.name, office.country].filter(Boolean).join(', ')}
+                      </span>
+                    </Link>
+                  ))}
                   <Link
                     href="/locations"
                     onClick={() => setMobileOpen(false)}
                     className="mt-2 block p-2 rounded bg-[#C6963A]/10 text-center font-bold text-[#C6963A] border border-[#C6963A]/20 hover:bg-[#C6963A]/20"
                   >
-                    View All Locations &amp; Compliance →
+                    View All Locations →
                   </Link>
                 </div>
               )}

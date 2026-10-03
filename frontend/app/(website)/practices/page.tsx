@@ -1,23 +1,30 @@
 import type { Metadata } from 'next';
-import { Container } from '@/components/ui/Container';
 import PageHeader from '@/components/layout/PageHeader';
-import { Breadcrumbs } from '@/components/navigation/Breadcrumbs';
-import { routes } from '@/config/routes';
 import { siteConfig } from '@/config/site';
+import { getGeneralFaqs } from '@/lib/api/faqs';
+import { getCompanyFacts } from '@/lib/api/settings';
 
 import ServicesGrid from '@/components/services/ServicesGrid';
 import AboutBanner from '@/components/about/AboutBanner';
 import ServicesDeployment from '@/components/services/ServicesDeployment';
 import ServicesFAQ from '@/components/services/ServicesFAQ';
 
-export const metadata: Metadata = {
-  title: `Practices | ${siteConfig.name}`,
-  description:
-    'Seven specialist practices — Talent, Digital, AI, Marketing, Quality, ServiceNow, and Energy Bees — delivered across six global regions.',
-  alternates: { canonical: `${siteConfig.url}/practices` },
-};
+// Backstop revalidation; admin edits invalidate via /api/revalidate tags.
+export const revalidate = 3600;
 
-export default function PracticesHubPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const { marketsLabel } = await getCompanyFacts();
+
+  return {
+    title: `Practices | ${siteConfig.name}`,
+    description: `Specialist TeamBees practices spanning talent, digital engineering, and AI — delivered from ${marketsLabel}.`,
+    alternates: { canonical: `${siteConfig.url}/practices` },
+  };
+}
+
+export default async function PracticesHubPage() {
+  const faqs = await getGeneralFaqs();
+
   return (
     <>
       <PageHeader title="Services" breadcrumb="Services" />
@@ -25,7 +32,7 @@ export default function PracticesHubPage() {
       <ServicesGrid />
       <AboutBanner />
       <ServicesDeployment />
-      <ServicesFAQ />
+      <ServicesFAQ faqs={faqs} />
     </>
   );
 }

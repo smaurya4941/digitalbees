@@ -6,6 +6,7 @@ import { Hero } from '@/components/sections/Hero';
 import { ProofBar } from '@/components/sections/ProofBar';
 import { SectionHeading } from '@/components/sections/SectionHeading';
 import { RelatedPractices } from '@/components/sections/RelatedPractices';
+import { CaseStudyGrid } from '@/components/sections/CaseStudyGrid';
 import { CTABand } from '@/components/sections/CTABand';
 import { routes } from '@/config/routes';
 import type { RegionDetail } from '@/types/region';
@@ -34,7 +35,7 @@ export function RegionTemplate({ region }: RegionTemplateProps) {
     <>
       <SeoJsonLd seo={region.seo} />
 
-      <div className="bg-canvas py-4">
+      <div className="bg-canvas pb-4 pt-[88px] md:pt-[120px]">
         <Container>
           <Breadcrumbs items={breadcrumbs} />
         </Container>
@@ -72,6 +73,13 @@ export function RegionTemplate({ region }: RegionTemplateProps) {
           </ul>
         </Section>
       )}
+
+      <CaseStudyGrid
+        caseStudies={region.case_studies}
+        eyebrow="Proof"
+        title={`Client results in ${region.name}`}
+        tone="sunken"
+      />
 
       <CTABand title={`Hire and build in ${region.name}`} cta={region.hero.cta} />
     </>

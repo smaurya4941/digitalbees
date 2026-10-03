@@ -8,18 +8,22 @@ import { CTABand } from '@/components/sections/CTABand';
 import { getLocations } from '@/lib/api/locations';
 import { routes } from '@/config/routes';
 import { siteConfig } from '@/config/site';
+import { getCompanyFacts } from '@/lib/api/settings';
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  title: `Locations | ${siteConfig.name}`,
-  description:
-    'TeamBees offices across the USA, UK, Europe, Canada, Australia and the UAE.',
-  alternates: { canonical: `${siteConfig.url}${routes.locations()}` },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { marketsLabel } = await getCompanyFacts();
+
+  return {
+    title: `Locations | ${siteConfig.name}`,
+    description: `TeamBees offices and delivery teams in ${marketsLabel}.`,
+    alternates: { canonical: `${siteConfig.url}${routes.locations()}` },
+  };
+}
 
 export default async function LocationsHubPage() {
-  const locations = await getLocations();
+  const [locations, facts] = await Promise.all([getLocations(), getCompanyFacts()]);
 
   return (
     <>
@@ -53,7 +57,7 @@ export default async function LocationsHubPage() {
           <EmptyState
             className="mt-12"
             title="Office details are being published"
-            description="We deliver across six regions. Tell us where you are and we’ll connect you with the local team."
+            description={`We deliver from ${facts.marketsLabel}. Tell us where you are and we’ll connect you with the right team.`}
             action={{ label: 'Contact us', href: routes.contact() }}
           />
         )}

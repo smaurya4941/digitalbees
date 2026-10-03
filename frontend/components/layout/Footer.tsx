@@ -6,7 +6,7 @@ import { siteConfig } from '@/config/site';
 import { footerNav } from '@/config/navigation';
 import { Container } from '@/components/ui/Container';
 import { NewsletterSignup } from '@/components/layout/NewsletterSignup';
-import { getSettings } from '@/lib/api/settings';
+import { contactEmail, getSettings } from '@/lib/api/settings';
 import { getPublicNavigation, PublicNavItem } from '@/lib/api/navigation';
 import { getPractices } from '@/lib/api/practices';
 
@@ -84,7 +84,7 @@ export default async function Footer() {
   const siteName = settings['site.name'] || siteConfig.name;
   const legalName = settings['site.legal_name'] || siteConfig.legalName;
   const tagline = settings['site.tagline'] || siteConfig.tagline;
-  const email = settings['contact.email'] || siteConfig.contact.email;
+  const email = contactEmail(settings);
   const phone = settings['contact.phone'] || siteConfig.contact.phone;
 
   return (

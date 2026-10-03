@@ -84,7 +84,7 @@ export const footerNav: NavGroup[] = [
     links: [
       { label: 'Contact', href: routes.contact() },
       { label: 'LinkedIn', href: siteConfig.social.linkedin, external: true },
-      { label: 'X / Twitter', href: siteConfig.social.x, external: true },
+      { label: 'Instagram', href: siteConfig.social.instagram, external: true },
     ],
   },
 ];

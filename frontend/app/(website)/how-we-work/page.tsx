@@ -7,6 +7,7 @@ import MarketGap from '@/components/how-we-work/MarketGap';
 import ModelBreakdown from '@/components/how-we-work/ModelBreakdown';
 import AboutBanner from '@/components/about/AboutBanner';
 import ServicesFAQ from '@/components/services/ServicesFAQ';
+import { getGeneralFaqs } from '@/lib/api/faqs';
 
 export const metadata: Metadata = {
   title: `How We Work | ${siteConfig.name}`,
@@ -14,7 +15,11 @@ export const metadata: Metadata = {
   alternates: { canonical: `${siteConfig.url}/how-we-work` },
 };
 
-export default function HowWeWorkPage() {
+export const revalidate = 3600;
+
+export default async function HowWeWorkPage() {
+  const faqs = await getGeneralFaqs();
+
   return (
     <>
       <PageHeader title="How We Work" breadcrumb="How We Work" />
@@ -22,7 +27,7 @@ export default function HowWeWorkPage() {
       <MarketGap />
       <ModelBreakdown />
       <AboutBanner />
-      <ServicesFAQ />
+      <ServicesFAQ faqs={faqs} />
     </>
   );
 }

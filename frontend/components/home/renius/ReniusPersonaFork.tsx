@@ -2,12 +2,13 @@ import Link from 'next/link';
 import { ArrowRight, Briefcase, Rocket, Users } from 'lucide-react';
 import { routes } from '@/config/routes';
 
-const FORKS = [
+/** `shortlist`: the admin-managed `company.shortlist_turnaround`, e.g. "2 business days". */
+const forks = (shortlist: string) => [
   {
     icon: Users,
     eyebrow: "I'm hiring",
     title: 'Fill a critical role',
-    body: 'Talent Bees puts validated specialists in front of you fast — five gates before a shortlist ever reaches you, typically within two business days.',
+    body: `Talent Bees puts validated specialists in front of you fast — five gates before a shortlist ever reaches you, typically within ${shortlist}.`,
     linkText: 'Explore Talent Bees',
     href: routes.practice('talent-bees'),
   },
@@ -35,7 +36,7 @@ const FORKS = [
  * the hero's trust ticker so a first-time visitor self-selects before
  * scrolling into practice detail.
  */
-export default function ReniusPersonaFork() {
+export default function ReniusPersonaFork({ shortlistTurnaround }: { shortlistTurnaround: string }) {
   return (
     <section className="py-14 sm:py-16 bg-[#FAFCFF] border-b border-[#CBDFF2]" aria-labelledby="persona-fork-heading">
       <div className="max-w-[1320px] mx-auto px-6 sm:px-10 lg:px-14">
@@ -50,7 +51,7 @@ export default function ReniusPersonaFork() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-          {FORKS.map((fork) => (
+          {forks(shortlistTurnaround).map((fork) => (
             <Link
               key={fork.eyebrow}
               href={fork.href}

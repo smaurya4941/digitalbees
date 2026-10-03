@@ -26,7 +26,7 @@ const POPULAR_QUERIES = [
   'ServiceNow ITOM',
   'Openlink Endur',
   'SOC2 Testing',
-  '48h IT Staffing',
+  'IT Staffing',
   'AI Agent Pods',
 ];
 

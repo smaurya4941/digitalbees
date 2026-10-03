@@ -9,9 +9,11 @@ import { Breadcrumbs } from '@/components/navigation/Breadcrumbs';
 interface ServiceClusterTemplateProps {
   page: ServiceClusterPage;
   pillarName: string;
+  /** Admin-managed `company.shortlist_turnaround`, e.g. "2 business days". */
+  shortlistTurnaround: string;
 }
 
-export function ServiceClusterTemplate({ page, pillarName }: ServiceClusterTemplateProps) {
+export function ServiceClusterTemplate({ page, pillarName, shortlistTurnaround }: ServiceClusterTemplateProps) {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
 
   const breadcrumbs = [
@@ -106,8 +108,8 @@ export function ServiceClusterTemplate({ page, pillarName }: ServiceClusterTempl
       <section className="border-b border-[#C4C6CE]/30 bg-[#071527] py-6 px-4 md:px-8 text-white">
         <div className="max-w-7xl mx-auto grid grid-cols-2 gap-6 md:grid-cols-4">
           <div className="flex flex-col items-center text-center">
-            <span className="text-2xl md:text-3xl font-extrabold text-[#C6963A]">48 Hours</span>
-            <span className="text-xs uppercase tracking-wider text-slate-400 mt-1">Shortlist Turnaround</span>
+            <span className="text-2xl md:text-3xl font-extrabold text-[#C6963A]">{shortlistTurnaround}</span>
+            <span className="text-xs uppercase tracking-wider text-slate-400 mt-1">Typical Shortlist Turnaround</span>
           </div>
           <div className="flex flex-col items-center text-center">
             <span className="text-2xl md:text-3xl font-extrabold text-[#C6963A]">Top 3%</span>
@@ -245,7 +247,7 @@ export function ServiceClusterTemplate({ page, pillarName }: ServiceClusterTempl
             {page.relatedRoles.map((role) => (
               <Link
                 key={role.slug}
-                href={routes.serviceCluster(page.pillarSlug, role.slug)}
+                href={routes.serviceCluster('staff-augmentation', role.slug)}
                 className="rounded-xl border border-[#C4C6CE]/40 bg-white p-4 text-center transition-all hover:border-[#C6963A] hover:shadow-md group"
               >
                 <div className="flex h-10 w-10 mx-auto items-center justify-center rounded-lg bg-[#0B1F3A]/5 text-[#0B1F3A] group-hover:bg-[#C6963A] group-hover:text-[#071527] transition-colors mb-2">

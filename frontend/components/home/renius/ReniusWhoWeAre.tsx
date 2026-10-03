@@ -2,22 +2,24 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, ShieldCheck, Award, Sparkles, Check } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ShieldCheck, Check } from 'lucide-react';
+import type { CompanyFacts } from '@/lib/api/settings';
 
-const CHECKLIST = [
+const checklist = (facts: CompanyFacts) => [
   'AI-enabled, human-verified selection',
   'Domain validation by TA and industry experts',
   'Flexible engagement models — staff augmentation, capability pods, or hybrid',
-  'Enterprise & GCC focus across four active markets',
+  `Enterprise & GCC focus, delivered from ${facts.marketsLabel}`,
 ];
 
-const COUNTERS = [
-  { value: '2021', label: 'Established', desc: 'Continuous delivery growth' },
-  { value: '50+', label: 'TA & Domain Experts', desc: 'Rigorous 5-gate validation' },
-  { value: '20+', label: 'Enterprise Customers', desc: 'Across 6 global regions' },
+/** Figures come from the admin-managed `company.*` settings. */
+const counters = (facts: CompanyFacts) => [
+  { value: facts.established, label: 'Established', desc: 'Continuous delivery growth' },
+  { value: facts.domainExperts, label: 'TA & Domain Experts', desc: 'Rigorous 5-gate validation' },
+  { value: facts.enterpriseCustomers, label: 'Enterprise Customers', desc: `Across ${facts.marketsCount} delivery markets` },
 ];
 
-export default function ReniusWhoWeAre() {
+export default function ReniusWhoWeAre({ facts }: { facts: CompanyFacts }) {
   return (
     <section className="py-20 bg-[#F8FAFD] border-b border-[#CBDFF2] relative overflow-hidden">
       <div className="max-w-[1320px] mx-auto px-6 sm:px-10 lg:px-14">
@@ -81,8 +83,8 @@ export default function ReniusWhoWeAre() {
               <div className="relative z-20 pt-6 mt-8 border-t border-white/15">
                 <div className="grid grid-cols-2 gap-3.5">
                   <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 shadow-xs">
-                    <div className="text-2xl sm:text-3xl font-black font-mono text-[#E5B556]">48h SLA</div>
-                    <div className="text-[11px] text-white/80 font-medium mt-1">Shortlist Turnaround</div>
+                    <div className="text-xl sm:text-2xl font-black font-mono text-[#E5B556]">{facts.shortlistTurnaround}</div>
+                    <div className="text-[11px] text-white/80 font-medium mt-1">Typical Shortlist Turnaround</div>
                   </div>
                   <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 shadow-xs">
                     <div className="text-2xl sm:text-3xl font-black font-mono text-emerald-400">100%</div>
@@ -90,7 +92,7 @@ export default function ReniusWhoWeAre() {
                   </div>
                 </div>
                 <div className="mt-3 flex items-center justify-between text-[11px] font-mono text-slate-400 px-1">
-                  <span>6 Global Delivery Hubs</span>
+                  <span>{facts.marketsCount} Delivery Markets</span>
                   <span>24/7 Follow-the-Sun</span>
                 </div>
               </div>
@@ -107,7 +109,7 @@ export default function ReniusWhoWeAre() {
                 </span>
               </div>
 
-              <h2 className="text-2xl sm:text-4xl lg:text-[42px] font-black text-[#0B1F3A] tracking-tight leading-[1.15]">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0B1F3A] tracking-tight leading-[1.15]">
                 Technology talent and capability delivery, <br />
                 <span className="text-[#9E6D18]">under one roof.</span>
               </h2>
@@ -122,7 +124,7 @@ export default function ReniusWhoWeAre() {
 
             {/* 4-point Checklist */}
             <div className="space-y-2.5 py-1">
-              {CHECKLIST.map((item, idx) => (
+              {checklist(facts).map((item, idx) => (
                 <div key={idx} className="flex items-start gap-3">
                   <div className="p-1 rounded-full bg-emerald-100 text-emerald-700 shrink-0 mt-0.5">
                     <CheckCircle2 className="h-4 w-4" />
@@ -134,7 +136,7 @@ export default function ReniusWhoWeAre() {
 
             {/* 3 Stat Counters with Rich Card Shadows */}
             <div className="grid grid-cols-3 gap-3.5 pt-4 border-t border-[#CBDFF2]">
-              {COUNTERS.map((c, i) => (
+              {counters(facts).map((c, i) => (
                 <div
                   key={i}
                   className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-[0_4px_20px_rgba(11,31,58,0.06)] hover:shadow-md transition-all"

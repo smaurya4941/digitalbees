@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getServicePillar, getServicePillars } from '@/lib/api/services';
+import { getCompanyFacts } from '@/lib/api/settings';
 import { ServicePillarTemplate } from '@/templates/ServicePillarTemplate';
 
 type Params = { params: Promise<{ pillar: string }> };
@@ -27,9 +28,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function ServicePillarPage({ params }: Params) {
   const { pillar: slug } = await params;
-  const pillar = await getServicePillar(slug);
+  const [pillar, facts] = await Promise.all([getServicePillar(slug), getCompanyFacts()]);
 
   if (!pillar) notFound();
 
-  return <ServicePillarTemplate pillar={pillar} />;
+  return <ServicePillarTemplate pillar={pillar} shortlistTurnaround={facts.shortlistTurnaround} />;
 }

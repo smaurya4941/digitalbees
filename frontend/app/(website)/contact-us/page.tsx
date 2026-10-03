@@ -5,6 +5,8 @@ import { Mail, Phone, MapPin, Briefcase } from 'lucide-react';
 import { siteConfig } from '@/config/site';
 import ContactForm from '@/components/contact/ContactForm';
 import { getPractices } from '@/lib/api/practices';
+import { getOffices } from '@/lib/api/locations';
+import { contactEmail, getSettings, type SiteSettings } from '@/lib/api/settings';
 
 export const metadata: Metadata = {
   title: `Contact Us | ${siteConfig.name}`,
@@ -13,18 +15,16 @@ export const metadata: Metadata = {
   alternates: { canonical: `${siteConfig.url}/contact-us` },
 };
 
-const CONTACT_EMAIL = 'info@teambeescorp.com';
-
-const OFFICES = [
-  { city: 'Gurugram, India', address: '337-338, Block-B3, Spaze i-Tech Park, Sector 49, Gurugram, HR 122018' },
-  { city: 'Chicago, USA', address: '200 E 75th Street, Chicago, IL 60619' },
-  { city: 'Singapore', address: null },
-  { city: 'Dubai, UAE', address: null },
-];
-
 export default async function ContactUsPage() {
-  const practices = await getPractices();
+  // Contact details (settings) and offices (locations) are admin-managed.
+  const [practices, offices, settings] = await Promise.all([
+    getPractices(),
+    getOffices(),
+    getSettings().catch(() => ({}) as SiteSettings),
+  ]);
   const practiceOptions = practices.map((p) => ({ slug: p.slug, name: p.name }));
+  const email = contactEmail(settings);
+  const phone = settings['contact.phone'] || siteConfig.contact.phone;
 
   return (
     <div className="min-h-screen bg-[#F8F9FF]">
@@ -46,7 +46,7 @@ export default async function ContactUsPage() {
           <div className="rounded-2xl border border-neutral-200/80 bg-white p-6 shadow-sm sm:p-8 lg:col-span-8">
             <h2 className="mb-6 text-title-md font-bold text-brand-navy">Send us a message</h2>
             <Suspense fallback={null}>
-              <ContactForm practices={practiceOptions} email={CONTACT_EMAIL} />
+              <ContactForm practices={practiceOptions} email={email} />
             </Suspense>
           </div>
 
@@ -55,35 +55,42 @@ export default async function ContactUsPage() {
             <div className="space-y-3">
               <h2 className="text-title-md font-bold text-brand-navy">Reach us directly</h2>
               <a
-                href={`mailto:${CONTACT_EMAIL}`}
+                href={`mailto:${email}`}
                 className="flex items-center gap-3 text-body-md text-ink-muted hover:text-brand-navy"
               >
                 <Mail className="h-4 w-4 shrink-0 text-brand-gold-deep" aria-hidden />
-                {CONTACT_EMAIL}
+                {email}
               </a>
               <a
-                href={`tel:${siteConfig.contact.phone.replace(/[^+\d]/g, '')}`}
+                href={`tel:${phone.replace(/[^+\d]/g, '')}`}
                 className="flex items-center gap-3 text-body-md text-ink-muted hover:text-brand-navy"
               >
                 <Phone className="h-4 w-4 shrink-0 text-brand-gold-deep" aria-hidden />
-                {siteConfig.contact.phone}
+                {phone}
               </a>
             </div>
 
-            <div className="border-t border-neutral-100 pt-6">
-              <h3 className="mb-3 text-body-md font-bold text-brand-navy">Offices</h3>
-              <ul className="space-y-3">
-                {OFFICES.map((office) => (
-                  <li key={office.city} className="flex gap-3">
-                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-gold-deep" aria-hidden />
-                    <div>
-                      <div className="text-body-sm font-semibold text-[#0B1F3A]">{office.city}</div>
-                      {office.address && <div className="text-body-sm text-ink-muted">{office.address}</div>}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {offices.length > 0 && (
+              <div className="border-t border-neutral-100 pt-6">
+                <h3 className="mb-3 text-body-md font-bold text-brand-navy">Offices</h3>
+                <ul className="space-y-3">
+                  {offices.map((office) => (
+                    <li key={office.slug} className="flex gap-3">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-gold-deep" aria-hidden />
+                      <div>
+                        <Link
+                          href={office.href}
+                          className="text-body-sm font-semibold text-[#0B1F3A] hover:text-brand-gold-deep"
+                        >
+                          {[office.city ?? office.name, office.country].filter(Boolean).join(', ')}
+                        </Link>
+                        {office.address && <div className="text-body-sm text-ink-muted">{office.address}</div>}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <div className="border-t border-neutral-100 pt-6">
               <Link

@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, type KeyboardEvent } from 'react';
+import { useRef, useState, type KeyboardEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Eye, PenLine, X } from 'lucide-react';
+import { Eye, ImagePlus, PenLine, X } from 'lucide-react';
 import { AdminApiError } from '@/lib/admin/http';
 import {
   type AdminResource,
@@ -18,6 +18,7 @@ import {
 } from '@/lib/admin/resources';
 import { blogCategoryQueryKeys, listBlogCategories } from '@/lib/admin/blog-categories';
 import { ImageField } from './practice/ImageField';
+import { InsertImageDialog } from './blog/InsertImageDialog';
 import { useAuth } from './providers';
 import { AdminButton, Field, Panel, Select, Textarea, TextInput, useToast } from './ui';
 import { cn } from '@/lib/utils/cn';
@@ -70,7 +71,7 @@ function toLocalInput(iso: string | null | undefined): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-const MARKDOWN_HELP = '## Heading · **bold** · *italic* · [link](https://…) · - list · > quote · ```code``` · | table |';
+const MARKDOWN_HELP = '## Heading · **bold** · *italic* · [link](https://…) · ![alt](image-url) · - list · > quote · ```code``` · | table |';
 
 export function BlogPostForm({ post }: { post?: AdminResource }) {
   const isEdit = Boolean(post);
@@ -128,6 +129,38 @@ export function BlogPostForm({ post }: { post?: AdminResource }) {
   const showPreview = () => {
     setTab('preview');
     preview.mutate(getValues('body'));
+  };
+
+  // --- Body: inline images --------------------------------------------------
+  const bodyField = register('body');
+  const bodyRef = useRef<HTMLTextAreaElement | null>(null);
+  const [imageDialogOpen, setImageDialogOpen] = useState(false);
+  // Remembered when the dialog opens: the textarea loses focus (and, if the
+  // Preview tab was showing, unmounts) while the author picks an image.
+  const insertAtRef = useRef<number | null>(null);
+
+  const openImageDialog = () => {
+    insertAtRef.current = tab === 'write' ? (bodyRef.current?.selectionStart ?? null) : null;
+    setImageDialogOpen(true);
+  };
+
+  const insertIntoBody = (snippet: string) => {
+    const body = getValues('body') ?? '';
+    const at = Math.min(insertAtRef.current ?? body.length, body.length);
+    const before = body.slice(0, at).replace(/\s*$/, '');
+    const after = body.slice(at).replace(/^\s*/, '');
+    // Images are block-level: keep a blank line on each side.
+    const head = before ? `${before}\n\n` : '';
+    const next = `${head}${snippet}${after ? `\n\n${after}` : '\n'}`;
+    setValue('body', next, { shouldDirty: true, shouldValidate: true });
+    setTab('write');
+    const caret = head.length + snippet.length;
+    requestAnimationFrame(() => {
+      const el = bodyRef.current;
+      if (!el) return;
+      el.focus();
+      el.setSelectionRange(caret, caret);
+    });
   };
 
   // --- Save -----------------------------------------------------------------
@@ -243,7 +276,18 @@ export function BlogPostForm({ post }: { post?: AdminResource }) {
                 <Eye className="size-4" /> Preview
               </button>
             </div>
-            <span className="hidden text-xs text-ink-subtle sm:block">Markdown supported</span>
+            <div className="flex items-center gap-3">
+              <span className="hidden text-xs text-ink-subtle sm:block">Markdown supported</span>
+              <AdminButton
+                type="button"
+                variant="secondary"
+                size="sm"
+                iconLeft={<ImagePlus className="size-4" />}
+                onClick={openImageDialog}
+              >
+                Insert image
+              </AdminButton>
+            </div>
           </div>
 
           <div className="p-4">
@@ -257,7 +301,11 @@ export function BlogPostForm({ post }: { post?: AdminResource }) {
                   rows={22}
                   className="font-mono text-[13px] leading-relaxed"
                   placeholder={'Write your post in Markdown…\n\n## A section heading\n\nA paragraph with **bold** text and a [link](https://example.com).'}
-                  {...register('body')}
+                  {...bodyField}
+                  ref={(el) => {
+                    bodyField.ref(el);
+                    bodyRef.current = el;
+                  }}
                 />
                 <p className="mt-2 text-xs text-ink-subtle">{MARKDOWN_HELP}</p>
                 {errors.body?.message && <p className="mt-1 text-xs text-red-600">{errors.body.message}</p>}
@@ -285,6 +333,7 @@ export function BlogPostForm({ post }: { post?: AdminResource }) {
             )}
           </div>
         </Panel>
+        <InsertImageDialog open={imageDialogOpen} onClose={() => setImageDialogOpen(false)} onInsert={insertIntoBody} />
       </div>
 
       {/* ---------------- Sidebar ---------------- */}

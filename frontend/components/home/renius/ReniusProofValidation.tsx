@@ -2,54 +2,37 @@
 
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Quote, Shield } from 'lucide-react';
+import type { Testimonial } from '@/types/testimonial';
 
-const QUOTES = [
-  {
-    quote:
-      'Teams recovered 45–60 minutes per person, per day through governed multi-agent finance workflow automation connecting our transaction ledgers.',
-    author: 'Enterprise Finance Team',
-    role: 'Financial Services Leader',
-    badge: 'Finance & Banking',
-    impact: '45–60 mins/day saved',
-  },
-  {
-    quote:
-      'Delivered 10-domain HRMS modernization with automated onboarding, dynamic credentialing, and real-time compliance reporting in under 12 weeks.',
-    author: 'VP People Systems',
-    role: 'Enterprise SaaS Client',
-    badge: 'HR & SaaS',
-    impact: '10 Domains Modernized',
-  },
-  {
-    quote:
-      'Reduced regression testing cycles by 65% with self-healing UI test automation across our continuous production release pipeline.',
-    author: 'Head of Quality Engineering',
-    role: 'Global Technology Brand',
-    badge: 'Enterprise Software',
-    impact: '65% Faster Release Cycles',
-  },
-  {
-    quote:
-      'Standardized enterprise CMDB and CSDM architecture across complex transit infrastructure within 90 days with zero operational downtime.',
-    author: 'Director of Service Operations',
-    role: 'Transport & Infrastructure Client',
-    badge: 'ServiceNow & ITSM',
-    impact: '90-Day Full CMDB Cleanup',
-  },
-];
 
-export default function ReniusProofValidation() {
+/**
+ * Homepage proof strip. Quotes are admin-managed testimonials tagged `home`;
+ * `shortlistTurnaround` is the admin-managed `company.shortlist_turnaround`.
+ */
+export default function ReniusProofValidation({
+  testimonials,
+  shortlistTurnaround,
+}: {
+  testimonials: Testimonial[];
+  shortlistTurnaround: string;
+}) {
   const [activeQuote, setActiveQuote] = useState(0);
 
   const handleNext = () => {
-    setActiveQuote((prev) => (prev + 1) % QUOTES.length);
+    setActiveQuote((prev) => (prev + 1) % testimonials.length);
   };
 
   const handlePrev = () => {
-    setActiveQuote((prev) => (prev - 1 + QUOTES.length) % QUOTES.length);
+    setActiveQuote((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
-  const q = QUOTES[activeQuote];
+  const q = testimonials[activeQuote];
+  const author = q ? q.author_name || q.author_title || q.author_company : null;
+  const role = q
+    ? [q.author_name ? q.author_title : null, q.author_name || q.author_title ? q.author_company : null]
+        .filter(Boolean)
+        .join(', ')
+    : '';
 
   return (
     <section className="py-16 bg-white border-b border-[#CBDFF2] relative">
@@ -61,9 +44,9 @@ export default function ReniusProofValidation() {
               <Shield className="h-3.5 w-3.5 text-[#C6963A]" />
               <span>VERIFIED ENTERPRISE TRACK RECORD</span>
             </div>
-            <h3 className="text-2xl sm:text-3xl font-black text-[#0B1F3A] tracking-tight">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-[#0B1F3A] tracking-tight">
               20+ Enterprise Customers Across Regulated Verticals
-            </h3>
+            </h2>
             <p className="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
               Serving manufacturing, healthcare, BFSI, technology, and energy trading sectors
               operating in North America, Europe, MENA, and APAC.
@@ -77,13 +60,14 @@ export default function ReniusProofValidation() {
               <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Delivery Precision</div>
             </div>
             <div className="text-center px-5 py-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs min-w-[120px]">
-              <div className="text-2xl font-black font-mono text-[#9E6D18]">48h</div>
+              <div className="text-xl font-black font-mono text-[#9E6D18] whitespace-nowrap">{shortlistTurnaround}</div>
               <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Typical Shortlist</div>
             </div>
           </div>
         </div>
 
-        {/* Tier 2: Quote Carousel (Consistent Container Width & Rich Shadow) */}
+        {/* Tier 2: Quote Carousel — hidden until at least one testimonial is published */}
+        {q && (
         <div className="rounded-3xl bg-white border border-slate-200/90 p-7 sm:p-10 relative shadow-[0_12px_35px_rgba(11,31,58,0.08)]">
           <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
             {/* Quote Icon */}
@@ -94,7 +78,7 @@ export default function ReniusProofValidation() {
             {/* Navigation Controls */}
             <div className="flex items-center gap-3">
               <span className="text-xs font-mono text-slate-500 font-bold tracking-wider">
-                Outcome {activeQuote + 1} of {QUOTES.length}
+                Outcome {activeQuote + 1} of {testimonials.length}
               </span>
               <div className="flex items-center gap-1.5">
                 <button
@@ -125,23 +109,20 @@ export default function ReniusProofValidation() {
           {/* Author Bar */}
           <div className="flex flex-wrap items-center justify-between pt-5 border-t border-slate-100 gap-4">
             <div>
-              <div className="font-extrabold text-[#0B1F3A] text-sm sm:text-base">{q.author}</div>
-              <div className="text-xs text-slate-500 font-medium">{q.role}</div>
+              {author && <div className="font-extrabold text-[#0B1F3A] text-sm sm:text-base">{author}</div>}
+              {role && <div className="text-xs text-slate-500 font-medium">{role}</div>}
             </div>
 
-            <div className="flex items-center gap-2.5">
-              <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-[#C6963A]/15 text-[#9E6D18] border border-[#C6963A]/30">
-                {q.impact}
-              </span>
+            {q.author_location && (
               <span className="text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1 rounded-full border border-slate-200">
-                {q.badge}
+                {q.author_location}
               </span>
-            </div>
+            )}
           </div>
 
           {/* Slide Dots Indicator */}
           <div className="flex justify-center gap-1.5 pt-6">
-            {QUOTES.map((_, i) => (
+            {testimonials.map((_, i) => (
               <button
                 key={i}
                 type="button"
@@ -154,6 +135,7 @@ export default function ReniusProofValidation() {
             ))}
           </div>
         </div>
+        )}
       </div>
     </section>
   );

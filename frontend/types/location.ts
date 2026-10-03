@@ -12,6 +12,8 @@ export interface LocationSummary {
   lng?: number;
   /** Region name, present when the relation is loaded. */
   region?: string;
+  /** The region's ISO 3166 alpha-2 code (or "EU"), present when the relation is loaded. */
+  region_code?: string;
   href: string;
 }
 

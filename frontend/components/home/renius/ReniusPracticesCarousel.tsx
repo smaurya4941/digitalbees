@@ -11,7 +11,6 @@ const REPEAT_TICKER = [
   'CERTIFIED SERVICENOW RESOURCES',
   'OOTB-FIRST DELIVERY APPROACH',
   'VALIDATED SPECIALISTS ONLY',
-  '48-HOUR TALENT SHORTLIST',
   'ENTERPRISE GOVERNED AI AGENTS',
   'GLOBAL DELIVERY HUBS',
 ];
@@ -21,7 +20,15 @@ const REPEAT_TICKER = [
  * A native scroll-snap track (swipeable on touch, arrow-driven on desktop)
  * so every practice is reachable at every breakpoint.
  */
-export default function ReniusPracticesCarousel({ practices }: { practices: PracticeSummary[] }) {
+export default function ReniusPracticesCarousel({
+  practices,
+  shortlistTurnaround,
+}: {
+  practices: PracticeSummary[];
+  /** Admin-managed `company.shortlist_turnaround`, shown in the ticker. */
+  shortlistTurnaround: string;
+}) {
+  const ticker = [...REPEAT_TICKER, `${shortlistTurnaround.toUpperCase()} TALENT SHORTLIST`];
   const trackRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
@@ -141,7 +148,7 @@ export default function ReniusPracticesCarousel({ practices }: { practices: Prac
         <div className="flex whitespace-nowrap animate-marquee">
           {[...Array(4)].map((_, groupIndex) => (
             <div key={groupIndex} className="flex items-center shrink-0" aria-hidden={groupIndex > 0}>
-              {REPEAT_TICKER.map((text, idx) => (
+              {ticker.map((text, idx) => (
                 <div key={idx} className="flex items-center mx-6">
                   <span className="font-mono text-xs font-bold tracking-widest uppercase text-white/90">{text}</span>
                   <span className="ml-6 text-[#E58A1F] text-xs font-bold">✦</span>
