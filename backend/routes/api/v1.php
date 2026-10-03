@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Admin\AuditLogController;
+use App\Http\Controllers\Api\V1\Admin\BlogCategoryAdminController;
 use App\Http\Controllers\Api\V1\Admin\CareerAdminController;
 use App\Http\Controllers\Api\V1\Admin\CaseStudyAdminController;
 use App\Http\Controllers\Api\V1\Admin\ContentStatusController;
@@ -15,7 +16,6 @@ use App\Http\Controllers\Api\V1\Admin\PageAdminController;
 use App\Http\Controllers\Api\V1\Admin\PracticeAdminController;
 use App\Http\Controllers\Api\V1\Admin\RedirectAdminController;
 use App\Http\Controllers\Api\V1\Admin\RegionAdminController;
-use App\Http\Controllers\Api\V1\Admin\BlogCategoryAdminController;
 use App\Http\Controllers\Api\V1\Admin\ResourceAdminController;
 use App\Http\Controllers\Api\V1\Admin\RevalidationController;
 use App\Http\Controllers\Api\V1\Admin\RevisionController;
@@ -27,12 +27,13 @@ use App\Http\Controllers\Api\V1\Admin\TestimonialAdminController;
 use App\Http\Controllers\Api\V1\Admin\UserAdminController;
 use App\Http\Controllers\Api\V1\Admin\WorkflowController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\BlogController;
 use App\Http\Controllers\Api\V1\CareerController;
 use App\Http\Controllers\Api\V1\CaseStudyController;
-use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\ChatbotController;
+use App\Http\Controllers\Api\V1\CompanyController;
+use App\Http\Controllers\Api\V1\FaqController;
 use App\Http\Controllers\Api\V1\IndustryController;
-use App\Http\Controllers\Api\V1\BlogController;
 use App\Http\Controllers\Api\V1\InsightController;
 use App\Http\Controllers\Api\V1\InvitationController;
 use App\Http\Controllers\Api\V1\LeadController;
@@ -82,10 +83,12 @@ Route::get('technologies', [TechnologyController::class, 'index'])->name('techno
 Route::get('technologies/{technology}', [TechnologyController::class, 'show'])->name('technologies.show');
 
 Route::get('testimonials', [TestimonialController::class, 'index'])->name('testimonials.index');
+Route::get('faqs', [FaqController::class, 'index'])->name('faqs.index');
 
 Route::get('company/leadership', [CompanyController::class, 'leadership'])->name('company.leadership');
 Route::get('company/partnerships', [CompanyController::class, 'partnerships'])->name('company.partnerships');
 Route::get('company/our-story', [CompanyController::class, 'ourStory'])->name('company.our-story');
+Route::get('company/client-logos', [CompanyController::class, 'clientLogos'])->name('company.client-logos');
 
 Route::get('case-studies', [CaseStudyController::class, 'index'])->name('case-studies.index');
 Route::get('case-studies/{caseStudy}', [CaseStudyController::class, 'show'])->name('case-studies.show');

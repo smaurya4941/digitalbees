@@ -21,6 +21,8 @@ class LocationPublicResource extends JsonResource
             'lat' => $this->lat,
             'lng' => $this->lng,
             'region' => $this->whenLoaded('region', fn () => $this->region?->name),
+            // ISO 3166 alpha-2 (or "EU") of the owning region, for flag glyphs.
+            'region_code' => $this->whenLoaded('region', fn () => $this->region?->iso_code),
             'href' => "/locations/{$this->slug}",
         ], fn ($v) => $v !== null);
     }

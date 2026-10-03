@@ -9,7 +9,9 @@ use App\Modules\Industry\Models\Industry;
 use App\Modules\Practice\Models\Practice;
 use App\Modules\Region\Models\Region;
 use App\Modules\Technology\Models\Technology;
+use App\Support\Models\EntityRelation;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Application use-cases for case studies.
@@ -61,11 +63,31 @@ final class CaseStudyService
             ?? throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("CaseStudy [{$slug}] not found.");
     }
 
+    /**
+     * Admin relation field => related model. Stored as outgoing `featured-in`
+     * edges so practice/industry/technology/region pages surface the study.
+     */
+    public const RELATIONS = [
+        'practice_ids' => Practice::class,
+        'industry_ids' => Industry::class,
+        'technology_ids' => Technology::class,
+        'region_ids' => Region::class,
+    ];
+
+    private const RELATION_TYPE = 'featured-in';
+
     /** @param  array<string, mixed>  $attributes */
     public function create(array $attributes): CaseStudy
     {
-        $caseStudy = $this->caseStudies->create($attributes);
-        $this->flush($caseStudy);
+        [$attributes, $relations] = $this->splitRelations($attributes);
+
+        $caseStudy = DB::transaction(function () use ($attributes, $relations) {
+            $caseStudy = $this->caseStudies->create($attributes);
+            $this->syncRelations($caseStudy, $relations);
+
+            return $caseStudy;
+        });
+        $this->flush($caseStudy, $relations !== []);
 
         return $caseStudy;
     }
@@ -73,10 +95,83 @@ final class CaseStudyService
     /** @param  array<string, mixed>  $attributes */
     public function update(CaseStudy $caseStudy, array $attributes): CaseStudy
     {
-        $caseStudy = $this->caseStudies->update($caseStudy, $attributes);
-        $this->flush($caseStudy);
+        [$attributes, $relations] = $this->splitRelations($attributes);
+
+        $caseStudy = DB::transaction(function () use ($caseStudy, $attributes, $relations) {
+            $caseStudy = $this->caseStudies->update($caseStudy, $attributes);
+            $this->syncRelations($caseStudy, $relations);
+
+            return $caseStudy;
+        });
+        $this->flush($caseStudy, $relations !== []);
 
         return $caseStudy;
+    }
+
+    /** Ids for each relation field, for the admin edit form. @return array<string, list<int>> */
+    public function relationIds(CaseStudy $caseStudy): array
+    {
+        $ids = [];
+        foreach (self::RELATIONS as $field => $class) {
+            $ids[$field] = $caseStudy->relationsOut()
+                ->where('related_type', (new $class)->getMorphClass())
+                ->orderBy('sort_order')
+                ->pluck('related_id')
+                ->map(fn ($id) => (int) $id)
+                ->all();
+        }
+
+        return $ids;
+    }
+
+    /**
+     * @param  array<string, mixed>  $attributes
+     * @return array{0: array<string, mixed>, 1: array<string, list<int>>}
+     */
+    private function splitRelations(array $attributes): array
+    {
+        $relations = [];
+        foreach (array_keys(self::RELATIONS) as $field) {
+            if (array_key_exists($field, $attributes)) {
+                $relations[$field] = array_values(array_unique(array_map('intval', $attributes[$field] ?? [])));
+                unset($attributes[$field]);
+            }
+        }
+
+        // Steps are numbered by position so the admin never manages step numbers.
+        if (isset($attributes['how_it_works']) && is_array($attributes['how_it_works'])) {
+            $attributes['how_it_works'] = array_map(
+                fn (array $step, int $i) => ['step' => $i + 1, 'title' => $step['title'], 'description' => $step['description'] ?? null],
+                array_values($attributes['how_it_works']),
+                array_keys(array_values($attributes['how_it_works'])),
+            );
+        }
+
+        return [$attributes, $relations];
+    }
+
+    /** @param  array<string, list<int>>  $relations */
+    private function syncRelations(CaseStudy $caseStudy, array $relations): void
+    {
+        foreach ($relations as $field => $ids) {
+            $morph = (new (self::RELATIONS[$field]))->getMorphClass();
+
+            // Replace every outgoing edge to this type — including seeded ones —
+            // so the admin's list is the single source of truth.
+            $caseStudy->relationsOut()->where('related_type', $morph)->delete();
+
+            foreach ($ids as $position => $id) {
+                EntityRelation::query()->create([
+                    'subject_type' => $caseStudy->getMorphClass(),
+                    'subject_id' => $caseStudy->getKey(),
+                    'related_type' => $morph,
+                    'related_id' => $id,
+                    'relation_type' => self::RELATION_TYPE,
+                    'sort_order' => $position,
+                    'created_at' => now(),
+                ]);
+            }
+        }
     }
 
     public function delete(CaseStudy $caseStudy): void
@@ -85,9 +180,16 @@ final class CaseStudyService
         $this->flush($caseStudy);
     }
 
-    private function flush(CaseStudy $caseStudy): void
+    private function flush(CaseStudy $caseStudy, bool $relationsChanged = false): void
     {
-        \App\Jobs\NotifyFrontendRevalidate::dispatch(['case-studies', "case-study:{$caseStudy->slug}"]);
+        $tags = ['case-studies', "case-study:{$caseStudy->slug}"];
+
+        // Practice/industry/technology/region pages list their case studies.
+        if ($relationsChanged) {
+            array_push($tags, 'practices', 'industries', 'technologies', 'regions');
+        }
+
+        \App\Jobs\NotifyFrontendRevalidate::dispatch($tags);
     }
 
     public function statuses(): array

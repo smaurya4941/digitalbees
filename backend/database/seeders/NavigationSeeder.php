@@ -72,8 +72,8 @@ class NavigationSeeder extends Seeder
             ]],
             ['label' => 'Connect', 'custom_url' => null, 'children' => [
                 ['label' => 'Contact', 'custom_url' => '/contact-us'],
-                ['label' => 'LinkedIn', 'custom_url' => 'https://www.linkedin.com/company/teambees'],
-                ['label' => 'X / Twitter', 'custom_url' => 'https://x.com/teambees'],
+                ['label' => 'LinkedIn', 'custom_url' => 'https://www.linkedin.com/company/teambees-corp/'],
+                ['label' => 'Instagram', 'custom_url' => 'https://www.instagram.com/teambeescorpofficial/'],
             ]],
         ]);
     }

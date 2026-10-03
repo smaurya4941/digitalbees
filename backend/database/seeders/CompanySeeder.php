@@ -9,7 +9,6 @@ use App\Modules\Page\Models\Page;
 use App\Modules\Page\Models\PageTemplate;
 use Illuminate\Database\Seeder;
 
-
 /**
  * The five Company sub-pages (blueprint §26.1), replacing the retired
  * `AboutPageSeeder` and its single `/about-us` page (which also carried two
@@ -77,10 +76,22 @@ class CompanySeeder extends Seeder
 
     private function seedPartners(): void
     {
+        // Every name on the decks' "Client Portfolio" slides.
         $partners = [
             'Stryker', 'Tata', 'Vocera', 'BT', 'Ananta Systems', 'QuestLabs',
-            'WillWare', 'Menhood', 'Ananttam', 'Squire Technologies',
+            'WillWare', 'Menhood', 'Ananttam', 'Squire Technologies', 'Resmera Solutions',
         ];
+
+        // The portfolio slides open with an unlabelled mark (orange glyph on
+        // a navy rounded square), extracted from the Staff Augmentation deck
+        // and shown as "TeamBees" per marketing. `logo` is a site-relative
+        // path served from the frontend's /public directory, so the frontend
+        // renders the image rather than a name-matched SVG. Client logo only
+        // — not a partner.
+        ClientLogo::updateOrCreate(
+            ['name' => 'TeamBees'],
+            ['logo' => '/brand/clients/teambees.png', 'display_order' => 0, 'status' => 'published'],
+        );
 
         foreach ($partners as $order => $name) {
             Partner::updateOrCreate(
@@ -90,16 +101,15 @@ class CompanySeeder extends Seeder
 
             ClientLogo::updateOrCreate(
                 ['name' => $name],
-                ['display_order' => $order, 'status' => 'published'],
+                ['display_order' => $order + 1, 'status' => 'published'],
             );
         }
     }
 
-
     private function seedNewsroom(): void
     {
         $template = PageTemplate::where('key_name', 'company-newsroom')->first();
-        if (!$template) {
+        if (! $template) {
             return;
         }
 
@@ -130,7 +140,7 @@ class CompanySeeder extends Seeder
     private function seedEsg(): void
     {
         $template = PageTemplate::where('key_name', 'company-esg')->first();
-        if (!$template) {
+        if (! $template) {
             return;
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Modules\Company\Services;
 
+use App\Modules\Company\Models\ClientLogo;
 use App\Modules\Company\Models\CompanyMilestone;
 use App\Modules\Company\Models\Partner;
 use App\Modules\Company\Models\TeamMember;
@@ -34,6 +35,17 @@ class CompanyService
             ->ordered()
             ->with(['logo', 'technology'])
             ->get();
+    }
+
+    /**
+     * The client logo wall (blueprint §10.1) — every published logo, in
+     * display order.
+     *
+     * @return Collection<int, ClientLogo>
+     */
+    public function clientLogos(): Collection
+    {
+        return ClientLogo::query()->published()->ordered()->get();
     }
 
     /** @return Collection<int, CompanyMilestone> */

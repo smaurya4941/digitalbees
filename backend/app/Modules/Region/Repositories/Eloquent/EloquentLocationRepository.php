@@ -12,7 +12,7 @@ final class EloquentLocationRepository implements LocationRepository
     {
         return Location::query()
             ->published()
-            ->with('region:id,name,slug')
+            ->with('region:id,name,slug,iso_code')
             ->orderBy('country')
             ->orderBy('city')
             ->get();

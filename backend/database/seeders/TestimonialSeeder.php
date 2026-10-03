@@ -42,6 +42,39 @@ class TestimonialSeeder extends Seeder
                 'author_title' => 'AI Engineer',
                 'author_company' => 'TeamBees, London',
             ],
+            // Formerly hard-coded in the homepage proof carousel; now admin-managed.
+            [
+                'related_type' => 'home',
+                'related_id' => null,
+                'quote' => 'Teams recovered 45–60 minutes per person, per day through governed multi-agent finance workflow automation connecting our transaction ledgers.',
+                'author_name' => null,
+                'author_title' => 'Enterprise Finance Team',
+                'author_company' => 'Financial Services Leader',
+            ],
+            [
+                'related_type' => 'home',
+                'related_id' => null,
+                'quote' => 'Delivered 10-domain HRMS modernization with automated onboarding, dynamic credentialing, and real-time compliance reporting in under 12 weeks.',
+                'author_name' => null,
+                'author_title' => 'VP People Systems',
+                'author_company' => 'Enterprise SaaS Client',
+            ],
+            [
+                'related_type' => 'home',
+                'related_id' => null,
+                'quote' => 'Reduced regression testing cycles by 65% with self-healing UI test automation across our continuous production release pipeline.',
+                'author_name' => null,
+                'author_title' => 'Head of Quality Engineering',
+                'author_company' => 'Global Technology Brand',
+            ],
+            [
+                'related_type' => 'home',
+                'related_id' => null,
+                'quote' => 'Standardized enterprise CMDB and CSDM architecture across complex transit infrastructure within 90 days with zero operational downtime.',
+                'author_name' => null,
+                'author_title' => 'Director of Service Operations',
+                'author_company' => 'Transport & Infrastructure Client',
+            ],
         ];
 
         foreach ($testimonials as $order => $data) {

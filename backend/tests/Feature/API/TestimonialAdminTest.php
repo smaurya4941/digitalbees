@@ -96,7 +96,7 @@ class TestimonialAdminTest extends TestCase
         $this->actingAs($this->user('admin'))
             ->getJson('/api/v1/admin/testimonials')
             ->assertOk()
-            ->assertJsonPath('meta.total', 3)
+            ->assertJsonPath('meta.total', Testimonial::count())
             ->assertJsonPath('meta.statuses', ['draft', 'published'])
             ->assertJsonStructure(['data', 'meta' => ['current_page', 'last_page', 'per_page', 'total'], 'links']);
 

@@ -72,13 +72,13 @@ class PracticeSeeder extends Seeder
                 'name' => 'Talent Bees',
                 'slug' => 'talent-bees',
                 'tagline' => 'Hire the specialists you need, on your timeline.',
-                'summary' => 'IT and non-IT staffing, executive search, contract staffing, staff augmentation, and RPO across six global regions.',
+                'summary' => 'IT and non-IT staffing, executive search, contract staffing, staff augmentation, and RPO, delivered from four markets: India, USA, Singapore and UAE.',
                 'icon' => 'users',
                 'color_token' => 'practice-talent',
                 'key_stats' => [
                     ['value' => '2 business days', 'label' => 'Typical shortlist turnaround'],
                     ['value' => '50+', 'label' => 'TA and domain experts'],
-                    ['value' => '6', 'label' => 'Global regions'],
+                    ['value' => '4', 'label' => 'Delivery markets'],
                     ['value' => '5', 'label' => 'Quality gates before you see a profile'],
                 ],
                 'key_capabilities' => [
@@ -254,7 +254,7 @@ class PracticeSeeder extends Seeder
                     ['value' => '2021', 'label' => 'Established'],
                     ['value' => '30+', 'label' => 'Workflows automated'],
                     ['value' => '78%', 'label' => 'Avg. processing-time reduction'],
-                    ['value' => '4', 'label' => 'Markets'],
+                    ['value' => '4', 'label' => 'Delivery markets'],
                 ],
                 'key_capabilities' => [
                     ['title' => 'Agentic Workflow Automation', 'description' => 'Agent-driven workflows with LLM reasoning, smart routing, and RAG pipelines.'],

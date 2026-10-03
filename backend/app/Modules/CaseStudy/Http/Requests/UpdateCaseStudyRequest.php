@@ -24,13 +24,9 @@ class UpdateCaseStudyRequest extends FormRequest
             'summary' => ['nullable', 'string', 'max:1000'],
             'challenge' => ['nullable', 'string', 'max:2000'],
             'solution' => ['nullable', 'string', 'max:2000'],
-            'impact' => ['nullable', 'string', 'max:2000'],
-            'hero_image' => ['nullable', 'string', 'max:255'],
-            'metrics' => ['sometimes', 'array'],
-            'how_it_works' => ['sometimes', 'array'],
-            'capabilities_used' => ['sometimes', 'array'],
+            'results' => ['nullable', 'string', 'max:2000'],
             'status' => ['nullable', Rule::enum(ContentStatus::class)],
-            'sort_order' => ['nullable', 'integer'],
+            ...StoreCaseStudyRequest::structuredRules(),
         ];
     }
 }

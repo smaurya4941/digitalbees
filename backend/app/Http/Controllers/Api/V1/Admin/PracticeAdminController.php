@@ -103,6 +103,8 @@ class PracticeAdminController extends ApiController
             ->values();
 
         return ApiResponse::item([
+            // Used by the case-study form's "Practices" picker.
+            'practices' => $options(Practice::class),
             'industries' => $options(Industry::class),
             'technologies' => $options(Technology::class, ['vendor_name']),
             'regions' => $options(Region::class),

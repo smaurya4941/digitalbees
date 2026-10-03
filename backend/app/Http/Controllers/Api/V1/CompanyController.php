@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Modules\Company\Http\Resources\ClientLogoResource;
 use App\Modules\Company\Http\Resources\CompanyMilestoneResource;
 use App\Modules\Company\Http\Resources\PartnerResource;
 use App\Modules\Company\Http\Resources\TeamMemberResource;
@@ -27,6 +28,11 @@ class CompanyController extends ApiController
     public function partnerships(): JsonResponse
     {
         return ApiResponse::collection(PartnerResource::collection($this->company->partnerships())->resolve());
+    }
+
+    public function clientLogos(): JsonResponse
+    {
+        return ApiResponse::collection(ClientLogoResource::collection($this->company->clientLogos())->resolve());
     }
 
     public function ourStory(): JsonResponse

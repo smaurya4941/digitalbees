@@ -42,9 +42,12 @@ class TaxonomyApiTest extends TestCase
 
     public function test_regions_index_and_detail_with_locations(): void
     {
-        $this->getJson('/api/v1/regions')->assertOk()->assertJsonPath('meta.count', 6);
+        $published = \App\Modules\Region\Models\Region::query()->where('status', 'published')->count();
+        $this->assertGreaterThan(0, $published);
+        $this->getJson('/api/v1/regions')->assertOk()->assertJsonPath('meta.count', $published);
 
-        $response = $this->getJson('/api/v1/regions/uk');
+        // USA carries a real office (Chicago); UK is served remotely.
+        $response = $this->getJson('/api/v1/regions/usa');
 
         $response->assertOk()
             ->assertJsonPath('data.template', 'region')

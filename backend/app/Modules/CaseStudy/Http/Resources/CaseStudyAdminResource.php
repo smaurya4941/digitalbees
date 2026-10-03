@@ -2,6 +2,7 @@
 
 namespace App\Modules\CaseStudy\Http\Resources;
 
+use App\Modules\CaseStudy\Services\CaseStudyService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,10 +18,13 @@ class CaseStudyAdminResource extends JsonResource
             'summary' => $this->summary,
             'challenge' => $this->challenge,
             'solution' => $this->solution,
-            'impact' => $this->impact,
-            'hero_image' => $this->hero_image,
+            'results' => $this->results,
+            'metrics' => $this->metrics ?? [],
+            'how_it_works' => $this->how_it_works ?? [],
+            'capabilities_used' => $this->capabilities_used ?? [],
+            ...app(CaseStudyService::class)->relationIds($this->resource),
             'status' => $this->status,
-            'sort_order' => $this->sort_order,
+            'published_at' => $this->published_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

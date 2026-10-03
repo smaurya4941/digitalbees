@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\API;
 
+use App\Modules\Company\Models\ClientLogo;
 use App\Modules\Company\Models\Partner;
 use App\Modules\Company\Models\TeamMember;
 use Database\Seeders\CompanySeeder;
@@ -74,6 +75,29 @@ class CompanyApiTest extends TestCase
         $years = collect($response->json('data'))->pluck('year');
         $this->assertSame($years->sort()->values()->all(), $years->all());
         $this->assertGreaterThanOrEqual(3, $years->count());
+    }
+
+    public function test_client_logos_list_every_deck_client_in_display_order(): void
+    {
+        $response = $this->getJson('/api/v1/company/client-logos');
+
+        $response->assertOk();
+        $logos = collect($response->json('data'));
+
+        // The unlabelled deck mark leads, rendered from its image asset.
+        $this->assertSame('TeamBees', $logos->first()['name']);
+        $this->assertSame('/brand/clients/teambees.png', $logos->first()['logo_url']);
+        $this->assertContains('Resmera Solutions', $logos->pluck('name'));
+        $this->assertSame(12, $logos->count());
+    }
+
+    public function test_client_logos_exclude_unpublished_entries(): void
+    {
+        ClientLogo::create(['name' => 'Hidden Client', 'display_order' => 99, 'status' => 'draft']);
+
+        $names = collect($this->getJson('/api/v1/company/client-logos')->json('data'))->pluck('name');
+
+        $this->assertNotContains('Hidden Client', $names);
     }
 
     public function test_newsroom_and_esg_pages_resolve_through_page_resolution(): void

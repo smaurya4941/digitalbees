@@ -33,6 +33,24 @@ class TestimonialApiTest extends TestCase
         }
     }
 
+    public function test_it_filters_to_one_related_entity(): void
+    {
+        $make = fn (string $quote, int $id) => \App\Modules\Testimonial\Models\Testimonial::create([
+            'quote' => $quote,
+            'author_title' => 'CIO',
+            'related_type' => 'case_study',
+            'related_id' => $id,
+            'status' => 'published',
+            'sort_order' => 0,
+        ]);
+        $make('For study 7.', 7);
+        $make('For study 8.', 8);
+
+        $quotes = collect($this->getJson('/api/v1/testimonials?related_type=case_study&related_id=7')->json('data'))->pluck('quote');
+
+        $this->assertSame(['For study 7.'], $quotes->all());
+    }
+
     public function test_an_unpublished_testimonial_is_not_returned(): void
     {
         \App\Modules\Testimonial\Models\Testimonial::create([
