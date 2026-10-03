@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'disk' => env('MEDIA_DISK', env('FILESYSTEM_DISK', 'public')),
+    'disk' => env('MEDIA_DISK', 'public'),
 
     /*
     |--------------------------------------------------------------------------
