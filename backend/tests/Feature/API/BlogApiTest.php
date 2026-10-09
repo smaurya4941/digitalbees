@@ -232,6 +232,55 @@ class BlogApiTest extends TestCase
             ->assertJsonPath('data.0.href', '/blog/category/engineering');
     }
 
+    // --- Revalidation ------------------------------------------------------
+
+    /** Every /blog page is fetched under `insights` + `resource:{slug}`; nothing else purges it. */
+    private function assertBlogPurged(string $slug): void
+    {
+        Queue::assertPushed(
+            NotifyFrontendRevalidate::class,
+            fn (NotifyFrontendRevalidate $job) => in_array('insights', $job->tags, true)
+                && in_array("resource:{$slug}", $job->tags, true),
+        );
+    }
+
+    public function test_seo_edit_revalidates_the_blog_post(): void
+    {
+        $this->makePost();
+
+        $this->actingAs($this->user('seo-manager'))
+            ->putJson('/api/v1/admin/seo/resources/a-post', ['meta_title' => 'A sharper title'])
+            ->assertOk();
+
+        $this->assertBlogPurged('a-post');
+    }
+
+    public function test_status_endpoint_revalidates_the_blog_post(): void
+    {
+        $this->makePost();
+
+        $this->actingAs($this->user('admin'))
+            ->patchJson('/api/v1/admin/content/resources/a-post/status', ['status' => 'archived'])
+            ->assertOk();
+
+        $this->assertBlogPurged('a-post');
+    }
+
+    public function test_workflow_publish_revalidates_the_blog_post_and_queue_links_to_blog(): void
+    {
+        $this->makePost(['status' => 'draft', 'workflow_state' => 'in_review']);
+        $reviewer = $this->user('reviewer');
+
+        $this->actingAs($reviewer)->getJson('/api/v1/admin/workflow/queue')
+            ->assertOk()
+            ->assertJsonPath('data.0.href', '/blog/a-post');
+
+        $this->actingAs($reviewer)->postJson('/api/v1/admin/resources/a-post/transition', ['to' => 'approved'])->assertOk();
+        $this->actingAs($reviewer)->postJson('/api/v1/admin/resources/a-post/transition', ['to' => 'published'])->assertOk();
+
+        $this->assertBlogPurged('a-post');
+    }
+
     public function test_blog_seeder_creates_one_reference_post_idempotently(): void
     {
         $this->seed(BlogSeeder::class);

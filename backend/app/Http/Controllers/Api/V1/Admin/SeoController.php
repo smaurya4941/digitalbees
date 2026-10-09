@@ -15,6 +15,7 @@ use App\Modules\Seo\Http\Requests\SeoRequest;
 use App\Modules\Seo\Services\SeoLintService;
 use App\Modules\Seo\Services\SeoService;
 use App\Modules\Technology\Models\Technology;
+use App\Support\Content\ContentType;
 use App\Support\Enums\ContentStatus;
 use App\Support\Http\ApiResponse;
 use Illuminate\Database\Eloquent\Model;
@@ -61,7 +62,7 @@ class SeoController extends ApiController
         $model = $this->resolve($type, $slug);
 
         $seo = $this->seo->sync($model, $request->validated());
-        NotifyFrontendRevalidate::dispatch([$type, "{$type}:{$slug}"]);
+        NotifyFrontendRevalidate::dispatch(ContentType::revalidationTags($type, $slug));
 
         $model->setRelation('seo', $seo);
 

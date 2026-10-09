@@ -88,13 +88,35 @@ final class ContentType
     }
 
     /**
+     * type => [list tags, per-item tag prefix]. Must mirror each module's
+     * `*Service::flush()` and frontend/lib/api/tags.ts — a mismatch means the
+     * page silently never revalidates. Resources also carry `insights`, the
+     * tag every /blog page is fetched under.
+     *
+     * @var array<string, array{0: list<string>, 1: string}>
+     */
+    private const REVALIDATION_TAGS = [
+        'practices' => [['practices'], 'practice'],
+        'industries' => [['industries'], 'industry'],
+        'regions' => [['regions'], 'region'],
+        'technologies' => [['technologies'], 'technology'],
+        'case-studies' => [['case-studies'], 'case-study'],
+        'resources' => [['resources', 'insights'], 'resource'],
+        'careers' => [['careers'], 'career'],
+        'locations' => [['locations'], 'location'],
+    ];
+
+    /**
      * Cache tags to purge on the frontend after this entity changes.
      *
      * @return list<string>
      */
     public static function revalidationTags(string $type, string $slug): array
     {
-        return [$type, "{$type}:{$slug}"];
+        [$listTags, $itemPrefix] = self::REVALIDATION_TAGS[$type]
+            ?? throw new NotFoundHttpException("Unknown content type [{$type}].");
+
+        return [...$listTags, "{$itemPrefix}:{$slug}"];
     }
 
     /** @return array{0: class-string<Model>, 1: string, 2: string} */

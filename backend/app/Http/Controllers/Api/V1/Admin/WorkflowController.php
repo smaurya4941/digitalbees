@@ -50,7 +50,10 @@ class WorkflowController extends ApiController
                         'type' => $type,
                         'slug' => $entity->slug,
                         'title' => $entity->name ?? $entity->title ?? $entity->slug,
-                        'href' => ContentType::prefix($type)."/{$entity->slug}",
+                        // Resources split by type (blog → /blog, others → /resources).
+                        'href' => method_exists($entity, 'publicPath')
+                            ? $entity->publicPath()
+                            : ContentType::prefix($type)."/{$entity->slug}",
                         'submitted_at' => $submitted?->reviewed_at,
                         'submitted_by' => $submitted?->reviewer()->value('name'),
                         'updated_at' => $entity->updated_at,

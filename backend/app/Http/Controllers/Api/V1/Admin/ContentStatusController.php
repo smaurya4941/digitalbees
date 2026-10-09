@@ -11,6 +11,7 @@ use App\Modules\Region\Models\Location;
 use App\Modules\Region\Models\Region;
 use App\Modules\Resource\Models\Resource;
 use App\Modules\Technology\Models\Technology;
+use App\Support\Content\ContentType;
 use App\Support\Enums\ContentStatus;
 use App\Support\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -81,7 +82,7 @@ class ContentStatusController extends ApiController
 
         $entity->save();
 
-        NotifyFrontendRevalidate::dispatch([$type, "{$type}:{$slug}"]);
+        NotifyFrontendRevalidate::dispatch(ContentType::revalidationTags($type, $slug));
 
         return ApiResponse::item([
             'type' => $type,
