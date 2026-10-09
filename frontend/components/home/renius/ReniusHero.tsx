@@ -18,19 +18,19 @@ import type { CompanyFacts } from '@/lib/api/settings';
 const BANNER_SLIDES = [
   {
     id: 1,
-    image: '/images/hero/hero-slide-1.jpg',
+    image: '/images/hero/hero-slide-1.png',
     alt: 'TeamBees Enterprise Architecture — Golden Skyscrapers',
     tagline: 'High-Consequence Enterprise Pods',
   },
   {
     id: 2,
-    image: '/images/hero/hero-slide-2.jpg',
+    image: '/images/hero/hero-slide-2.png',
     alt: 'TeamBees Modern Engineering — Cantilevered Facade',
     tagline: 'Zero-Defect Software & Cloud Delivery',
   },
   {
     id: 3,
-    image: '/images/hero/hero-slide-3.jpg',
+    image: '/images/hero/hero-slide-3.png',
     alt: 'TeamBees AI Swarms — Illuminated Tech Tower',
     tagline: 'Autonomous AI Swarm Infrastructure',
   },
